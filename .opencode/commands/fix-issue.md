@@ -2,7 +2,7 @@
 description: Fix a GitHub issue end-to-end — worktree, branch, fix, tests, PR
 ---
 
-Fix GitHub issue #$ARGUMENTS on cloudflare/vinext.
+Fix GitHub issue #$ARGUMENTS on openvite/openvite.
 
 ## Step 1: Understand the issue
 
@@ -14,19 +14,19 @@ Generate a short slug from the issue title (lowercase, hyphens, max 30 chars, no
 
 ```
 git fetch origin main
-git worktree add ../vinext-fix-$ARGUMENTS -b fix/$ARGUMENTS-<slug> origin/main
+git worktree add ../openvite-fix-$ARGUMENTS -b fix/$ARGUMENTS-<slug> origin/main
 ```
 
 **All subsequent commands must target the worktree directory.** Use the bash tool's workdir parameter or explicit paths. Do NOT modify the main worktree.
 
 Install dependencies in the worktree:
 ```
-pnpm install
+bun install
 ```
 
 ## Step 3: Fix the issue
 
-Work in `../vinext-fix-$ARGUMENTS/`:
+Work in `../openvite-fix-$ARGUMENTS/`:
 
 1. Research the codebase to understand the problem area
 2. Implement the fix following the patterns described in AGENTS.md
@@ -41,10 +41,10 @@ Work in `../vinext-fix-$ARGUMENTS/`:
 
 Run all checks from the worktree:
 ```
-pnpm run build
-pnpm test
-pnpm run typecheck
-pnpm run lint
+bun run build
+bun run test
+bun run typecheck
+bun run lint
 ```
 
 Fix any failures before proceeding.

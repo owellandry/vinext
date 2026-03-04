@@ -2,8 +2,8 @@
 
 /**
  * Traffic simulator — generates realistic Zipf-distributed HTTP traffic
- * against a running vinext app. This populates Cloudflare zone analytics
- * so that `vinext deploy` with TPR can use real traffic data.
+ * against a running openvite app. This populates Cloudflare zone analytics
+ * so that `openvite deploy` with TPR can use real traffic data.
  *
  * Usage:
  *   node scripts/simulate-traffic.mjs                          # defaults

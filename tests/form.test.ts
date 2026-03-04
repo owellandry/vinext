@@ -8,7 +8,7 @@
 import { describe, it, expect } from "vitest";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import Form from "../packages/vinext/src/shims/form.js";
+import Form from "../packages/openvite/src/shims/form.js";
 
 // ─── SSR rendering ──────────────────────────────────────────────────────
 
@@ -92,7 +92,7 @@ describe("Form SSR rendering", () => {
 
 describe("Form useActionState", () => {
   it("exports useActionState from the module", async () => {
-    const mod = await import("../packages/vinext/src/shims/form.js");
+    const mod = await import("../packages/openvite/src/shims/form.js");
     expect(typeof mod.useActionState).toBe("function");
   });
 });

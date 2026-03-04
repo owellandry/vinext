@@ -16,7 +16,7 @@ import {
   setRevalidateDuration,
   getRevalidateDuration,
   triggerBackgroundRegeneration,
-} from "../packages/vinext/src/server/isr-cache.js";
+} from "../packages/openvite/src/server/isr-cache.js";
 
 // ─── isrCacheKey ────────────────────────────────────────────────────────
 

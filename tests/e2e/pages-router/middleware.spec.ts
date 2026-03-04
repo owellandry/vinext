@@ -63,7 +63,7 @@ test.describe("Middleware (Pages Router)", () => {
     const headers = response?.headers();
 
     expect(headers?.["x-custom-middleware"]).toBe("active");
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
   });
 
   test("redirect preserves functionality of target page", async ({ page }) => {
@@ -80,7 +80,7 @@ test.describe("Middleware (Pages Router)", () => {
       (window as any).__NAV_MARKER__ = true;
     });
     await homeLink.click();
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
 
     // Client-side nav should have worked (no full page reload)
     const marker = await page.evaluate(() => (window as any).__NAV_MARKER__);

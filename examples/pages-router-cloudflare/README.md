@@ -1,6 +1,6 @@
 # Pages Router on Cloudflare Workers
 
-A minimal example of a Next.js Pages Router application running on Cloudflare Workers via vinext.
+A minimal example of a Next.js Pages Router application running on Cloudflare Workers via openvite.
 
 Demonstrates `getServerSideProps`, `next/head`, `next/link`, dynamic routes, and API routes.
 
@@ -9,23 +9,23 @@ Demonstrates `getServerSideProps`, `next/head`, `next/link`, dynamic routes, and
 1. Install dependencies:
 
 ```sh
-pnpm install
+bun install
 ```
 
 2. Start the dev server:
 
 ```sh
-pnpm dev
+bun run dev
 ```
 
 3. Build for production:
 
 ```sh
-pnpm build
+bun run build
 ```
 
 4. Preview the production build:
 
 ```sh
-pnpm preview
+bun run preview
 ```

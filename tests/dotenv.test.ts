@@ -5,7 +5,7 @@ import path from "node:path";
 import {
   loadDotenv,
   getDotenvFiles,
-} from "../packages/vinext/src/config/dotenv.js";
+} from "../packages/openvite/src/config/dotenv.js";
 
 let tmpDir: string;
 
@@ -16,7 +16,7 @@ function writeFile(relativePath: string, content: string): void {
 }
 
 beforeEach(() => {
-  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vinext-dotenv-test-"));
+  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openvite-dotenv-test-"));
 });
 
 afterEach(() => {

@@ -3,7 +3,7 @@
  *
  * Tests sitemap XML generation, robots.txt generation, manifest JSON
  * generation, and metadata file scanning. These are direct counterparts
- * to Next.js's metadata-dynamic-routes tests, verifying that vinext
+ * to Next.js's metadata-dynamic-routes tests, verifying that openvite
  * produces correct output for file-based metadata routes.
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
@@ -19,7 +19,7 @@ import {
   type SitemapEntry,
   type RobotsConfig,
   type ManifestConfig,
-} from "../packages/vinext/src/server/metadata-routes.js";
+} from "../packages/openvite/src/server/metadata-routes.js";
 
 // ─── sitemapToXml ───────────────────────────────────────────────────────
 
@@ -255,7 +255,7 @@ describe("scanMetadataFiles", () => {
   let tmpDir: string;
 
   beforeEach(() => {
-    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vinext-test-metadata-"));
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openvite-test-metadata-"));
   });
 
   afterEach(() => {

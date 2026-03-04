@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
-import vinext from "vinext";
+import openvite from "openvite";
 
 export default defineConfig({
-  plugins: [vinext({ appDir: import.meta.dirname })],
+  plugins: [openvite({ appDir: import.meta.dirname })],
 });

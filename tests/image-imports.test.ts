@@ -1,33 +1,34 @@
 import { describe, it, expect } from "vitest";
 import path from "node:path";
-import vinext from "../packages/vinext/src/index.js";
+import openvite from "../packages/openvite/src/index.js";
 import type { Plugin } from "vite";
 
 // ── Helpers ───────────────────────────────────────────────────
-const IMAGES_DIR = path.resolve(import.meta.dirname, "./fixtures/images");
-const PNG_PATH = path.join(IMAGES_DIR, "test-4x3.png");
-const JPG_PATH = path.join(IMAGES_DIR, "test-8x6.jpg");
+const norm = (p: string) => p.replace(/\\/g, "/");
+const IMAGES_DIR = norm(path.resolve(import.meta.dirname, "./fixtures/images"));
+const PNG_PATH = norm(path.join(IMAGES_DIR, "test-4x3.png"));
+const JPG_PATH = norm(path.join(IMAGES_DIR, "test-8x6.jpg"));
 
 /** Unwrap a Vite plugin hook that may use the object-with-filter format */
 function unwrapHook(hook: any): Function {
   return typeof hook === "function" ? hook : hook?.handler;
 }
 
-/** Extract the vinext:image-imports plugin from the plugin array */
+/** Extract the openvite:image-imports plugin from the plugin array */
 function getImagePlugin(): Plugin & { _dimCache: Map<string, { width: number; height: number }> } {
-  const plugins = vinext() as Plugin[];
-  const plugin = plugins.find((p) => p.name === "vinext:image-imports");
-  if (!plugin) throw new Error("vinext:image-imports plugin not found");
+  const plugins = openvite() as Plugin[];
+  const plugin = plugins.find((p) => p.name === "openvite:image-imports");
+  if (!plugin) throw new Error("openvite:image-imports plugin not found");
   return plugin as any;
 }
 
 // ── resolveId ─────────────────────────────────────────────────
-describe("vinext:image-imports — resolveId", () => {
-  it("resolves ?vinext-meta suffix to virtual module ID", () => {
+describe("openvite:image-imports — resolveId", () => {
+  it("resolves ?openvite-meta suffix to virtual module ID", () => {
     const plugin = getImagePlugin();
     const resolve = unwrapHook(plugin.resolveId);
-    const result = resolve.call(plugin, "/abs/path/hero.jpg?vinext-meta", "/some/file.tsx");
-    expect(result).toBe("\0vinext-image-meta:/abs/path/hero.jpg");
+    const result = resolve.call(plugin, "/abs/path/hero.jpg?openvite-meta", "/some/file.tsx");
+    expect(result).toBe("\0openvite-image-meta:/abs/path/hero.jpg");
   });
 
   it("returns null for non-meta imports", () => {
@@ -40,11 +41,11 @@ describe("vinext:image-imports — resolveId", () => {
 });
 
 // ── load ──────────────────────────────────────────────────────
-describe("vinext:image-imports — load", () => {
+describe("openvite:image-imports — load", () => {
   it("returns dimensions for a PNG file", async () => {
     const plugin = getImagePlugin();
     const load = plugin.load as Function;
-    const result = await load.call(plugin, `\0vinext-image-meta:${PNG_PATH}`);
+    const result = await load.call(plugin, `\0openvite-image-meta:${PNG_PATH}`);
     expect(result).toContain("export default");
     const json = result.replace("export default ", "").replace(";", "");
     const dims = JSON.parse(json);
@@ -55,7 +56,7 @@ describe("vinext:image-imports — load", () => {
   it("returns dimensions for a JPEG file", async () => {
     const plugin = getImagePlugin();
     const load = plugin.load as Function;
-    const result = await load.call(plugin, `\0vinext-image-meta:${JPG_PATH}`);
+    const result = await load.call(plugin, `\0openvite-image-meta:${JPG_PATH}`);
     const json = result.replace("export default ", "").replace(";", "");
     const dims = JSON.parse(json);
     expect(dims.width).toBe(8);
@@ -65,7 +66,7 @@ describe("vinext:image-imports — load", () => {
   it("returns 0x0 for non-existent file", async () => {
     const plugin = getImagePlugin();
     const load = plugin.load as Function;
-    const result = await load.call(plugin, "\0vinext-image-meta:/no/such/file.png");
+    const result = await load.call(plugin, "\0openvite-image-meta:/no/such/file.png");
     const json = result.replace("export default ", "").replace(";", "");
     const dims = JSON.parse(json);
     expect(dims.width).toBe(0);
@@ -83,16 +84,16 @@ describe("vinext:image-imports — load", () => {
     const plugin = getImagePlugin();
     plugin._dimCache.clear();
     const load = plugin.load as Function;
-    await load.call(plugin, `\0vinext-image-meta:${PNG_PATH}`);
+    await load.call(plugin, `\0openvite-image-meta:${PNG_PATH}`);
     expect(plugin._dimCache.has(PNG_PATH)).toBe(true);
     // Second call uses cache (no way to verify directly, but should not throw)
-    const result = await load.call(plugin, `\0vinext-image-meta:${PNG_PATH}`);
+    const result = await load.call(plugin, `\0openvite-image-meta:${PNG_PATH}`);
     expect(result).toContain('"width":4');
   });
 });
 
 // ── transform ─────────────────────────────────────────────────
-describe("vinext:image-imports — transform", () => {
+describe("openvite:image-imports — transform", () => {
   // Fake file ID in the images directory so path.resolve works
   const fakeId = path.join(IMAGES_DIR, "page.tsx");
 
@@ -102,10 +103,10 @@ describe("vinext:image-imports — transform", () => {
     const code = `import hero from './test-4x3.png';\nconsole.log(hero);`;
     const result = await transform.call(plugin, code, fakeId);
     expect(result).not.toBeNull();
-    expect(result.code).toContain("__vinext_img_url_hero");
-    expect(result.code).toContain("__vinext_img_meta_hero");
-    expect(result.code).toContain("const hero = { src: __vinext_img_url_hero");
-    expect(result.code).toContain("?vinext-meta");
+    expect(result.code).toContain("__openvite_img_url_hero");
+    expect(result.code).toContain("__openvite_img_meta_hero");
+    expect(result.code).toContain("const hero = { src: __openvite_img_url_hero");
+    expect(result.code).toContain("?openvite-meta");
     expect(result.code).not.toContain("import hero from");
     expect(result.map).toBeDefined();
   });
@@ -116,8 +117,8 @@ describe("vinext:image-imports — transform", () => {
     const code = `import photo from './test-8x6.jpg';`;
     const result = await transform.call(plugin, code, fakeId);
     expect(result).not.toBeNull();
-    expect(result.code).toContain("__vinext_img_url_photo");
-    expect(result.code).toContain("const photo = { src: __vinext_img_url_photo");
+    expect(result.code).toContain("__openvite_img_url_photo");
+    expect(result.code).toContain("const photo = { src: __openvite_img_url_photo");
   });
 
   it("transforms multiple image imports in one file", async () => {
@@ -130,8 +131,8 @@ describe("vinext:image-imports — transform", () => {
     ].join("\n");
     const result = await transform.call(plugin, code, fakeId);
     expect(result).not.toBeNull();
-    expect(result.code).toContain("__vinext_img_url_hero");
-    expect(result.code).toContain("__vinext_img_url_photo");
+    expect(result.code).toContain("__openvite_img_url_hero");
+    expect(result.code).toContain("__openvite_img_url_photo");
     expect(result.code).toContain("const hero =");
     expect(result.code).toContain("const photo =");
   });
@@ -144,7 +145,7 @@ describe("vinext:image-imports — transform", () => {
     const code = `import icon from './test-4x3.png';`;
     const result = await transform.call(plugin, code, fakeId);
     expect(result).not.toBeNull();
-    expect(result.code).toContain("__vinext_img_url_icon");
+    expect(result.code).toContain("__openvite_img_url_icon");
   });
 
   it("returns null for files with no image imports", async () => {
@@ -202,7 +203,7 @@ describe("vinext:image-imports — transform", () => {
     expect(result.code).toContain(`import React from 'react'`);
     expect(result.code).toContain(`import { useState } from 'react'`);
     // Image import should be transformed
-    expect(result.code).toContain("__vinext_img_url_hero");
+    expect(result.code).toContain("__openvite_img_url_hero");
   });
 
   it("handles single-quoted imports", async () => {
@@ -211,7 +212,7 @@ describe("vinext:image-imports — transform", () => {
     const code = `import hero from './test-4x3.png';`;
     const result = await transform.call(plugin, code, fakeId);
     expect(result).not.toBeNull();
-    expect(result.code).toContain("__vinext_img_url_hero");
+    expect(result.code).toContain("__openvite_img_url_hero");
   });
 
   it("handles double-quoted imports", async () => {
@@ -220,7 +221,7 @@ describe("vinext:image-imports — transform", () => {
     const code = `import hero from "./test-4x3.png";`;
     const result = await transform.call(plugin, code, fakeId);
     expect(result).not.toBeNull();
-    expect(result.code).toContain("__vinext_img_url_hero");
+    expect(result.code).toContain("__openvite_img_url_hero");
   });
 
   it("uses absolute path in meta import", async () => {
@@ -230,6 +231,6 @@ describe("vinext:image-imports — transform", () => {
     const result = await transform.call(plugin, code, fakeId);
     expect(result).not.toBeNull();
     // Meta import should reference the absolute path
-    expect(result.code).toContain(PNG_PATH + "?vinext-meta");
+    expect(result.code).toContain(PNG_PATH + "?openvite-meta");
   });
 });

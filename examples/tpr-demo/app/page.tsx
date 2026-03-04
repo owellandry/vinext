@@ -5,7 +5,7 @@ export default function Home() {
     <main>
       <nav>
         <div className="nav-inner">
-          <div className="nav-brand">vinext / TPR demo</div>
+          <div className="nav-brand">openvite / TPR demo</div>
           <div className="nav-links">
             <a href="#trade-off">Trade-off</a>
             <a href="#power-law">Power law</a>
@@ -18,7 +18,7 @@ export default function Home() {
       {/* Hero */}
       <section className="hero" style={{ borderBottom: "none" }}>
         <div className="container">
-          <div className="badge">vinext</div>
+          <div className="badge">openvite</div>
           <h1>
             Traffic-aware
             <br />
@@ -45,10 +45,10 @@ export default function Home() {
       >
         Built with{" "}
         <a
-          href="https://github.com/cloudflare/vinext"
+          href="https://github.com/openvite/openvite"
           style={{ color: "var(--accent)" }}
         >
-          vinext
+          openvite
         </a>{" "}
         — Next.js apps on Vite, deployed to Cloudflare Workers.
       </footer>

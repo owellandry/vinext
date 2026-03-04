@@ -9,7 +9,7 @@
 import { describe, it, expect } from "vitest";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import Script, { type ScriptProps } from "../packages/vinext/src/shims/script.js";
+import Script, { type ScriptProps } from "../packages/openvite/src/shims/script.js";
 
 // ─── SSR rendering ──────────────────────────────────────────────────────
 

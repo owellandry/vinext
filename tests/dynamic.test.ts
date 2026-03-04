@@ -2,14 +2,14 @@
  * next/dynamic shim unit tests.
  *
  * Mirrors test cases from Next.js test/unit/next-dynamic.test.tsx,
- * plus comprehensive coverage for vinext's dynamic() implementation:
+ * plus comprehensive coverage for openvite's dynamic() implementation:
  * SSR rendering, ssr:false behavior, loading components, error
  * boundaries, displayName assignment, and flushPreloads().
  */
 import { describe, it, expect } from "vitest";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import dynamic, { flushPreloads } from "../packages/vinext/src/shims/dynamic.js";
+import dynamic, { flushPreloads } from "../packages/openvite/src/shims/dynamic.js";
 
 // ─── Test components ────────────────────────────────────────────────────
 

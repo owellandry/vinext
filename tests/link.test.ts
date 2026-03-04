@@ -2,7 +2,7 @@
  * next/link shim unit tests.
  *
  * Mirrors test cases from Next.js test/unit/link-rendering.test.ts and
- * test/unit/link-warnings.test.tsx, plus additional coverage for vinext's
+ * test/unit/link-warnings.test.tsx, plus additional coverage for openvite's
  * Link internals: resolveHref(), withBasePath(), applyLocaleToHref(), and
  * isHashOnlyChange().
  *
@@ -15,10 +15,10 @@ import ReactDOMServer from "react-dom/server";
 
 // We test the Link component and its internal helpers.
 // Link is a "use client" component but renderToString still works for SSR output.
-import Link, { useLinkStatus } from "../packages/vinext/src/shims/link.js";
+import Link, { useLinkStatus } from "../packages/openvite/src/shims/link.js";
 
 // Internal helpers re-exported or accessible via the router shim
-import { isExternalUrl, isHashOnlyChange } from "../packages/vinext/src/shims/router.js";
+import { isExternalUrl, isHashOnlyChange } from "../packages/openvite/src/shims/router.js";
 
 // ─── SSR rendering (mirrors Next.js test/unit/link-rendering.test.ts) ────
 
@@ -226,7 +226,7 @@ describe("Link locale handling", () => {
 
   it("locale string prepends locale prefix", () => {
     // When locale is a non-default locale string, it prepends /{locale}
-    // Note: default locale check uses __VINEXT_DEFAULT_LOCALE__ which is undefined in tests
+    // Note: default locale check uses __OPENVITE_DEFAULT_LOCALE__ which is undefined in tests
     const html = ReactDOMServer.renderToString(
       React.createElement(Link, { href: "/about", locale: "fr" } as any, "x"),
     );

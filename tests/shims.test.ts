@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import path from "node:path";
 import { PAGES_FIXTURE_DIR } from "./helpers.js";
-import { isExternalUrl, isHashOnlyChange } from "../packages/vinext/src/shims/router.js";
-import { isValidModulePath } from "../packages/vinext/src/client/validate-module-path.js";
+import { isExternalUrl, isHashOnlyChange } from "../packages/openvite/src/shims/router.js";
+import { isValidModulePath } from "../packages/openvite/src/client/validate-module-path.js";
 
 const FIXTURE_DIR = PAGES_FIXTURE_DIR;
 
 describe("next/navigation shim", () => {
   it("exports usePathname, useSearchParams, useParams, useRouter", async () => {
     const nav = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     expect(typeof nav.usePathname).toBe("function");
     expect(typeof nav.useSearchParams).toBe("function");
@@ -19,7 +19,7 @@ describe("next/navigation shim", () => {
 
   it("exports redirect, notFound, permanentRedirect", async () => {
     const nav = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     expect(typeof nav.redirect).toBe("function");
     expect(typeof nav.notFound).toBe("function");
@@ -28,7 +28,7 @@ describe("next/navigation shim", () => {
 
   it("redirect() throws with correct digest", async () => {
     const { redirect } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     try {
       redirect("/login");
@@ -42,7 +42,7 @@ describe("next/navigation shim", () => {
 
   it("redirect() encodes semicolons in URL to prevent digest injection", async () => {
     const { redirect } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     try {
       redirect("http://example.com;301");
@@ -59,7 +59,7 @@ describe("next/navigation shim", () => {
 
   it("notFound() throws with correct digest", async () => {
     const { notFound } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     try {
       notFound();
@@ -71,7 +71,7 @@ describe("next/navigation shim", () => {
 
   it("forbidden() throws with correct digest", async () => {
     const { forbidden } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     try {
       forbidden();
@@ -83,7 +83,7 @@ describe("next/navigation shim", () => {
 
   it("unauthorized() throws with correct digest", async () => {
     const { unauthorized } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     try {
       unauthorized();
@@ -95,7 +95,7 @@ describe("next/navigation shim", () => {
 
   it("isHTTPAccessFallbackError detects all HTTP access fallback errors", async () => {
     const { notFound, forbidden, unauthorized, isHTTPAccessFallbackError, getAccessFallbackHTTPStatus } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
 
     // Test notFound
@@ -129,7 +129,7 @@ describe("next/navigation shim", () => {
 
   it("setNavigationContext / useParams works on server side", async () => {
     const { setNavigationContext, useParams } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     setNavigationContext({
       pathname: "/blog/test",
@@ -143,7 +143,7 @@ describe("next/navigation shim", () => {
 
   it("setClientParams provides referential stability for identical params", async () => {
     const { setClientParams, getClientParams } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     // Set params initially
     setClientParams({ slug: "hello" });
@@ -165,7 +165,7 @@ describe("next/navigation shim", () => {
 
   it("exports useSelectedLayoutSegment and useSelectedLayoutSegments", async () => {
     const nav = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     expect(typeof nav.useSelectedLayoutSegment).toBe("function");
     expect(typeof nav.useSelectedLayoutSegments).toBe("function");
@@ -173,7 +173,7 @@ describe("next/navigation shim", () => {
 
   it("useSelectedLayoutSegments returns path segments from server context", async () => {
     const { setNavigationContext, useSelectedLayoutSegments } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     setNavigationContext({
       pathname: "/dashboard/settings/profile",
@@ -187,7 +187,7 @@ describe("next/navigation shim", () => {
 
   it("useSelectedLayoutSegment returns first segment or null", async () => {
     const { setNavigationContext, useSelectedLayoutSegment } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     setNavigationContext({
       pathname: "/blog/my-post",
@@ -209,7 +209,7 @@ describe("next/navigation shim", () => {
 describe("next/headers shim", () => {
   it("exports cookies, headers, draftMode", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     expect(typeof mod.cookies).toBe("function");
     expect(typeof mod.headers).toBe("function");
@@ -218,7 +218,7 @@ describe("next/headers shim", () => {
 
   it("headers() returns request headers from context", async () => {
     const { setHeadersContext, headers } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     const reqHeaders = new Headers({ "x-custom": "test-value" });
     setHeadersContext({
@@ -233,7 +233,7 @@ describe("next/headers shim", () => {
 
   it("cookies() returns parsed cookies from context", async () => {
     const { setHeadersContext, cookies } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     setHeadersContext({
       headers: new Headers(),
@@ -254,7 +254,7 @@ describe("next/headers shim", () => {
 
   it("headersContextFromRequest parses cookies from Request", async () => {
     const { headersContextFromRequest } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     const req = new Request("https://example.com", {
       headers: { cookie: "a=1; b=2" },
@@ -271,7 +271,7 @@ describe("next/headers shim", () => {
     // needs ctx.headers.set() after middleware runs, so the context must hold a mutable
     // copy, not the original Headers reference.
     const { headersContextFromRequest } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     const req = new Request("https://example.com", {
       headers: { "x-custom": "original" },
@@ -291,11 +291,11 @@ describe("next/headers shim", () => {
 
   it("throws when called outside request context", async () => {
     const { headers, cookies } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     // Ensure context is cleared
     const { setHeadersContext } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     setHeadersContext(null);
 
@@ -305,7 +305,7 @@ describe("next/headers shim", () => {
 
   it("draftMode() returns isEnabled=false when no bypass cookie", async () => {
     const { setHeadersContext, draftMode } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     setHeadersContext({
       headers: new Headers(),
@@ -318,7 +318,7 @@ describe("next/headers shim", () => {
 
   it("draftMode() returns isEnabled=false for arbitrary cookie values (not signed)", async () => {
     const { setHeadersContext, draftMode } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     // An arbitrary cookie value should NOT enable draft mode — only the
     // server-generated secret is valid.
@@ -333,7 +333,7 @@ describe("next/headers shim", () => {
 
   it("draftMode().enable() sets the bypass cookie in context", async () => {
     const { setHeadersContext, draftMode, getDraftModeCookieHeader } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     setHeadersContext({
       headers: new Headers(),
@@ -361,7 +361,7 @@ describe("next/headers shim", () => {
 
   it("draftMode().disable() clears the bypass cookie", async () => {
     const { setHeadersContext, draftMode, getDraftModeCookieHeader } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     setHeadersContext({
       headers: new Headers(),
@@ -389,7 +389,7 @@ describe("next/headers shim", () => {
 describe("next/headers writable cookies", () => {
   it("cookies().set() updates the cookie map and accumulates Set-Cookie headers", async () => {
     const { setHeadersContext, cookies, getAndClearPendingCookies } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     setHeadersContext({
       headers: new Headers(),
@@ -418,7 +418,7 @@ describe("next/headers writable cookies", () => {
 
   it("cookies().delete() removes from map and adds Max-Age=0 header", async () => {
     const { setHeadersContext, cookies, getAndClearPendingCookies } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     setHeadersContext({
       headers: new Headers(),
@@ -439,7 +439,7 @@ describe("next/headers writable cookies", () => {
 
   it("cookies().set() with object syntax works", async () => {
     const { setHeadersContext, cookies, getAndClearPendingCookies } = await import(
-      "../packages/vinext/src/shims/headers.js"
+      "../packages/openvite/src/shims/headers.js"
     );
     setHeadersContext({
       headers: new Headers(),
@@ -460,7 +460,7 @@ describe("next/headers writable cookies", () => {
 describe("next/server shim", () => {
   it("NextRequest wraps a standard Request with nextUrl and cookies", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("https://example.com/blog?page=2", {
       headers: { cookie: "session=abc123; theme=dark" },
@@ -476,7 +476,7 @@ describe("next/server shim", () => {
 
   it("NextResponse.json() creates a JSON response", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.json({ message: "hello" }, { status: 201 });
 
@@ -488,7 +488,7 @@ describe("next/server shim", () => {
 
   it("NextResponse.redirect() creates a redirect response", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.redirect("https://example.com/new", 308);
 
@@ -498,7 +498,7 @@ describe("next/server shim", () => {
 
   it("NextResponse.rewrite() sets x-middleware-rewrite header", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.rewrite("https://example.com/internal");
 
@@ -507,7 +507,7 @@ describe("next/server shim", () => {
 
   it("NextResponse.next() sets x-middleware-next header", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.next();
 
@@ -516,7 +516,7 @@ describe("next/server shim", () => {
 
   it("ResponseCookies set/get/delete work", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = new NextResponse();
     res.cookies.set("token", "xyz", { path: "/", httpOnly: true });
@@ -534,7 +534,7 @@ describe("next/server shim", () => {
 
   it("userAgentFromString detects bots", async () => {
     const { userAgentFromString } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const bot = userAgentFromString("Googlebot/2.1");
     expect(bot.isBot).toBe(true);
@@ -545,7 +545,7 @@ describe("next/server shim", () => {
 
   it("after() runs a callback asynchronously without throwing", async () => {
     const { after } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     let called = false;
     after(() => {
@@ -558,7 +558,7 @@ describe("next/server shim", () => {
 
   it("after() handles a promise argument", async () => {
     const { after } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     let resolved = false;
     const p = new Promise<void>((resolve) => {
@@ -574,7 +574,7 @@ describe("next/server shim", () => {
 
   it("after() swallows errors from failing tasks", async () => {
     const { after } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     after(() => {
@@ -582,7 +582,7 @@ describe("next/server shim", () => {
     });
     await new Promise((r) => setTimeout(r, 10));
     expect(consoleError).toHaveBeenCalledWith(
-      "[vinext] after() task failed:",
+      "[openvite] after() task failed:",
       expect.any(Error),
     );
     consoleError.mockRestore();
@@ -590,7 +590,7 @@ describe("next/server shim", () => {
 
   it("connection() returns a resolved promise", async () => {
     const { connection } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const result = connection();
     expect(result).toBeInstanceOf(Promise);
@@ -599,7 +599,7 @@ describe("next/server shim", () => {
 
   it("URLPattern is exported and available in Node 20+", async () => {
     const { URLPattern } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     // Node 22+ has URLPattern globally; if available, test it works
     if (globalThis.URLPattern) {
@@ -618,7 +618,7 @@ describe("next/server shim", () => {
 describe("next/config shim", () => {
   it("getConfig returns default empty config", async () => {
     const { default: getConfig } = await import(
-      "../packages/vinext/src/shims/config.js"
+      "../packages/openvite/src/shims/config.js"
     );
     const config = getConfig();
     expect(config).toEqual({
@@ -629,7 +629,7 @@ describe("next/config shim", () => {
 
   it("setConfig updates the runtime config", async () => {
     const { default: getConfig, setConfig } = await import(
-      "../packages/vinext/src/shims/config.js"
+      "../packages/openvite/src/shims/config.js"
     );
     setConfig({
       serverRuntimeConfig: { secret: "s3cr3t" },
@@ -647,7 +647,7 @@ describe("next/config shim", () => {
 describe("next/cache shim", () => {
   it("exports revalidateTag, revalidatePath, unstable_cache", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     expect(typeof mod.revalidateTag).toBe("function");
     expect(typeof mod.revalidatePath).toBe("function");
@@ -656,7 +656,7 @@ describe("next/cache shim", () => {
 
   it("exports setCacheHandler and getCacheHandler", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     expect(typeof mod.setCacheHandler).toBe("function");
     expect(typeof mod.getCacheHandler).toBe("function");
@@ -664,7 +664,7 @@ describe("next/cache shim", () => {
 
   it("default handler is MemoryCacheHandler", async () => {
     const { getCacheHandler, MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     const handler = getCacheHandler();
     expect(handler).toBeInstanceOf(MemoryCacheHandler);
@@ -672,7 +672,7 @@ describe("next/cache shim", () => {
 
   it("unstable_cache caches function results", async () => {
     const { unstable_cache, setCacheHandler, MemoryCacheHandler } =
-      await import("../packages/vinext/src/shims/cache.js");
+      await import("../packages/openvite/src/shims/cache.js");
 
     // Fresh handler for isolation
     setCacheHandler(new MemoryCacheHandler());
@@ -709,7 +709,7 @@ describe("next/cache shim", () => {
       revalidateTag,
       setCacheHandler,
       MemoryCacheHandler,
-    } = await import("../packages/vinext/src/shims/cache.js");
+    } = await import("../packages/openvite/src/shims/cache.js");
 
     setCacheHandler(new MemoryCacheHandler());
 
@@ -744,7 +744,7 @@ describe("next/cache shim", () => {
       revalidateTag,
       setCacheHandler,
       MemoryCacheHandler,
-    } = await import("../packages/vinext/src/shims/cache.js");
+    } = await import("../packages/openvite/src/shims/cache.js");
 
     setCacheHandler(new MemoryCacheHandler());
 
@@ -760,7 +760,7 @@ describe("next/cache shim", () => {
   });
 
   it("exports updateTag function (Next.js 16)", async () => {
-    const mod = await import("../packages/vinext/src/shims/cache.js");
+    const mod = await import("../packages/openvite/src/shims/cache.js");
     expect(typeof mod.updateTag).toBe("function");
   });
 
@@ -770,7 +770,7 @@ describe("next/cache shim", () => {
       updateTag,
       setCacheHandler,
       MemoryCacheHandler,
-    } = await import("../packages/vinext/src/shims/cache.js");
+    } = await import("../packages/openvite/src/shims/cache.js");
 
     setCacheHandler(new MemoryCacheHandler());
 
@@ -798,7 +798,7 @@ describe("next/cache shim", () => {
   });
 
   it("exports refresh function (Next.js 16)", async () => {
-    const mod = await import("../packages/vinext/src/shims/cache.js");
+    const mod = await import("../packages/openvite/src/shims/cache.js");
     expect(typeof mod.refresh).toBe("function");
     // refresh() is a no-op on the server but should not throw
     mod.refresh();
@@ -806,7 +806,7 @@ describe("next/cache shim", () => {
 
   it("setCacheHandler swaps the active handler", async () => {
     const { setCacheHandler, getCacheHandler, unstable_cache } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
 
     // Create a custom handler that tracks calls
@@ -843,7 +843,7 @@ describe("next/cache shim", () => {
 
   it("MemoryCacheHandler.get/set round-trips values", async () => {
     const { MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
 
     const handler = new MemoryCacheHandler();
@@ -866,7 +866,7 @@ describe("next/cache shim", () => {
 
   it("MemoryCacheHandler respects tag invalidation", async () => {
     const { MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
 
     const handler = new MemoryCacheHandler();
@@ -896,7 +896,7 @@ describe("next/cache shim", () => {
 
   it("exports unstable_noStore and noStore as no-ops", async () => {
     const { unstable_noStore, noStore } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     expect(typeof unstable_noStore).toBe("function");
     expect(typeof noStore).toBe("function");
@@ -907,7 +907,7 @@ describe("next/cache shim", () => {
 
   it("exports cacheLife with built-in profiles", async () => {
     const { cacheLife, cacheLifeProfiles } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     expect(typeof cacheLife).toBe("function");
     expect(typeof cacheLifeProfiles).toBe("object");
@@ -933,7 +933,7 @@ describe("next/cache shim", () => {
 
   it("cacheLife warns on unknown profile", async () => {
     const { cacheLife } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
     cacheLife("nonexistent-profile");
@@ -945,7 +945,7 @@ describe("next/cache shim", () => {
 
   it("cacheLife warns when expire < revalidate", async () => {
     const { cacheLife } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
     cacheLife({ revalidate: 3600, expire: 60 });
@@ -957,7 +957,7 @@ describe("next/cache shim", () => {
 
   it("exports cacheTag as a no-op function", async () => {
     const { cacheTag } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     expect(typeof cacheTag).toBe("function");
     // Should accept multiple tags without throwing
@@ -972,11 +972,11 @@ describe("next/cache shim", () => {
 describe('"use cache" runtime', () => {
   it("registerCachedFunction caches return values", async () => {
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     // Reset state
     const { setCacheHandler, MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     setCacheHandler(new MemoryCacheHandler());
 
@@ -1005,10 +1005,10 @@ describe('"use cache" runtime', () => {
 
   it("registerCachedFunction respects cacheLife inside cached function", async () => {
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler, cacheLife } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     setCacheHandler(new MemoryCacheHandler());
 
@@ -1031,10 +1031,10 @@ describe('"use cache" runtime', () => {
 
   it("registerCachedFunction collects cacheTag", async () => {
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler, cacheTag } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     const handler = new MemoryCacheHandler();
     setCacheHandler(handler);
@@ -1059,10 +1059,10 @@ describe('"use cache" runtime', () => {
 
   it("revalidateTag invalidates cached entries", async () => {
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler, cacheTag, revalidateTag } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     setCacheHandler(new MemoryCacheHandler());
 
@@ -1095,7 +1095,7 @@ describe('"use cache" runtime', () => {
 
   it("private variant uses per-request cache", async () => {
     const { registerCachedFunction, clearPrivateCache } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
 
     let callCount = 0;
@@ -1123,10 +1123,10 @@ describe('"use cache" runtime', () => {
 
   it("cacheLife minimum-wins rule applies", async () => {
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler, cacheLife } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     const handler = new MemoryCacheHandler();
     setCacheHandler(handler);
@@ -1150,17 +1150,17 @@ describe('"use cache" runtime', () => {
 
   it("getCacheContext returns null outside cache function", async () => {
     const { getCacheContext } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     expect(getCacheContext()).toBeNull();
   });
 
   it("consistent cache keys for same objects regardless of key order", async () => {
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     setCacheHandler(new MemoryCacheHandler());
 
@@ -1182,10 +1182,10 @@ describe('"use cache" runtime', () => {
 
   it("cached function with no args works correctly", async () => {
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     setCacheHandler(new MemoryCacheHandler());
 
@@ -1208,10 +1208,10 @@ describe('"use cache" runtime', () => {
     // environment). The runtime should gracefully fall back to JSON.stringify
     // for cache values and stableStringify for cache keys.
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     const handler = new MemoryCacheHandler();
     setCacheHandler(handler);
@@ -1222,22 +1222,22 @@ describe('"use cache" runtime', () => {
     const r1 = await cached(3);
     expect(r1).toEqual({ doubled: 6 });
 
-    // Verify the stored value is JSON (no x-vinext-rsc header)
+    // Verify the stored value is JSON (no x-openvite-rsc header)
     // stableStringify wraps args as an array: [3]
     const entry = await handler.get("use-cache:test:json-fallback:[3]");
     expect(entry).not.toBeNull();
     if (entry?.value && entry.value.kind === "FETCH") {
-      expect(entry.value.data.headers["x-vinext-rsc"]).toBeUndefined();
+      expect(entry.value.data.headers["x-openvite-rsc"]).toBeUndefined();
       expect(JSON.parse(entry.value.data.body)).toEqual({ doubled: 6 });
     }
   });
 
   it("skips caching for non-serializable args (functions)", async () => {
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     setCacheHandler(new MemoryCacheHandler());
 
@@ -1263,10 +1263,10 @@ describe('"use cache" runtime', () => {
     // This caused all dynamic route pages with "use cache" to share one
     // cache entry (e.g., /layouts/sports showed /layouts/electronics data).
     const { registerCachedFunction } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     const { setCacheHandler, MemoryCacheHandler } = await import(
-      "../packages/vinext/src/shims/cache.js"
+      "../packages/openvite/src/shims/cache.js"
     );
     setCacheHandler(new MemoryCacheHandler());
 
@@ -1319,7 +1319,7 @@ describe('"use cache" runtime', () => {
 describe("replyToCacheKey deterministic hashing", () => {
   it("returns string replies as-is", async () => {
     const { replyToCacheKey } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
     expect(await replyToCacheKey("hello")).toBe("hello");
     expect(await replyToCacheKey("")).toBe("");
@@ -1327,7 +1327,7 @@ describe("replyToCacheKey deterministic hashing", () => {
 
   it("produces stable hash for FormData with string entries", async () => {
     const { replyToCacheKey } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
 
     const fd1 = new FormData();
@@ -1345,7 +1345,7 @@ describe("replyToCacheKey deterministic hashing", () => {
 
   it("produces stable hash regardless of entry insertion order", async () => {
     const { replyToCacheKey } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
 
     const fd1 = new FormData();
@@ -1363,7 +1363,7 @@ describe("replyToCacheKey deterministic hashing", () => {
 
   it("produces stable hash for FormData with Blob entries", async () => {
     const { replyToCacheKey } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
 
     const blob = new Blob([new Uint8Array([1, 2, 3])], { type: "application/octet-stream" });
@@ -1381,7 +1381,7 @@ describe("replyToCacheKey deterministic hashing", () => {
 
   it("produces different hashes for different FormData content", async () => {
     const { replyToCacheKey } = await import(
-      "../packages/vinext/src/shims/cache-runtime.js"
+      "../packages/openvite/src/shims/cache-runtime.js"
     );
 
     const fd1 = new FormData();
@@ -1399,7 +1399,7 @@ describe("replyToCacheKey deterministic hashing", () => {
 describe("middleware runner", () => {
   it("findMiddlewareFile finds middleware.ts at project root", async () => {
     const { findMiddlewareFile } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     // pages-basic fixture has middleware.ts
     const result = findMiddlewareFile(FIXTURE_DIR);
@@ -1409,7 +1409,7 @@ describe("middleware runner", () => {
 
   it("findMiddlewareFile returns null when no middleware exists", async () => {
     const { findMiddlewareFile } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const result = findMiddlewareFile("/tmp/nonexistent-dir-" + Date.now());
     expect(result).toBeNull();
@@ -1420,11 +1420,11 @@ describe("middleware runner", () => {
     const path = await import("node:path");
     const os = await import("node:os");
     const { findMiddlewareFile } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
 
     // Create a temp directory with both proxy.ts and middleware.ts
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vinext-proxy-test-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openvite-proxy-test-"));
     try {
       fs.writeFileSync(path.join(tmpDir, "proxy.ts"), "export default function proxy() {}");
       fs.writeFileSync(path.join(tmpDir, "middleware.ts"), "export function middleware() {}");
@@ -1441,10 +1441,10 @@ describe("middleware runner", () => {
     const path = await import("node:path");
     const os = await import("node:os");
     const { findMiddlewareFile } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
 
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vinext-proxy-test-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openvite-proxy-test-"));
     try {
       fs.writeFileSync(path.join(tmpDir, "proxy.js"), "module.exports = function proxy() {}");
       const result = findMiddlewareFile(tmpDir);
@@ -1464,7 +1464,7 @@ describe("middleware runner", () => {
 describe("middleware/proxy export validation", () => {
   it("isProxyFile returns true for proxy files", async () => {
     const { isProxyFile } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(isProxyFile("/app/proxy.ts")).toBe(true);
     expect(isProxyFile("/app/proxy.js")).toBe(true);
@@ -1474,7 +1474,7 @@ describe("middleware/proxy export validation", () => {
 
   it("isProxyFile returns false for middleware files", async () => {
     const { isProxyFile } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(isProxyFile("/app/middleware.ts")).toBe(false);
     expect(isProxyFile("/app/middleware.js")).toBe(false);
@@ -1484,7 +1484,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: proxy.ts with named proxy export", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const fn = () => {};
     const handler = resolveMiddlewareHandler({ proxy: fn }, "/app/proxy.ts");
@@ -1493,7 +1493,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: proxy.ts with default export", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const fn = () => {};
     const handler = resolveMiddlewareHandler({ default: fn }, "/app/proxy.ts");
@@ -1502,7 +1502,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: proxy.ts prefers named proxy over default", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const proxyFn = () => {};
     const defaultFn = () => {};
@@ -1515,7 +1515,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: proxy.ts with default arrow function export", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const fn = () => {};
     const handler = resolveMiddlewareHandler({ default: fn }, "/app/proxy.ts");
@@ -1524,7 +1524,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: proxy.ts throws when only 'middleware' is exported (wrong name)", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(() =>
       resolveMiddlewareHandler({ middleware: () => {} }, "/app/proxy.ts"),
@@ -1533,7 +1533,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: proxy.ts throws when export is aliased to wrong name", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(() =>
       resolveMiddlewareHandler({ handler: () => {} }, "/app/proxy.ts"),
@@ -1542,7 +1542,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: proxy.ts throws when no exports", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(() =>
       resolveMiddlewareHandler({}, "/app/proxy.ts"),
@@ -1551,7 +1551,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: proxy.ts throws when export is not a function", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(() =>
       resolveMiddlewareHandler({ proxy: "not a function" }, "/app/proxy.ts"),
@@ -1560,7 +1560,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: middleware.ts with named middleware export", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const fn = () => {};
     const handler = resolveMiddlewareHandler({ middleware: fn }, "/app/middleware.ts");
@@ -1569,7 +1569,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: middleware.ts with default export", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const fn = () => {};
     const handler = resolveMiddlewareHandler({ default: fn }, "/app/middleware.ts");
@@ -1578,7 +1578,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: middleware.ts throws when only 'proxy' is exported (wrong name)", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(() =>
       resolveMiddlewareHandler({ proxy: () => {} }, "/app/middleware.ts"),
@@ -1587,7 +1587,7 @@ describe("middleware/proxy export validation", () => {
 
   it("resolveMiddlewareHandler: middleware.ts throws when no exports", async () => {
     const { resolveMiddlewareHandler } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(() =>
       resolveMiddlewareHandler({}, "/app/middleware.ts"),
@@ -1601,7 +1601,7 @@ describe("middleware/proxy export validation", () => {
 describe("middleware matcher patterns", () => {
   it("matchPattern: exact path match", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(matchPattern("/about", "/about")).toBe(true);
     expect(matchPattern("/about", "/other")).toBe(false);
@@ -1610,7 +1610,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchPattern: named parameter (:param)", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(matchPattern("/user/123", "/user/:id")).toBe(true);
     expect(matchPattern("/user/abc", "/user/:id")).toBe(true);
@@ -1620,7 +1620,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchPattern: wildcard (:path*) matches zero or more segments", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(matchPattern("/dashboard", "/dashboard/:path*")).toBe(true);
     expect(matchPattern("/dashboard/settings", "/dashboard/:path*")).toBe(true);
@@ -1630,7 +1630,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchPattern: one-or-more (:path+) requires at least one segment", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(matchPattern("/api/users", "/api/:path+")).toBe(true);
     expect(matchPattern("/api/users/123", "/api/:path+")).toBe(true);
@@ -1641,7 +1641,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchPattern: regex patterns with groups", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     // Common Next.js matcher: /((?!api|_next|favicon\.ico).*)
     expect(matchPattern("/about", "/((?!api|_next|favicon\\.ico).*)")).toBe(true);
@@ -1652,7 +1652,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchPattern: dots are escaped in paths", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(matchPattern("/files/data.json", "/files/data.json")).toBe(true);
     expect(matchPattern("/files/dataXjson", "/files/data.json")).toBe(false);
@@ -1660,7 +1660,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchesMiddleware: no matcher — matches all paths (Next.js default)", async () => {
     const { matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     // Next.js default: middleware runs on ALL paths when no matcher is configured.
     // Users opt out of specific paths by configuring a matcher pattern.
@@ -1675,7 +1675,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchesMiddleware: single string matcher", async () => {
     const { matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     expect(matchesMiddleware("/about", "/about")).toBe(true);
     expect(matchesMiddleware("/other", "/about")).toBe(false);
@@ -1683,7 +1683,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchesMiddleware: array of string matchers", async () => {
     const { matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const matcher = ["/about", "/dashboard/:path*"];
     expect(matchesMiddleware("/about", matcher)).toBe(true);
@@ -1694,7 +1694,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchesMiddleware: array of object matchers with source", async () => {
     const { matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const matcher = [
       { source: "/about" },
@@ -1707,7 +1707,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchesMiddleware: mixed array of strings and objects", async () => {
     const { matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const matcher = ["/about", { source: "/api/:path+" }] as any;
     expect(matchesMiddleware("/about", matcher)).toBe(true);
@@ -1718,7 +1718,7 @@ describe("middleware matcher patterns", () => {
 
   it("matchPattern: rejects pathological ReDoS patterns", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     // Pathological pattern: (a+)+ causes catastrophic backtracking
     // matchPattern should return false (no match) instead of hanging
@@ -1733,14 +1733,14 @@ describe("middleware matcher patterns", () => {
 describe("normalizePath", () => {
   it("returns root unchanged", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     expect(normalizePath("/")).toBe("/");
   });
 
   it("returns already-canonical paths unchanged", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     expect(normalizePath("/foo/bar")).toBe("/foo/bar");
     expect(normalizePath("/about")).toBe("/about");
@@ -1749,7 +1749,7 @@ describe("normalizePath", () => {
 
   it("collapses double slashes", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     expect(normalizePath("//foo")).toBe("/foo");
     expect(normalizePath("/foo//bar")).toBe("/foo/bar");
@@ -1760,7 +1760,7 @@ describe("normalizePath", () => {
 
   it("resolves single-dot segments", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     expect(normalizePath("/foo/./bar")).toBe("/foo/bar");
     expect(normalizePath("/./foo")).toBe("/foo");
@@ -1769,7 +1769,7 @@ describe("normalizePath", () => {
 
   it("resolves double-dot segments", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     expect(normalizePath("/foo/../bar")).toBe("/bar");
     expect(normalizePath("/foo/bar/../baz")).toBe("/foo/baz");
@@ -1778,7 +1778,7 @@ describe("normalizePath", () => {
 
   it("clamps traversal above root", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     expect(normalizePath("/../../../etc/passwd")).toBe("/etc/passwd");
     expect(normalizePath("/..")).toBe("/");
@@ -1786,7 +1786,7 @@ describe("normalizePath", () => {
 
   it("ensures leading slash", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     expect(normalizePath("foo/bar")).toBe("/foo/bar");
     expect(normalizePath("")).toBe("/");
@@ -1794,7 +1794,7 @@ describe("normalizePath", () => {
 
   it("preserves trailing slash on fast path", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     // Fast path: already canonical with trailing slash
     expect(normalizePath("/foo/bar/")).toBe("/foo/bar/");
@@ -1802,7 +1802,7 @@ describe("normalizePath", () => {
 
   it("handles complex combined cases", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     expect(normalizePath("/foo/./bar/../baz")).toBe("/foo/baz");
     expect(normalizePath("//foo/./bar//baz/../qux")).toBe("/foo/bar/qux");
@@ -1815,7 +1815,7 @@ describe("normalizePath", () => {
 describe("middleware codegen parity", () => {
   it("generateMiddlewareMatcherCode('modern') produces working matchesMiddleware", async () => {
     const { generateSafeRegExpCode, generateMiddlewareMatcherCode } = await import(
-      "../packages/vinext/src/server/middleware-codegen.js"
+      "../packages/openvite/src/server/middleware-codegen.js"
     );
     // Eval the generated code and test it behaves identically to the runtime
     const code = generateSafeRegExpCode("modern") + generateMiddlewareMatcherCode("modern");
@@ -1847,7 +1847,7 @@ describe("middleware codegen parity", () => {
 
   it("generateMiddlewareMatcherCode('es5') produces working matchesMiddleware", async () => {
     const { generateSafeRegExpCode, generateMiddlewareMatcherCode } = await import(
-      "../packages/vinext/src/server/middleware-codegen.js"
+      "../packages/openvite/src/server/middleware-codegen.js"
     );
     const code = generateSafeRegExpCode("es5") + generateMiddlewareMatcherCode("es5");
     // eslint-disable-next-line no-implied-eval -- intentional: eval generated codegen output
@@ -1864,7 +1864,7 @@ describe("middleware codegen parity", () => {
 
   it("generateNormalizePathCode produces working __normalizePath", async () => {
     const { generateNormalizePathCode } = await import(
-      "../packages/vinext/src/server/middleware-codegen.js"
+      "../packages/openvite/src/server/middleware-codegen.js"
     );
     const code = generateNormalizePathCode("modern");
     // eslint-disable-next-line no-implied-eval -- intentional: eval generated codegen output
@@ -1887,10 +1887,10 @@ describe("middleware codegen parity", () => {
 describe("middleware bypass prevention", () => {
   it("percent-encoded path is decoded before matching", async () => {
     const { matchPattern, matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
 
     // /%61dmin decodes to /admin
@@ -1903,10 +1903,10 @@ describe("middleware bypass prevention", () => {
 
   it("double-slash path is collapsed before matching", async () => {
     const { matchPattern, matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
 
     // /dashboard//settings collapses to /dashboard/settings
@@ -1919,7 +1919,7 @@ describe("middleware bypass prevention", () => {
 
   it("default matcher (no config) matches all paths including /api", async () => {
     const { matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     // When no matcher is configured, middleware must run on ALL paths
     expect(matchesMiddleware("/api/hello", undefined)).toBe(true);
@@ -1929,7 +1929,7 @@ describe("middleware bypass prevention", () => {
 
   it("regex patterns are not corrupted by dot-escaping", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     // The common Next.js regex pattern must work correctly:
     // /((?!api|_next|favicon\.ico).*) should match /about but NOT /api/hello
@@ -1945,10 +1945,10 @@ describe("middleware bypass prevention", () => {
 
   it("config redirect matcher works with decoded percent-encoded paths", async () => {
     const { matchRedirect } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     const redirects = [
       { source: "/admin", destination: "/login", permanent: true },
@@ -1976,10 +1976,10 @@ describe("middleware bypass prevention", () => {
 
   it("config header matcher works with decoded percent-encoded paths", async () => {
     const { matchHeaders } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     const headers = [
       { source: "/api/(.*)", headers: [{ key: "X-Custom", value: "true" }] },
@@ -1999,10 +1999,10 @@ describe("middleware bypass prevention", () => {
 
   it("config rewrite matcher works with decoded percent-encoded paths", async () => {
     const { matchRewrite } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     const rewrites = [
       { source: "/before-rewrite", destination: "/about" },
@@ -2021,7 +2021,7 @@ describe("middleware bypass prevention", () => {
 
   it("double-encoded paths are decoded only once", async () => {
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
     // %2561dmin → first decode → %61dmin (literal text, not /admin)
     const doubleEncoded = "/%2561dmin";
@@ -2035,10 +2035,10 @@ describe("middleware bypass prevention", () => {
 describe("double-encoded path handling in middleware", () => {
   it("double-encoded path /%2564ashboard does not match /dashboard middleware pattern", async () => {
     const { matchPattern, matchesMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
 
     // /%2564ashboard with a single decode becomes /%64ashboard (NOT /dashboard).
@@ -2055,10 +2055,10 @@ describe("double-encoded path handling in middleware", () => {
 
   it("double-encoded slash /foo/..%252fdashboard does not resolve to /dashboard", async () => {
     const { matchPattern } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     const { normalizePath } = await import(
-      "../packages/vinext/src/server/normalize-path.js"
+      "../packages/openvite/src/server/normalize-path.js"
     );
 
     // /foo/..%252fdashboard with a single decode becomes /foo/..%2fdashboard.
@@ -2076,7 +2076,7 @@ describe("double-encoded path handling in middleware", () => {
     // Verify that matchRoute no longer calls decodeURIComponent internally.
     // The generated RSC entry code is a string — we check it directly.
     const { generateRscEntry } = await import(
-      "../packages/vinext/src/server/app-dev-server.js"
+      "../packages/openvite/src/server/app-dev-server.js"
     );
     const code = generateRscEntry("/tmp/app", [
       {
@@ -2109,7 +2109,7 @@ describe("double-encoded path handling in middleware", () => {
 
   it("middleware always receives a Request with the decoded pathname (not raw URL)", async () => {
     const { generateRscEntry } = await import(
-      "../packages/vinext/src/server/app-dev-server.js"
+      "../packages/openvite/src/server/app-dev-server.js"
     );
     const code = generateRscEntry(
       "/tmp/app",
@@ -2146,7 +2146,7 @@ describe("double-encoded path handling in middleware", () => {
 
   it("Pages Router runMiddleware passes decoded pathname to middleware function", async () => {
     const { runMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
     // Create a mock Vite server that returns a middleware module
     let capturedUrl: string | undefined;
@@ -2180,7 +2180,7 @@ describe("double-encoded path handling in middleware", () => {
 
   it("runMiddleware accepts named proxy export", async () => {
     const { runMiddleware } = await import(
-      "../packages/vinext/src/server/middleware.js"
+      "../packages/openvite/src/server/middleware.js"
     );
 
     const mockServer = {
@@ -2207,7 +2207,7 @@ describe("double-encoded path handling in middleware", () => {
     // leaving that responsibility to the RSC handler.
     const fs = await import("node:fs");
     const entryCode = fs.readFileSync(
-      new URL("../packages/vinext/src/server/app-router-entry.ts", import.meta.url),
+      new URL("../packages/openvite/src/server/app-router-entry.ts", import.meta.url),
       "utf-8",
     );
     // The entry should validate encoding but NOT normalize+reconstruct the request
@@ -2226,7 +2226,7 @@ describe("double-encoded path handling in middleware", () => {
 describe("RequestCookies API", () => {
   it("get() returns cookie by name", async () => {
     const { RequestCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers({ cookie: "token=abc123; session=xyz" });
     const cookies = new RequestCookies(headers);
@@ -2240,7 +2240,7 @@ describe("RequestCookies API", () => {
 
   it("get() returns undefined for missing cookie", async () => {
     const { RequestCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers({ cookie: "token=abc123" });
     const cookies = new RequestCookies(headers);
@@ -2250,7 +2250,7 @@ describe("RequestCookies API", () => {
 
   it("getAll() returns all cookies", async () => {
     const { RequestCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers({ cookie: "a=1; b=2; c=3" });
     const cookies = new RequestCookies(headers);
@@ -2264,7 +2264,7 @@ describe("RequestCookies API", () => {
 
   it("has() checks cookie existence", async () => {
     const { RequestCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers({ cookie: "token=abc" });
     const cookies = new RequestCookies(headers);
@@ -2275,7 +2275,7 @@ describe("RequestCookies API", () => {
 
   it("iterator yields [name, entry] pairs", async () => {
     const { RequestCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers({ cookie: "x=1; y=2" });
     const cookies = new RequestCookies(headers);
@@ -2290,7 +2290,7 @@ describe("RequestCookies API", () => {
 
   it("handles empty cookie header", async () => {
     const { RequestCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new RequestCookies(headers);
@@ -2302,7 +2302,7 @@ describe("RequestCookies API", () => {
 
   it("handles cookies with = in value", async () => {
     const { RequestCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers({ cookie: "data=base64=encoded=value" });
     const cookies = new RequestCookies(headers);
@@ -2319,7 +2319,7 @@ describe("RequestCookies API", () => {
 describe("ResponseCookies API", () => {
   it("set() creates Set-Cookie header with options", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2344,7 +2344,7 @@ describe("ResponseCookies API", () => {
 
   it("set() multiple cookies appends multiple Set-Cookie headers", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2360,7 +2360,7 @@ describe("ResponseCookies API", () => {
 
   it("get() retrieves a cookie from Set-Cookie headers", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2372,7 +2372,7 @@ describe("ResponseCookies API", () => {
 
   it("getAll() returns all set cookies", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2390,7 +2390,7 @@ describe("ResponseCookies API", () => {
 
   it("delete() sets Max-Age=0", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2406,7 +2406,7 @@ describe("ResponseCookies API", () => {
 
   it("set() URL-encodes cookie values", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2423,7 +2423,7 @@ describe("ResponseCookies API", () => {
 
   it("iterator yields [name, entry] pairs", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2441,7 +2441,7 @@ describe("ResponseCookies API", () => {
 
   it("set() with domain option includes Domain directive", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2454,7 +2454,7 @@ describe("ResponseCookies API", () => {
 
   it("set() with expires option includes Expires directive", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -2473,35 +2473,35 @@ describe("ResponseCookies API", () => {
 
 describe("cookie name validation", () => {
   it("RequestCookies.set() rejects names with = (injection)", async () => {
-    const headersModule = await import("../packages/vinext/src/shims/headers.js");
+    const headersModule = await import("../packages/openvite/src/shims/headers.js");
     headersModule.setHeadersContext({ headers: new Headers(), cookies: new Map() });
     const jar = await headersModule.cookies();
     expect(() => jar.set("foo=bar; Path=/; Domain=evil.com", "val")).toThrow("Invalid cookie name");
   });
 
   it("RequestCookies.set() rejects names with semicolons", async () => {
-    const headersModule = await import("../packages/vinext/src/shims/headers.js");
+    const headersModule = await import("../packages/openvite/src/shims/headers.js");
     headersModule.setHeadersContext({ headers: new Headers(), cookies: new Map() });
     const jar = await headersModule.cookies();
     expect(() => jar.set("foo; HttpOnly", "val")).toThrow("Invalid cookie name");
   });
 
   it("RequestCookies.set() rejects names with newlines", async () => {
-    const headersModule = await import("../packages/vinext/src/shims/headers.js");
+    const headersModule = await import("../packages/openvite/src/shims/headers.js");
     headersModule.setHeadersContext({ headers: new Headers(), cookies: new Map() });
     const jar = await headersModule.cookies();
     expect(() => jar.set("foo\r\nSet-Cookie: evil=1", "val")).toThrow("Invalid cookie name");
   });
 
   it("RequestCookies.set() rejects empty names", async () => {
-    const headersModule = await import("../packages/vinext/src/shims/headers.js");
+    const headersModule = await import("../packages/openvite/src/shims/headers.js");
     headersModule.setHeadersContext({ headers: new Headers(), cookies: new Map() });
     const jar = await headersModule.cookies();
     expect(() => jar.set("", "val")).toThrow("Invalid cookie name");
   });
 
   it("RequestCookies.set() accepts valid cookie names", async () => {
-    const headersModule = await import("../packages/vinext/src/shims/headers.js");
+    const headersModule = await import("../packages/openvite/src/shims/headers.js");
     headersModule.setHeadersContext({ headers: new Headers(), cookies: new Map() });
     const jar = await headersModule.cookies();
     // These should not throw
@@ -2512,35 +2512,35 @@ describe("cookie name validation", () => {
   });
 
   it("RequestCookies.delete() rejects invalid names", async () => {
-    const headersModule = await import("../packages/vinext/src/shims/headers.js");
+    const headersModule = await import("../packages/openvite/src/shims/headers.js");
     headersModule.setHeadersContext({ headers: new Headers(), cookies: new Map() });
     const jar = await headersModule.cookies();
     expect(() => jar.delete("foo=bar")).toThrow("Invalid cookie name");
   });
 
   it("RequestCookies.set() rejects path with semicolons", async () => {
-    const headersModule = await import("../packages/vinext/src/shims/headers.js");
+    const headersModule = await import("../packages/openvite/src/shims/headers.js");
     headersModule.setHeadersContext({ headers: new Headers(), cookies: new Map() });
     const jar = await headersModule.cookies();
     expect(() => jar.set("name", "val", { path: "/; Domain=evil.com" })).toThrow("Invalid cookie Path");
   });
 
   it("ResponseCookies.set() rejects names with = (injection)", async () => {
-    const { ResponseCookies } = await import("../packages/vinext/src/shims/server.js");
+    const { ResponseCookies } = await import("../packages/openvite/src/shims/server.js");
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
     expect(() => cookies.set("foo=bar; Path=/", "val")).toThrow("Invalid cookie name");
   });
 
   it("ResponseCookies.set() rejects domain with control chars", async () => {
-    const { ResponseCookies } = await import("../packages/vinext/src/shims/server.js");
+    const { ResponseCookies } = await import("../packages/openvite/src/shims/server.js");
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
     expect(() => cookies.set("name", "val", { domain: "evil.com\r\nSet-Cookie: hack=1" })).toThrow("Invalid cookie Domain");
   });
 
   it("ResponseCookies.set() accepts valid cookie names and options", async () => {
-    const { ResponseCookies } = await import("../packages/vinext/src/shims/server.js");
+    const { ResponseCookies } = await import("../packages/openvite/src/shims/server.js");
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
     // These should not throw
@@ -2555,7 +2555,7 @@ describe("cookie name validation", () => {
 describe("NextRequest API", () => {
   it("cookies reads request cookies", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("http://localhost/test", {
       headers: { cookie: "session=abc; theme=dark" },
@@ -2569,7 +2569,7 @@ describe("NextRequest API", () => {
 
   it("nextUrl provides URL properties", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("http://localhost:3000/api/test?key=value#hash");
 
@@ -2584,7 +2584,7 @@ describe("NextRequest API", () => {
 
   it("nextUrl.clone() creates independent copy", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("http://localhost/test");
     const cloned = req.nextUrl.clone();
@@ -2596,7 +2596,7 @@ describe("NextRequest API", () => {
 
   it("ip reads x-forwarded-for header", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("http://localhost/", {
       headers: { "x-forwarded-for": "1.2.3.4, 5.6.7.8" },
@@ -2606,7 +2606,7 @@ describe("NextRequest API", () => {
 
   it("ip returns undefined when no header", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("http://localhost/");
     expect(req.ip).toBeUndefined();
@@ -2614,7 +2614,7 @@ describe("NextRequest API", () => {
 
   it("geo reads Cloudflare headers", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("http://localhost/", {
       headers: {
@@ -2628,7 +2628,7 @@ describe("NextRequest API", () => {
 
   it("geo returns undefined when no geo headers", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("http://localhost/");
     expect(req.geo).toBeUndefined();
@@ -2641,7 +2641,7 @@ describe("NextRequest API", () => {
 describe("NextResponse.next() request header forwarding", () => {
   it("forwards request headers as x-middleware-request-* headers", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.next({
       request: {
@@ -2664,7 +2664,7 @@ describe("NextResponse.next() request header forwarding", () => {
 describe("NextResponse.redirect() status codes", () => {
   it("defaults to 307 Temporary Redirect", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.redirect("https://example.com");
     expect(res.status).toBe(307);
@@ -2672,7 +2672,7 @@ describe("NextResponse.redirect() status codes", () => {
 
   it("supports 301 Permanent Redirect", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.redirect("https://example.com", 301);
     expect(res.status).toBe(301);
@@ -2681,7 +2681,7 @@ describe("NextResponse.redirect() status codes", () => {
 
   it("supports 302 Found", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.redirect("https://example.com", 302);
     expect(res.status).toBe(302);
@@ -2689,7 +2689,7 @@ describe("NextResponse.redirect() status codes", () => {
 
   it("supports 308 Permanent Redirect", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const res = NextResponse.redirect("https://example.com", 308);
     expect(res.status).toBe(308);
@@ -2697,7 +2697,7 @@ describe("NextResponse.redirect() status codes", () => {
 
   it("accepts URL object", async () => {
     const { NextResponse } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const url = new URL("https://example.com/target");
     const res = NextResponse.redirect(url);
@@ -2711,7 +2711,7 @@ describe("NextResponse.redirect() status codes", () => {
 describe("matchConfigPattern", () => {
   it("matches exact paths", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     expect(matchConfigPattern("/about", "/about")).toEqual({});
     expect(matchConfigPattern("/", "/")).toEqual({});
@@ -2720,7 +2720,7 @@ describe("matchConfigPattern", () => {
 
   it("matches single :param segments", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     const result = matchConfigPattern("/blog/hello-world", "/blog/:slug");
     expect(result).toEqual({ slug: "hello-world" });
@@ -2728,7 +2728,7 @@ describe("matchConfigPattern", () => {
 
   it("matches multiple :param segments", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     const result = matchConfigPattern("/blog/2024/my-post", "/blog/:year/:slug");
     expect(result).toEqual({ year: "2024", slug: "my-post" });
@@ -2736,7 +2736,7 @@ describe("matchConfigPattern", () => {
 
   it("rejects when segment count differs for non-wildcard patterns", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     expect(matchConfigPattern("/blog/a/b", "/blog/:slug")).toBeNull();
     expect(matchConfigPattern("/blog", "/blog/:slug")).toBeNull();
@@ -2744,7 +2744,7 @@ describe("matchConfigPattern", () => {
 
   it("matches :path* catch-all (zero or more segments)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     // Zero segments
     expect(matchConfigPattern("/docs", "/docs/:path*")).toEqual({ path: "" });
@@ -2758,7 +2758,7 @@ describe("matchConfigPattern", () => {
 
   it("matches :path+ catch-all (one or more segments)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     // One segment
     expect(matchConfigPattern("/api/users", "/api/:path+")).toEqual({ path: "users" });
@@ -2770,7 +2770,7 @@ describe("matchConfigPattern", () => {
 
   it("matches regex group patterns", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     // Common Next.js pattern: /:path(\\d+) for numeric paths
     const result = matchConfigPattern("/123", "/:id(\\d+)");
@@ -2783,7 +2783,7 @@ describe("matchConfigPattern", () => {
 
   it("handles dots in patterns", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     expect(matchConfigPattern("/feed.xml", "/feed.xml")).toEqual({});
     // Dot should not match any character
@@ -2792,7 +2792,7 @@ describe("matchConfigPattern", () => {
 
   it("matches :path* with literal suffix (e.g. /:path*.md)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     // Should match URLs ending in .md
     expect(matchConfigPattern("/article.md", "/:path*.md")).toEqual({ path: "article" });
@@ -2807,7 +2807,7 @@ describe("matchConfigPattern", () => {
 
   it("matches :path+ with literal suffix (e.g. /:path+.json)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     // Should match URLs ending in .json with at least one path segment
     expect(matchConfigPattern("/data.json", "/:path+.json")).toEqual({ path: "data" });
@@ -2821,7 +2821,7 @@ describe("matchConfigPattern", () => {
 
   it("matches :path* with prefix and suffix (e.g. /docs/:path*.md)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     expect(matchConfigPattern("/docs/intro.md", "/docs/:path*.md")).toEqual({ path: "intro" });
     expect(matchConfigPattern("/docs/guide/getting-started.md", "/docs/:path*.md")).toEqual({
@@ -2835,7 +2835,7 @@ describe("matchConfigPattern", () => {
 
   it("matches :param with literal suffix (e.g. /:slug.md)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     // Should match URLs with the .md suffix and extract the param
     expect(matchConfigPattern("/hello-world.md", "/:slug.md")).toEqual({ slug: "hello-world" });
@@ -2850,7 +2850,7 @@ describe("matchConfigPattern", () => {
 
   it("matches :param with literal suffix via config-matchers module", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(matchConfigPattern("/hello-world.md", "/:slug.md")).toEqual({ slug: "hello-world" });
     expect(matchConfigPattern("/", "/:slug.md")).toBeNull();
@@ -2859,7 +2859,7 @@ describe("matchConfigPattern", () => {
 
   it("still matches plain :path* catch-all (no suffix) correctly", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/index.js"
+      "../packages/openvite/src/index.js"
     );
     // Ensure the fix doesn't regress existing catch-all behavior
     expect(matchConfigPattern("/docs", "/docs/:path*")).toEqual({ path: "" });
@@ -2876,7 +2876,7 @@ describe("matchConfigPattern", () => {
 describe("isSafeRegex", () => {
   it("accepts simple patterns", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("^/about$")).toBe(true);
     expect(isSafeRegex("^/blog/[^/]+$")).toBe(true);
@@ -2888,7 +2888,7 @@ describe("isSafeRegex", () => {
 
   it("accepts non-nested quantifiers inside groups", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // A single quantifier inside a group without a quantifier on the group itself
     expect(isSafeRegex("(a+)")).toBe(true);
@@ -2898,49 +2898,49 @@ describe("isSafeRegex", () => {
 
   it("rejects nested quantifiers: (a+)+", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("(a+)+")).toBe(false);
   });
 
   it("rejects nested quantifiers: (a+)*", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("(a+)*")).toBe(false);
   });
 
   it("rejects nested quantifiers: (.*)*", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("(.*)*")).toBe(false);
   });
 
   it("rejects nested quantifiers: (a*)+", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("(a*)+")).toBe(false);
   });
 
   it("rejects nested quantifiers: ([^/]+)+", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("([^/]+)+")).toBe(false);
   });
 
   it("rejects nested quantifiers with braces: (a+){2,}", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("(a+){2,}")).toBe(false);
   });
 
   it("accepts quantifier on group without inner quantifier", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // (ab)+ is fine — no inner quantifier
     expect(isSafeRegex("(ab)+")).toBe(true);
@@ -2949,7 +2949,7 @@ describe("isSafeRegex", () => {
 
   it("treats escaped characters as safe", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // \\+ is a literal +, not a quantifier
     expect(isSafeRegex("(a\\+)+")).toBe(true);
@@ -2957,7 +2957,7 @@ describe("isSafeRegex", () => {
 
   it("treats quantifiers inside character classes as safe", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // [+*] is a character class, not a quantifier
     expect(isSafeRegex("([+*])+")).toBe(true);
@@ -2965,7 +2965,7 @@ describe("isSafeRegex", () => {
 
   it("rejects nested optional quantifiers: (a?)+", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // '?' inside group + quantifier on group = catastrophic backtracking
     expect(isSafeRegex("(a?)+")).toBe(false);
@@ -2974,21 +2974,21 @@ describe("isSafeRegex", () => {
 
   it("rejects nested optional quantifiers: (.?)+", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("(.?)+")).toBe(false);
   });
 
   it("rejects nested optional quantifiers: (a?)*", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isSafeRegex("(a?)*")).toBe(false);
   });
 
   it("accepts outer '?' on group (zero-or-one is not unbounded repetition)", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // '?' means zero or one — only 2 paths, not exponential backtracking
     // This is safe even with inner quantifiers (e.g. URL patterns like (?:/.*)?  )
@@ -2998,7 +2998,7 @@ describe("isSafeRegex", () => {
 
   it("treats non-greedy modifier as safe, not as quantifier", async () => {
     const { isSafeRegex } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // a+? is non-greedy '+', not a nested quantifier
     expect(isSafeRegex("(a+?)")).toBe(true);
@@ -3010,7 +3010,7 @@ describe("isSafeRegex", () => {
 describe("safeRegExp", () => {
   it("returns RegExp for safe patterns", async () => {
     const { safeRegExp } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const re = safeRegExp("^/about$");
     expect(re).toBeInstanceOf(RegExp);
@@ -3019,7 +3019,7 @@ describe("safeRegExp", () => {
 
   it("returns null for pathological patterns", async () => {
     const { safeRegExp } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // lgtm[js/redos] — deliberate pathological regex to test safeRegExp guard
     const re = safeRegExp("(a+)+b");
@@ -3028,7 +3028,7 @@ describe("safeRegExp", () => {
 
   it("returns null for invalid regex syntax", async () => {
     const { safeRegExp } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const re = safeRegExp("(?P<name>");
     expect(re).toBeNull();
@@ -3038,35 +3038,35 @@ describe("safeRegExp", () => {
 describe("escapeHeaderSource", () => {
   it("passes through literal paths unchanged", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/api/users")).toBe("/api/users");
   });
 
   it("escapes dots", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/file.txt")).toBe("/file\\.txt");
   });
 
   it("converts named param to [^/]+", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/user/:id")).toBe("/user/[^/]+");
   });
 
   it("converts glob * to .*", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/api/*")).toBe("/api/.*");
   });
 
   it("escapes + and ?", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/path+query")).toBe("/path\\+query");
     expect(escapeHeaderSource("/maybe?")).toBe("/maybe\\?");
@@ -3074,28 +3074,28 @@ describe("escapeHeaderSource", () => {
 
   it("handles constrained param :param(constraint)", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/api/:version(\\d+)/users")).toBe("/api/(\\d+)/users");
   });
 
   it("handles constrained param with alternation", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/:lang(en|fr)/page")).toBe("/(en|fr)/page");
   });
 
   it("preserves standalone regex groups", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/api/(v1|v2)/users")).toBe("/api/(v1|v2)/users");
   });
 
   it("handles multiple groups and params", async () => {
     const { escapeHeaderSource } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(escapeHeaderSource("/:lang(en|fr)/:id(\\d+)/page")).toBe("/(en|fr)/(\\d+)/page");
   });
@@ -3104,7 +3104,7 @@ describe("escapeHeaderSource", () => {
 describe("matchConfigPattern rejects ReDoS patterns", () => {
   it("returns null for pathological source patterns", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // This pattern has nested quantifiers: the compiled regex would be (a+)+b
     // which causes catastrophic backtracking. matchConfigPattern should return
@@ -3121,7 +3121,7 @@ describe("matchConfigPattern rejects ReDoS patterns", () => {
 describe("matchConfigPattern handles parameterized suffix patterns", () => {
   it("matches :path* with literal suffix (e.g. /:path*.md)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // Should match URLs ending in .md
     expect(matchConfigPattern("/article.md", "/:path*.md")).toEqual({ path: "article" });
@@ -3134,7 +3134,7 @@ describe("matchConfigPattern handles parameterized suffix patterns", () => {
 
   it("matches :path+ with literal suffix (e.g. /:path+.json)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(matchConfigPattern("/data.json", "/:path+.json")).toEqual({ path: "data" });
     expect(matchConfigPattern("/api/users.json", "/:path+.json")).toEqual({ path: "api/users" });
@@ -3145,7 +3145,7 @@ describe("matchConfigPattern handles parameterized suffix patterns", () => {
 
   it("does not regress plain :path* catch-all (no suffix)", async () => {
     const { matchConfigPattern } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(matchConfigPattern("/docs", "/docs/:path*")).toEqual({ path: "" });
     expect(matchConfigPattern("/docs/intro", "/docs/:path*")).toEqual({ path: "intro" });
@@ -3161,35 +3161,35 @@ describe("matchConfigPattern handles parameterized suffix patterns", () => {
 describe("parseCookies", () => {
   it("parses standard cookie header", async () => {
     const { parseCookies } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(parseCookies("a=1; b=2; c=three")).toEqual({ a: "1", b: "2", c: "three" });
   });
 
   it("returns empty object for null", async () => {
     const { parseCookies } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(parseCookies(null)).toEqual({});
   });
 
   it("returns empty object for empty string", async () => {
     const { parseCookies } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(parseCookies("")).toEqual({});
   });
 
   it("handles cookies with = in value", async () => {
     const { parseCookies } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(parseCookies("token=abc=def")).toEqual({ token: "abc=def" });
   });
 
   it("trims whitespace around keys and values", async () => {
     const { parseCookies } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(parseCookies("  a = 1 ;  b = 2 ")).toEqual({ a: "1", b: "2" });
   });
@@ -3217,7 +3217,7 @@ describe("checkHasConditions", () => {
 
   it("returns true when no conditions", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(checkHasConditions(undefined, undefined, makeCtx())).toBe(true);
   });
@@ -3225,7 +3225,7 @@ describe("checkHasConditions", () => {
   // -- header conditions --
   it("has header: passes when header present", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ headers: { "x-custom": "yes" } });
     expect(checkHasConditions([{ type: "header", key: "x-custom" }], undefined, ctx)).toBe(true);
@@ -3233,7 +3233,7 @@ describe("checkHasConditions", () => {
 
   it("has header: fails when header absent", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({});
     expect(checkHasConditions([{ type: "header", key: "x-custom" }], undefined, ctx)).toBe(false);
@@ -3241,7 +3241,7 @@ describe("checkHasConditions", () => {
 
   it("has header with value: matches regex", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ headers: { "x-auth": "yes" } });
     expect(checkHasConditions([{ type: "header", key: "x-auth", value: "(?:yes|true)" }], undefined, ctx)).toBe(true);
@@ -3251,7 +3251,7 @@ describe("checkHasConditions", () => {
   // -- cookie conditions --
   it("has cookie: passes when cookie present", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ cookies: { "session": "abc" } });
     expect(checkHasConditions([{ type: "cookie", key: "session" }], undefined, ctx)).toBe(true);
@@ -3259,7 +3259,7 @@ describe("checkHasConditions", () => {
 
   it("has cookie: fails when cookie absent", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ cookies: {} });
     expect(checkHasConditions([{ type: "cookie", key: "session" }], undefined, ctx)).toBe(false);
@@ -3267,7 +3267,7 @@ describe("checkHasConditions", () => {
 
   it("has cookie with exact value", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ cookies: { "authorized": "true" } });
     expect(checkHasConditions([{ type: "cookie", key: "authorized", value: "true" }], undefined, ctx)).toBe(true);
@@ -3277,7 +3277,7 @@ describe("checkHasConditions", () => {
   // -- query conditions --
   it("has query: passes when query param present", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ query: { page: "home" } });
     expect(checkHasConditions([{ type: "query", key: "page" }], undefined, ctx)).toBe(true);
@@ -3285,7 +3285,7 @@ describe("checkHasConditions", () => {
 
   it("has query: fails when query param absent", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ query: {} });
     expect(checkHasConditions([{ type: "query", key: "page" }], undefined, ctx)).toBe(false);
@@ -3293,7 +3293,7 @@ describe("checkHasConditions", () => {
 
   it("has query with regex value", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ query: { page: "home" } });
     expect(checkHasConditions([{ type: "query", key: "page", value: "home|about" }], undefined, ctx)).toBe(true);
@@ -3303,7 +3303,7 @@ describe("checkHasConditions", () => {
   // -- host conditions --
   it("has host: matches exact value", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ host: "example.com" });
     expect(checkHasConditions([{ type: "host", key: "", value: "example.com" }], undefined, ctx)).toBe(true);
@@ -3312,7 +3312,7 @@ describe("checkHasConditions", () => {
 
   it("has host: matches regex value", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ host: "staging.example.com" });
     expect(checkHasConditions([{ type: "host", key: "", value: ".*\\.example\\.com" }], undefined, ctx)).toBe(true);
@@ -3321,7 +3321,7 @@ describe("checkHasConditions", () => {
   // -- missing conditions --
   it("missing header: passes when header absent", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({});
     expect(checkHasConditions(undefined, [{ type: "header", key: "x-block" }], ctx)).toBe(true);
@@ -3329,7 +3329,7 @@ describe("checkHasConditions", () => {
 
   it("missing header: fails when header present", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ headers: { "x-block": "1" } });
     expect(checkHasConditions(undefined, [{ type: "header", key: "x-block" }], ctx)).toBe(false);
@@ -3337,7 +3337,7 @@ describe("checkHasConditions", () => {
 
   it("missing cookie: passes when cookie absent", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ cookies: {} });
     expect(checkHasConditions(undefined, [{ type: "cookie", key: "stay-here" }], ctx)).toBe(true);
@@ -3345,7 +3345,7 @@ describe("checkHasConditions", () => {
 
   it("missing cookie: fails when cookie present", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ cookies: { "stay-here": "1" } });
     expect(checkHasConditions(undefined, [{ type: "cookie", key: "stay-here" }], ctx)).toBe(false);
@@ -3354,7 +3354,7 @@ describe("checkHasConditions", () => {
   // -- combined has + missing --
   it("both has and missing must pass", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ cookies: { "auth": "yes" } });
     // has: cookie auth present (passes), missing: cookie block absent (passes)
@@ -3373,7 +3373,7 @@ describe("checkHasConditions", () => {
 
   it("all has conditions must match (conjunction)", async () => {
     const { checkHasConditions } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const ctx = makeCtx({ cookies: { "a": "1" }, query: { "page": "home" } });
     // Both match
@@ -3413,7 +3413,7 @@ describe("matchHeaders", () => {
 
   it("applies headers when has header condition is satisfied", async () => {
     const { matchHeaders } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const rules: any[] = [
       {
@@ -3429,7 +3429,7 @@ describe("matchHeaders", () => {
 
   it("does not apply headers when missing cookie condition fails", async () => {
     const { matchHeaders } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const rules: any[] = [
       {
@@ -3445,7 +3445,7 @@ describe("matchHeaders", () => {
 
   it("applies headers when has query condition is satisfied", async () => {
     const { matchHeaders } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const rules: any[] = [
       {
@@ -3461,7 +3461,7 @@ describe("matchHeaders", () => {
 
   it("skips conditional header rule when has condition is not met", async () => {
     const { matchHeaders } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const rules: any[] = [
       {
@@ -3483,7 +3483,7 @@ describe("matchHeaders", () => {
 describe("isExternalUrl", () => {
   it("returns true for https:// URLs", async () => {
     const { isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isExternalUrl("https://example.com/path")).toBe(true);
     expect(isExternalUrl("https://us.i.posthog.com/decide?v=3")).toBe(true);
@@ -3491,14 +3491,14 @@ describe("isExternalUrl", () => {
 
   it("returns true for http:// URLs", async () => {
     const { isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isExternalUrl("http://example.com/api")).toBe(true);
   });
 
   it("returns false for relative paths", async () => {
     const { isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isExternalUrl("/about")).toBe(false);
     expect(isExternalUrl("/api/test")).toBe(false);
@@ -3507,7 +3507,7 @@ describe("isExternalUrl", () => {
 
   it("returns true for protocol-relative URLs", async () => {
     const { isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isExternalUrl("//example.com")).toBe(true);
     expect(isExternalUrl("//cdn.example.com/image.png")).toBe(true);
@@ -3515,7 +3515,7 @@ describe("isExternalUrl", () => {
 
   it("returns true for exotic URL schemes (data:, javascript:, blob:, ftp:)", async () => {
     const { isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isExternalUrl("data:text/html,<h1>hi</h1>")).toBe(true);
     expect(isExternalUrl("javascript:alert(1)")).toBe(true);
@@ -3525,7 +3525,7 @@ describe("isExternalUrl", () => {
 
   it("returns false for hash-only and bare strings", async () => {
     const { isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(isExternalUrl("#section")).toBe(false);
     expect(isExternalUrl("about")).toBe(false);
@@ -3538,13 +3538,13 @@ describe("isExternalUrl", () => {
 describe("proxyExternalRequest", () => {
   it("proxies request to external URL and returns upstream response", async () => {
     const { proxyExternalRequest } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
 
     // Use a well-known public URL that returns a predictable response
     const request = new Request("http://localhost:3000/test?extra=1", {
       method: "GET",
-      headers: { "user-agent": "vinext-test" },
+      headers: { "user-agent": "openvite-test" },
     });
 
     // We test the function constructs the right request by mocking fetch
@@ -3580,7 +3580,7 @@ describe("proxyExternalRequest", () => {
 
   it("preserves query parameters from the rewrite destination", async () => {
     const { proxyExternalRequest } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
 
     const request = new Request("http://localhost:3000/test", {
@@ -3604,7 +3604,7 @@ describe("proxyExternalRequest", () => {
 
   it("strips hop-by-hop headers from upstream response", async () => {
     const { proxyExternalRequest } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
 
     const request = new Request("http://localhost:3000/test");
@@ -3634,7 +3634,7 @@ describe("proxyExternalRequest", () => {
 
   it("passes through non-200 status codes", async () => {
     const { proxyExternalRequest } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
 
     const request = new Request("http://localhost:3000/test");
@@ -3654,7 +3654,7 @@ describe("proxyExternalRequest", () => {
 
   it("strips credentials and x-middleware-* headers from proxied requests", async () => {
     const { proxyExternalRequest } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
 
     const request = new Request("http://localhost:3000/proxy", {
@@ -3667,7 +3667,7 @@ describe("proxyExternalRequest", () => {
         "x-middleware-rewrite": "/internal",
         "x-middleware-next": "1",
         "x-custom-header": "keep-me",
-        "user-agent": "vinext-test",
+        "user-agent": "openvite-test",
       },
     });
 
@@ -3690,7 +3690,7 @@ describe("proxyExternalRequest", () => {
       expect(capturedHeaders!.get("x-middleware-next")).toBeNull();
       // Non-sensitive headers must be preserved
       expect(capturedHeaders!.get("x-custom-header")).toBe("keep-me");
-      expect(capturedHeaders!.get("user-agent")).toBe("vinext-test");
+      expect(capturedHeaders!.get("user-agent")).toBe("openvite-test");
     } finally {
       globalThis.fetch = originalFetch;
     }
@@ -3698,7 +3698,7 @@ describe("proxyExternalRequest", () => {
 
   it("forwards redirect responses without following them", async () => {
     const { proxyExternalRequest } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
 
     const request = new Request("http://localhost:3000/test");
@@ -3731,7 +3731,7 @@ describe("matchRewrite with external URLs", () => {
 
   it("returns full external URL when destination is external", async () => {
     const { matchRewrite, isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const rewrites = [
       { source: "/ph/:path*", destination: "https://us.i.posthog.com/:path*" },
@@ -3743,7 +3743,7 @@ describe("matchRewrite with external URLs", () => {
 
   it("returns full external URL for static path rewrites", async () => {
     const { matchRewrite, isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const rewrites = [
       { source: "/ph/static/:path*", destination: "https://us-assets.i.posthog.com/static/:path*" },
@@ -3755,7 +3755,7 @@ describe("matchRewrite with external URLs", () => {
 
   it("returns internal path for non-external rewrites", async () => {
     const { matchRewrite, isExternalUrl } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const rewrites = [
       { source: "/posts/:id", destination: "/blog/:id" },
@@ -3772,7 +3772,7 @@ describe("matchRewrite with external URLs", () => {
 describe("sanitizeDestination", () => {
   it("collapses leading // to / for relative URLs", async () => {
     const { sanitizeDestination } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(sanitizeDestination("//evil.com")).toBe("/evil.com");
     expect(sanitizeDestination("///evil.com")).toBe("/evil.com");
@@ -3781,7 +3781,7 @@ describe("sanitizeDestination", () => {
 
   it("preserves external http:// and https:// URLs", async () => {
     const { sanitizeDestination } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(sanitizeDestination("https://example.com/path")).toBe("https://example.com/path");
     expect(sanitizeDestination("http://example.com")).toBe("http://example.com");
@@ -3789,7 +3789,7 @@ describe("sanitizeDestination", () => {
 
   it("normalizes leading backslashes (browsers treat \\ as /)", async () => {
     const { sanitizeDestination } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(sanitizeDestination("\\/evil.com")).toBe("/evil.com");
     expect(sanitizeDestination("\\\\evil.com")).toBe("/evil.com");
@@ -3799,7 +3799,7 @@ describe("sanitizeDestination", () => {
 
   it("preserves normal relative paths", async () => {
     const { sanitizeDestination } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     expect(sanitizeDestination("/about")).toBe("/about");
     expect(sanitizeDestination("/blog/hello")).toBe("/blog/hello");
@@ -3815,7 +3815,7 @@ describe("open redirect prevention in catch-all redirects", () => {
 
   it("matchRedirect sanitizes decoded %2F that would produce //evil.com", async () => {
     const { matchRedirect } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     // In the real request flow, the entry point decodes %2F to / and
     // normalizePath collapses // to /. So /old/%2Fevil.com arrives as
@@ -3833,7 +3833,7 @@ describe("open redirect prevention in catch-all redirects", () => {
 
   it("matchRedirect sanitizes double-slash in already-decoded paths", async () => {
     const { matchRedirect } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const redirects = [
       { source: "/old/:path*", destination: "/:path*", permanent: false },
@@ -3846,7 +3846,7 @@ describe("open redirect prevention in catch-all redirects", () => {
 
   it("matchRedirect preserves valid external redirect destinations", async () => {
     const { matchRedirect } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const redirects = [
       { source: "/go/:path*", destination: "https://example.com/:path*", permanent: false },
@@ -3858,7 +3858,7 @@ describe("open redirect prevention in catch-all redirects", () => {
 
   it("matchRewrite sanitizes decoded %2F that would produce //evil.com", async () => {
     const { matchRewrite } = await import(
-      "../packages/vinext/src/config/config-matchers.js"
+      "../packages/openvite/src/config/config-matchers.js"
     );
     const rewrites = [
       { source: "/old/:path*", destination: "/:path*" },
@@ -3874,20 +3874,20 @@ describe("open redirect prevention in catch-all redirects", () => {
 
 describe("next/form shim", () => {
   it("exports default Form component", async () => {
-    const mod = await import("../packages/vinext/src/shims/form.js");
+    const mod = await import("../packages/openvite/src/shims/form.js");
     expect(mod.default).toBeDefined();
     expect(typeof mod.default).toBe("object"); // forwardRef returns an object
   });
 
   it("re-exports useActionState from React", async () => {
-    const mod = await import("../packages/vinext/src/shims/form.js");
+    const mod = await import("../packages/openvite/src/shims/form.js");
     expect(typeof mod.useActionState).toBe("function");
   });
 
   it("renders a form element with string action in SSR", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const { default: Form } = await import("../packages/vinext/src/shims/form.js");
+    const { default: Form } = await import("../packages/openvite/src/shims/form.js");
 
     const html = renderToStaticMarkup(
       React.createElement(
@@ -3906,7 +3906,7 @@ describe("next/form shim", () => {
   it("renders a form with method prop", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const { default: Form } = await import("../packages/vinext/src/shims/form.js");
+    const { default: Form } = await import("../packages/openvite/src/shims/form.js");
 
     const html = renderToStaticMarkup(
       React.createElement(
@@ -3922,7 +3922,7 @@ describe("next/form shim", () => {
   it("renders children inside the form", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const { default: Form } = await import("../packages/vinext/src/shims/form.js");
+    const { default: Form } = await import("../packages/openvite/src/shims/form.js");
 
     const html = renderToStaticMarkup(
       React.createElement(
@@ -3941,7 +3941,7 @@ describe("next/form shim", () => {
   it("passes className and id through to form element", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const { default: Form } = await import("../packages/vinext/src/shims/form.js");
+    const { default: Form } = await import("../packages/openvite/src/shims/form.js");
 
     const html = renderToStaticMarkup(
       React.createElement(
@@ -3957,7 +3957,7 @@ describe("next/form shim", () => {
 describe("next/font/google shim", () => {
   it("returns className, style, and variable for a Google Font", async () => {
     const { Inter } = await import(
-      "../packages/vinext/src/shims/font-google.js"
+      "../packages/openvite/src/shims/font-google.js"
     );
     const result = Inter({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -3970,7 +3970,7 @@ describe("next/font/google shim", () => {
 
   it("Proxy returns font loaders for any family", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/font-google.js"
+      "../packages/openvite/src/shims/font-google.js"
     );
     const googleFonts = mod.default;
     const loader = googleFonts.Poppins;
@@ -3983,7 +3983,7 @@ describe("next/font/google shim", () => {
 
   it("converts PascalCase to font family name", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/font-google.js"
+      "../packages/openvite/src/shims/font-google.js"
     );
     const googleFonts = mod.default;
     const result = googleFonts.RobotoMono({ weight: "400" });
@@ -3995,7 +3995,7 @@ describe("next/font/google shim", () => {
 
   it("uses custom variable name when provided", async () => {
     const { Inter } = await import(
-      "../packages/vinext/src/shims/font-google.js"
+      "../packages/openvite/src/shims/font-google.js"
     );
     const result = Inter({ variable: "--custom-font" });
     // When custom variable is provided, the generated class still sets that variable
@@ -4005,7 +4005,7 @@ describe("next/font/google shim", () => {
 
   it("uses custom fallback fonts", async () => {
     const { Inter } = await import(
-      "../packages/vinext/src/shims/font-google.js"
+      "../packages/openvite/src/shims/font-google.js"
     );
     const result = Inter({ fallback: ["Helvetica", "Arial", "sans-serif"] });
     expect(result.style.fontFamily).toContain("Helvetica");
@@ -4014,7 +4014,7 @@ describe("next/font/google shim", () => {
 
   it("generates CSS rules for className (SSR)", async () => {
     const { Inter, getSSRFontStyles } = await import(
-      "../packages/vinext/src/shims/font-google.js"
+      "../packages/openvite/src/shims/font-google.js"
     );
     // Clear any previously collected styles
     getSSRFontStyles();
@@ -4031,7 +4031,7 @@ describe("next/font/google shim", () => {
 
   it("generates CSS variable rule when variable is specified", async () => {
     const { Inter, getSSRFontStyles } = await import(
-      "../packages/vinext/src/shims/font-google.js"
+      "../packages/openvite/src/shims/font-google.js"
     );
     getSSRFontStyles(); // clear
 
@@ -4045,7 +4045,7 @@ describe("next/font/google shim", () => {
 describe("next/font/local shim", () => {
   it("returns className, style for a local font", async () => {
     const { default: localFont } = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const result = localFont({ src: "./my-font.woff2" });
 
@@ -4055,7 +4055,7 @@ describe("next/font/local shim", () => {
 
   it("includes variable as generated class name when specified", async () => {
     const { default: localFont } = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const result = localFont({
       src: "./my-font.woff2",
@@ -4068,7 +4068,7 @@ describe("next/font/local shim", () => {
 
   it("accepts array of font sources", async () => {
     const { default: localFont } = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const result = localFont({
       src: [
@@ -4083,7 +4083,7 @@ describe("next/font/local shim", () => {
 
   it("does not include variable when not specified", async () => {
     const { default: localFont } = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const result = localFont({ src: "./no-var.woff2" });
     expect(result.variable).toBeUndefined();
@@ -4091,7 +4091,7 @@ describe("next/font/local shim", () => {
 
   it("generates SSR font styles for className rules", async () => {
     const fontLocal = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const localFont = fontLocal.default;
     // In test (Node), typeof document === "undefined", so SSR path is used
@@ -4120,7 +4120,7 @@ describe("next/font/local shim", () => {
 
   it("generates unique classNames and variableClassNames", async () => {
     const { default: localFont } = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const a = localFont({ src: "./a.woff2", variable: "--font-a" });
     const b = localFont({ src: "./b.woff2", variable: "--font-b" });
@@ -4133,14 +4133,14 @@ describe("next/font/local shim", () => {
 
   it("exports getSSRFontPreloads function", async () => {
     const fontLocal = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     expect(typeof fontLocal.getSSRFontPreloads).toBe("function");
   });
 
   it("collects preload data for fonts with absolute URLs", async () => {
     const fontLocal = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const localFont = fontLocal.default;
 
@@ -4157,7 +4157,7 @@ describe("next/font/local shim", () => {
 
   it("collects preload data for array font sources with absolute URLs", async () => {
     const fontLocal = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const localFont = fontLocal.default;
 
@@ -4183,7 +4183,7 @@ describe("next/font/local shim", () => {
 
   it("does not collect preload data for relative URLs", async () => {
     const fontLocal = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const localFont = fontLocal.default;
 
@@ -4197,7 +4197,7 @@ describe("next/font/local shim", () => {
 
   it("deduplicates preload entries by href", async () => {
     const fontLocal = await import(
-      "../packages/vinext/src/shims/font-local.js"
+      "../packages/openvite/src/shims/font-local.js"
     );
     const localFont = fontLocal.default;
 
@@ -4216,7 +4216,7 @@ describe("next/font/local shim", () => {
 describe("next/og shim", () => {
   it("exports ImageResponse class", async () => {
     const og = await import(
-      "../packages/vinext/src/shims/og.js"
+      "../packages/openvite/src/shims/og.js"
     );
     expect(og.ImageResponse).toBeDefined();
     expect(typeof og.ImageResponse).toBe("function");
@@ -4224,7 +4224,7 @@ describe("next/og shim", () => {
 
   it("ImageResponse extends Response", async () => {
     const og = await import(
-      "../packages/vinext/src/shims/og.js"
+      "../packages/openvite/src/shims/og.js"
     );
     // Check the prototype chain
     expect(og.ImageResponse.prototype instanceof Response).toBe(true);
@@ -4233,7 +4233,7 @@ describe("next/og shim", () => {
   it("generates a PNG image from JSX", async () => {
     const React = await import("react");
     const og = await import(
-      "../packages/vinext/src/shims/og.js"
+      "../packages/openvite/src/shims/og.js"
     );
 
     // Simple colored div — no text so no font needed
@@ -4274,7 +4274,7 @@ describe("next/og shim", () => {
   it("respects custom status and headers", async () => {
     const React = await import("react");
     const og = await import(
-      "../packages/vinext/src/shims/og.js"
+      "../packages/openvite/src/shims/og.js"
     );
 
     const element = React.createElement("div", {
@@ -4296,7 +4296,7 @@ describe("next/og shim", () => {
   it("uses default dimensions of 1200x630", async () => {
     const React = await import("react");
     const og = await import(
-      "../packages/vinext/src/shims/og.js"
+      "../packages/openvite/src/shims/og.js"
     );
 
     const element = React.createElement("div", {
@@ -4317,7 +4317,7 @@ describe("next/og shim", () => {
 describe("metadata route serializers", () => {
   it("sitemapToXml converts sitemap entries to valid XML", async () => {
     const { sitemapToXml } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const xml = sitemapToXml([
       { url: "https://example.com", lastModified: "2025-01-01", priority: 1 },
@@ -4334,7 +4334,7 @@ describe("metadata route serializers", () => {
 
   it("sitemapToXml handles Date objects", async () => {
     const { sitemapToXml } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const xml = sitemapToXml([
       { url: "https://example.com", lastModified: new Date("2025-06-15") },
@@ -4344,7 +4344,7 @@ describe("metadata route serializers", () => {
 
   it("robotsToText converts robots config to text", async () => {
     const { robotsToText } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const text = robotsToText({
       rules: { userAgent: "*", allow: "/", disallow: "/private/" },
@@ -4358,7 +4358,7 @@ describe("metadata route serializers", () => {
 
   it("robotsToText handles multiple rules", async () => {
     const { robotsToText } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const text = robotsToText({
       rules: [
@@ -4373,7 +4373,7 @@ describe("metadata route serializers", () => {
 
   it("manifestToJson converts manifest config to JSON", async () => {
     const { manifestToJson } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const json = manifestToJson({
       name: "Test App",
@@ -4388,7 +4388,7 @@ describe("metadata route serializers", () => {
 
   it("scanMetadataFiles discovers metadata files in app directory", async () => {
     const { scanMetadataFiles } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const appDir = path.resolve(import.meta.dirname, "./fixtures/app-basic/app");
     const routes = scanMetadataFiles(appDir);
@@ -4419,21 +4419,21 @@ describe("metadata route serializers", () => {
 describe("next/dynamic shim", () => {
   it("exports a default function", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     expect(typeof mod.default).toBe("function");
   });
 
   it("exports flushPreloads", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     expect(typeof mod.flushPreloads).toBe("function");
   });
 
   it("returns a component for SSR-enabled dynamic imports", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4452,7 +4452,7 @@ describe("next/dynamic shim", () => {
 
   it("renders loading state for ssr: false on server", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
@@ -4472,7 +4472,7 @@ describe("next/dynamic shim", () => {
 
   it("renders nothing for ssr: false without loading on server", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
@@ -4490,7 +4490,7 @@ describe("next/dynamic shim", () => {
 
   it("accepts module without default export (bare component)", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4506,7 +4506,7 @@ describe("next/dynamic shim", () => {
 
   it("forwards props to the underlying component", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4525,7 +4525,7 @@ describe("next/dynamic shim", () => {
 
   it("renders loading fallback when component not yet resolved (SSR)", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4550,7 +4550,7 @@ describe("next/dynamic shim", () => {
 
   it("streaming renderer resolves multiple dynamic components", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4580,7 +4580,7 @@ describe("next/dynamic shim", () => {
 
   it("flushPreloads second call resolves immediately (queue drained)", async () => {
     const { flushPreloads } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
 
     // First call should drain whatever's in the queue
@@ -4593,7 +4593,7 @@ describe("next/dynamic shim", () => {
 
   it("loading component receives isLoading and pastDelay props", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
@@ -4619,7 +4619,7 @@ describe("next/dynamic shim", () => {
 
   it("renders loading fallback for ssr: false with props forwarded", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
@@ -4643,7 +4643,7 @@ describe("next/dynamic shim", () => {
 
   it("handles module with both default and named exports", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4663,7 +4663,7 @@ describe("next/dynamic shim", () => {
 
   it("loader rejection does not crash flushPreloads", async () => {
     const { default: dynamic, flushPreloads } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
 
     dynamic(() => Promise.reject(new Error("Module not found")));
@@ -4675,7 +4675,7 @@ describe("next/dynamic shim", () => {
 
   it("loader rejection renders loading component with error", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4701,7 +4701,7 @@ describe("next/dynamic shim", () => {
 
   it("loader rejection without loading component propagates via onError", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4723,7 +4723,7 @@ describe("next/dynamic shim", () => {
 
   it("loader rejection with non-Error value is caught during SSR", async () => {
     const { default: dynamic } = await import(
-      "../packages/vinext/src/shims/dynamic.js"
+      "../packages/openvite/src/shims/dynamic.js"
     );
     const React = await import("react");
     const { renderToReadableStream } = await import("react-dom/server.edge");
@@ -4746,7 +4746,7 @@ describe("next/dynamic shim", () => {
 describe("basePath config validation", () => {
   it("resolveNextConfig preserves basePath with leading slash", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({ basePath: "/my-app" });
     expect(config.basePath).toBe("/my-app");
@@ -4754,7 +4754,7 @@ describe("basePath config validation", () => {
 
   it("resolveNextConfig handles nested basePath", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({ basePath: "/a/b/c" });
     expect(config.basePath).toBe("/a/b/c");
@@ -4762,7 +4762,7 @@ describe("basePath config validation", () => {
 
   it("resolveNextConfig defaults to empty string", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({});
     expect(config.basePath).toBe("");
@@ -4770,7 +4770,7 @@ describe("basePath config validation", () => {
 
   it("resolveNextConfig handles undefined basePath", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({ basePath: undefined });
     expect(config.basePath).toBe("");
@@ -4780,7 +4780,7 @@ describe("basePath config validation", () => {
 describe("cacheComponents config (Next.js 16)", () => {
   it("resolveNextConfig defaults cacheComponents to false", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({});
     expect(config.cacheComponents).toBe(false);
@@ -4788,7 +4788,7 @@ describe("cacheComponents config (Next.js 16)", () => {
 
   it("resolveNextConfig reads cacheComponents: true", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({ cacheComponents: true });
     expect(config.cacheComponents).toBe(true);
@@ -4796,7 +4796,7 @@ describe("cacheComponents config (Next.js 16)", () => {
 
   it("resolveNextConfig reads cacheComponents: false", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({ cacheComponents: false });
     expect(config.cacheComponents).toBe(false);
@@ -4804,7 +4804,7 @@ describe("cacheComponents config (Next.js 16)", () => {
 
   it("resolveNextConfig handles null input with cacheComponents default", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig(null);
     expect(config.cacheComponents).toBe(false);
@@ -4812,7 +4812,7 @@ describe("cacheComponents config (Next.js 16)", () => {
 
   it("resolveNextConfig defaults mdx to null", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({});
     expect(config.mdx).toBeNull();
@@ -4820,7 +4820,7 @@ describe("cacheComponents config (Next.js 16)", () => {
 
   it("resolveNextConfig returns null mdx for null input", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig(null);
     expect(config.mdx).toBeNull();
@@ -4828,7 +4828,7 @@ describe("cacheComponents config (Next.js 16)", () => {
 
   it("resolveNextConfig resolves serverActionsAllowedOrigins from experimental.serverActions", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({
       experimental: {
@@ -4842,7 +4842,7 @@ describe("cacheComponents config (Next.js 16)", () => {
 
   it("resolveNextConfig defaults serverActionsAllowedOrigins to empty array", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig({});
     expect(config.serverActionsAllowedOrigins).toEqual([]);
@@ -4850,7 +4850,7 @@ describe("cacheComponents config (Next.js 16)", () => {
 
   it("resolveNextConfig handles null input with empty serverActionsAllowedOrigins", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = await resolveNextConfig(null);
     expect(config.serverActionsAllowedOrigins).toEqual([]);
@@ -4863,7 +4863,7 @@ describe("loadNextConfig CJS support", () => {
   beforeEach(async () => {
     const os = await import("node:os");
     const fsp = await import("node:fs/promises");
-    tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-cjs-cfg-"));
+    tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-cjs-cfg-"));
   });
 
   afterEach(async () => {
@@ -4874,7 +4874,7 @@ describe("loadNextConfig CJS support", () => {
   it("loads a CJS next.config.js that uses module.exports", async () => {
     const fsp = await import("node:fs/promises");
     const { loadNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     await fsp.writeFile(
@@ -4891,7 +4891,7 @@ describe("loadNextConfig CJS support", () => {
   it("loads a CJS next.config.js with require() plugin wrapper", async () => {
     const fsp = await import("node:fs/promises");
     const { loadNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     // Simulate a CJS plugin wrapper like nextra/next-intl/etc.
@@ -4928,7 +4928,7 @@ module.exports = withPlugin({ basePath: "/wrapped" });`,
   it("loads a CJS function-form next.config.js", async () => {
     const fsp = await import("node:fs/promises");
     const { loadNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     await fsp.writeFile(
@@ -4947,7 +4947,7 @@ module.exports = withPlugin({ basePath: "/wrapped" });`,
   it("loads a .cjs config file", async () => {
     const fsp = await import("node:fs/promises");
     const { loadNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     await fsp.writeFile(
@@ -4963,7 +4963,7 @@ module.exports = withPlugin({ basePath: "/wrapped" });`,
   it("loads an ESM next.config.mjs normally", async () => {
     const fsp = await import("node:fs/promises");
     const { loadNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     await fsp.writeFile(
@@ -4978,7 +4978,7 @@ module.exports = withPlugin({ basePath: "/wrapped" });`,
 
   it("returns null when no config file exists", async () => {
     const { loadNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     const config = await loadNextConfig(tmpDir);
@@ -4989,7 +4989,7 @@ module.exports = withPlugin({ basePath: "/wrapped" });`,
 describe("extractMdxOptions", () => {
   it("returns null when no webpack function", async () => {
     const { extractMdxOptions } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     expect(extractMdxOptions({})).toBeNull();
     expect(extractMdxOptions({ webpack: "not a function" })).toBeNull();
@@ -4997,7 +4997,7 @@ describe("extractMdxOptions", () => {
 
   it("extracts remarkPlugins from webpack rule", async () => {
     const { extractMdxOptions } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const fakeRemarkPlugin = () => {};
     const config = {
@@ -5026,7 +5026,7 @@ describe("extractMdxOptions", () => {
 
   it("extracts rehypePlugins from webpack rule", async () => {
     const { extractMdxOptions } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const fakeRehypePlugin = () => {};
     const config = {
@@ -5054,7 +5054,7 @@ describe("extractMdxOptions", () => {
 
   it("extracts recmaPlugins from webpack rule", async () => {
     const { extractMdxOptions } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const fakeRecmaPlugin = () => {};
     const config = {
@@ -5080,7 +5080,7 @@ describe("extractMdxOptions", () => {
 
   it("handles oneOf nested rules", async () => {
     const { extractMdxOptions } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const fakeRemarkPlugin = () => {};
     const config = {
@@ -5110,7 +5110,7 @@ describe("extractMdxOptions", () => {
 
   it("returns null when webpack throws", async () => {
     const { extractMdxOptions } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = {
       webpack: () => {
@@ -5122,7 +5122,7 @@ describe("extractMdxOptions", () => {
 
   it("returns null when webpack has no MDX loader", async () => {
     const { extractMdxOptions } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = {
       webpack: (webpackConfig: any) => {
@@ -5138,7 +5138,7 @@ describe("extractMdxOptions", () => {
 
   it("returns null when MDX loader has empty plugin arrays", async () => {
     const { extractMdxOptions } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const config = {
       webpack: (webpackConfig: any) => {
@@ -5162,7 +5162,7 @@ describe("extractMdxOptions", () => {
 
   it("resolveNextConfig extracts mdx from webpack closure", async () => {
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
     const fakeRemarkPlugin = () => {};
     const config = await resolveNextConfig({
@@ -5189,7 +5189,7 @@ describe("extractMdxOptions", () => {
 describe("next/web-vitals shim", () => {
   it("exports useReportWebVitals as a no-op function", async () => {
     const { useReportWebVitals } = await import(
-      "../packages/vinext/src/shims/web-vitals.js"
+      "../packages/openvite/src/shims/web-vitals.js"
     );
     expect(typeof useReportWebVitals).toBe("function");
     // Should run without throwing
@@ -5200,7 +5200,7 @@ describe("next/web-vitals shim", () => {
 describe("next/amp shim", () => {
   it("exports useAmp and isInAmpMode as no-op functions", async () => {
     const { useAmp, isInAmpMode } = await import(
-      "../packages/vinext/src/shims/amp.js"
+      "../packages/openvite/src/shims/amp.js"
     );
     expect(typeof useAmp).toBe("function");
     expect(typeof isInAmpMode).toBe("function");
@@ -5213,7 +5213,7 @@ describe("next/amp shim", () => {
 describe("next/compat/router shim", () => {
   it("exports useRouter as a function", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/compat-router.js"
+      "../packages/openvite/src/shims/compat-router.js"
     );
     // useRouter should be a named export, not a default export (unlike next/router).
     // Returns null in App Router context instead of throwing.
@@ -5276,7 +5276,7 @@ describe("Pages Router router helpers", () => {
 describe("next/server enhancements", () => {
   it("NextRequest.ip extracts from x-forwarded-for header", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("https://example.com", {
       headers: { "x-forwarded-for": "1.2.3.4, 5.6.7.8" },
@@ -5286,7 +5286,7 @@ describe("next/server enhancements", () => {
 
   it("NextRequest.ip returns undefined without forwarded header", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("https://example.com");
     expect(req.ip).toBeUndefined();
@@ -5294,7 +5294,7 @@ describe("next/server enhancements", () => {
 
   it("NextRequest.geo extracts from Cloudflare/Vercel headers", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("https://example.com", {
       headers: {
@@ -5310,7 +5310,7 @@ describe("next/server enhancements", () => {
 
   it("NextRequest.geo returns undefined without geo headers", async () => {
     const { NextRequest } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const req = new NextRequest("https://example.com");
     expect(req.geo).toBeUndefined();
@@ -5318,7 +5318,7 @@ describe("next/server enhancements", () => {
 
   it("ResponseCookies.getAll returns all set cookies", async () => {
     const { ResponseCookies } = await import(
-      "../packages/vinext/src/shims/server.js"
+      "../packages/openvite/src/shims/server.js"
     );
     const headers = new Headers();
     const cookies = new ResponseCookies(headers);
@@ -5334,7 +5334,7 @@ describe("next/server enhancements", () => {
 describe("next/image enhancements", () => {
   it("exports StaticImageData type", async () => {
     const imageModule = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     // StaticImageData is an interface, so we can't check at runtime
     // but getImageProps uses it — verify that function exists
@@ -5343,7 +5343,7 @@ describe("next/image enhancements", () => {
 
   it("getImageProps returns img props from Image props", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const result = getImageProps({
       src: "/photo.jpg",
@@ -5353,7 +5353,7 @@ describe("next/image enhancements", () => {
       priority: true,
     });
     // Local images now route through the optimization endpoint
-    expect(result.props.src).toContain("/_vinext/image");
+    expect(result.props.src).toContain("/_openvite/image");
     expect(result.props.src).toContain("url=%2Fphoto.jpg");
     expect(result.props.src).toContain("w=800");
     expect(result.props.alt).toBe("Test");
@@ -5364,7 +5364,7 @@ describe("next/image enhancements", () => {
 
   it("getImageProps handles fill mode", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const result = getImageProps({
       src: "/bg.jpg",
@@ -5378,13 +5378,13 @@ describe("next/image enhancements", () => {
 
   it("getImageProps handles StaticImageData", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const result = getImageProps({
       src: { src: "/imported.jpg", width: 1200, height: 800, blurDataURL: "data:..." },
       alt: "Imported",
     });
-    expect(result.props.src).toContain("/_vinext/image");
+    expect(result.props.src).toContain("/_openvite/image");
     expect(result.props.src).toContain("url=%2Fimported.jpg");
     expect(result.props.src).toContain("w=1200");
     expect(result.props.width).toBe(1200);
@@ -5393,7 +5393,7 @@ describe("next/image enhancements", () => {
 
   it("getImageProps generates srcSet for local images with width", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const result = getImageProps({
       src: "/photo.jpg",
@@ -5402,15 +5402,15 @@ describe("next/image enhancements", () => {
       height: 800,
     });
     expect(result.props.srcSet).toBeDefined();
-    // srcSet entries point to /_vinext/image optimization endpoint
-    expect(result.props.srcSet).toContain("/_vinext/image");
+    // srcSet entries point to /_openvite/image optimization endpoint
+    expect(result.props.srcSet).toContain("/_openvite/image");
     expect(result.props.srcSet).toContain("url=%2Fphoto.jpg");
     expect(result.props.srcSet).toContain("w");
   });
 
   it("getImageProps does not generate srcSet for fill images", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const result = getImageProps({
       src: "/bg.jpg",
@@ -5423,7 +5423,7 @@ describe("next/image enhancements", () => {
 
   it("getImageProps includes fetchPriority for priority images", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const result = getImageProps({
       src: "/hero.jpg",
@@ -5438,7 +5438,7 @@ describe("next/image enhancements", () => {
 
   it("getImageProps includes data-nimg attribute", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const result = getImageProps({
       src: "/photo.jpg",
@@ -5458,7 +5458,7 @@ describe("next/image enhancements", () => {
 
   it("getImageProps includes blur placeholder background styles", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const blurUrl = "data:image/jpeg;base64,/9j/4AAQ";
     const result = getImageProps({
@@ -5475,7 +5475,7 @@ describe("next/image enhancements", () => {
 
   it("getImageProps uses custom loader function", async () => {
     const { getImageProps } = await import(
-      "../packages/vinext/src/shims/image.js"
+      "../packages/openvite/src/shims/image.js"
     );
     const result = getImageProps({
       src: "/photo.jpg",
@@ -5484,13 +5484,13 @@ describe("next/image enhancements", () => {
       height: 600,
       loader: ({ src, width, quality }) => `https://cdn.example.com${src}?w=${width}&q=${quality}`,
     });
-    // Custom loader bypasses the /_vinext/image endpoint
+    // Custom loader bypasses the /_openvite/image endpoint
     expect(result.props.src).toBe("https://cdn.example.com/photo.jpg?w=800&q=75");
-    expect(result.props.src).not.toContain("/_vinext/image");
+    expect(result.props.src).not.toContain("/_openvite/image");
   });
 
-  it("unoptimized prop bypasses /_vinext/image endpoint", async () => {
-    const { getImageProps } = await import("../packages/vinext/src/shims/image.js");
+  it("unoptimized prop bypasses /_openvite/image endpoint", async () => {
+    const { getImageProps } = await import("../packages/openvite/src/shims/image.js");
     const result = getImageProps({
       src: "/photo.jpg",
       alt: "Unoptimized",
@@ -5500,11 +5500,11 @@ describe("next/image enhancements", () => {
     });
     // unoptimized=true should serve the raw src, not the optimization endpoint
     expect(result.props.src).toBe("/photo.jpg");
-    expect(result.props.src).not.toContain("/_vinext/image");
+    expect(result.props.src).not.toContain("/_openvite/image");
   });
 
   it("SVG src auto-skips optimization endpoint (default behavior)", async () => {
-    const { getImageProps } = await import("../packages/vinext/src/shims/image.js");
+    const { getImageProps } = await import("../packages/openvite/src/shims/image.js");
     const result = getImageProps({
       src: "/logo.svg",
       alt: "SVG logo",
@@ -5513,18 +5513,18 @@ describe("next/image enhancements", () => {
     });
     // By default (dangerouslyAllowSVG not set), .svg sources bypass the optimizer
     expect(result.props.src).toBe("/logo.svg");
-    expect(result.props.src).not.toContain("/_vinext/image");
+    expect(result.props.src).not.toContain("/_openvite/image");
   });
 
   it("non-SVG src still uses optimization endpoint", async () => {
-    const { getImageProps } = await import("../packages/vinext/src/shims/image.js");
+    const { getImageProps } = await import("../packages/openvite/src/shims/image.js");
     const result = getImageProps({
       src: "/photo.png",
       alt: "PNG photo",
       width: 256,
       height: 256,
     });
-    expect(result.props.src).toContain("/_vinext/image");
+    expect(result.props.src).toContain("/_openvite/image");
   });
 });
 
@@ -5532,13 +5532,13 @@ describe("next/image component rendering", () => {
   it("renders basic image with src, alt, width, height", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: "/photo.jpg", alt: "Test photo", width: 800, height: 600 }),
     );
     // Local images route through the optimization endpoint
-    expect(html).toContain("/_vinext/image");
+    expect(html).toContain("/_openvite/image");
     expect(html).toContain("url=%2Fphoto.jpg");
     expect(html).toContain('alt="Test photo"');
     expect(html).toContain('width="800"');
@@ -5548,7 +5548,7 @@ describe("next/image component rendering", () => {
   it("renders fill image with absolute positioning", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: "/bg.jpg", alt: "Background", fill: true }),
@@ -5563,7 +5563,7 @@ describe("next/image component rendering", () => {
   it("renders priority image with fetchpriority=high and loading=eager", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: "/hero.jpg", alt: "Hero", width: 1200, height: 800, priority: true }),
@@ -5575,7 +5575,7 @@ describe("next/image component rendering", () => {
   it("renders lazy loading by default (no priority)", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: "/photo.jpg", alt: "Photo", width: 800, height: 600 }),
@@ -5587,21 +5587,21 @@ describe("next/image component rendering", () => {
   it("renders srcSet for local images with width", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: "/photo.jpg", alt: "Photo", width: 1200, height: 800 }),
     );
     expect(html).toContain("srcSet");
-    // srcSet entries point to /_vinext/image optimization endpoint
-    expect(html).toContain("/_vinext/image");
+    // srcSet entries point to /_openvite/image optimization endpoint
+    expect(html).toContain("/_openvite/image");
     expect(html).toContain("url=%2Fphoto.jpg");
   });
 
   it("renders blur placeholder with background-image", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const blurUrl = "data:image/jpeg;base64,/9j/4AAQ";
     const html = renderToStaticMarkup(
@@ -5622,7 +5622,7 @@ describe("next/image component rendering", () => {
   it("renders with custom loader function", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, {
@@ -5640,7 +5640,7 @@ describe("next/image component rendering", () => {
   it("renders with custom sizes attribute", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, {
@@ -5657,7 +5657,7 @@ describe("next/image component rendering", () => {
   it("renders fill image with sizes=100vw by default", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: "/bg.jpg", alt: "BG", fill: true }),
@@ -5668,13 +5668,13 @@ describe("next/image component rendering", () => {
   it("handles StaticImageData import objects", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const staticImport = { src: "/imported.jpg", width: 1200, height: 800, blurDataURL: "data:..." };
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: staticImport, alt: "Imported" }),
     );
-    expect(html).toContain("/_vinext/image");
+    expect(html).toContain("/_openvite/image");
     expect(html).toContain("url=%2Fimported.jpg");
     expect(html).toContain('width="1200"');
     expect(html).toContain('height="800"');
@@ -5683,7 +5683,7 @@ describe("next/image component rendering", () => {
   it("renders with className", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, {
@@ -5700,7 +5700,7 @@ describe("next/image component rendering", () => {
   it("includes data-nimg=1 for non-fill images", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: "/photo.jpg", alt: "Test", width: 800, height: 600 }),
@@ -5711,7 +5711,7 @@ describe("next/image component rendering", () => {
   it("always sets decoding=async", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Image = (await import("../packages/vinext/src/shims/image.js")).default;
+    const Image = (await import("../packages/openvite/src/shims/image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Image, { src: "/photo.jpg", alt: "Test", width: 800, height: 600 }),
@@ -5722,14 +5722,14 @@ describe("next/image component rendering", () => {
 
 describe("image remote pattern matching", () => {
   it("matchRemotePattern matches exact hostname", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { hostname: "cdn.example.com" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/img.jpg"))).toBe(true);
     expect(matchRemotePattern(pattern, new URL("https://other.example.com/img.jpg"))).toBe(false);
   });
 
   it("matchRemotePattern matches wildcard hostname with *", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { hostname: "*.example.com" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/img.jpg"))).toBe(true);
     expect(matchRemotePattern(pattern, new URL("https://images.example.com/img.jpg"))).toBe(true);
@@ -5740,7 +5740,7 @@ describe("image remote pattern matching", () => {
   });
 
   it("matchRemotePattern matches ** hostname for any depth", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { hostname: "**.example.com" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/img.jpg"))).toBe(true);
     expect(matchRemotePattern(pattern, new URL("https://a.b.c.example.com/img.jpg"))).toBe(true);
@@ -5749,21 +5749,21 @@ describe("image remote pattern matching", () => {
   });
 
   it("matchRemotePattern checks protocol when specified", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { protocol: "https", hostname: "cdn.example.com" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/img.jpg"))).toBe(true);
     expect(matchRemotePattern(pattern, new URL("http://cdn.example.com/img.jpg"))).toBe(false);
   });
 
   it("matchRemotePattern checks port when specified", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { hostname: "localhost", port: "3000" };
     expect(matchRemotePattern(pattern, new URL("http://localhost:3000/img.jpg"))).toBe(true);
     expect(matchRemotePattern(pattern, new URL("http://localhost:8080/img.jpg"))).toBe(false);
   });
 
   it("matchRemotePattern checks pathname when specified", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { hostname: "cdn.example.com", pathname: "/images/**" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/images/photo.jpg"))).toBe(true);
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/images/nested/photo.jpg"))).toBe(true);
@@ -5771,7 +5771,7 @@ describe("image remote pattern matching", () => {
   });
 
   it("matchRemotePattern checks search when specified", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { hostname: "cdn.example.com", search: "?v=123" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/img.jpg?v=123"))).toBe(true);
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/img.jpg?v=456"))).toBe(false);
@@ -5779,20 +5779,20 @@ describe("image remote pattern matching", () => {
   });
 
   it("matchRemotePattern defaults pathname to ** when not specified", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { hostname: "cdn.example.com" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/any/deep/path/img.jpg"))).toBe(true);
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/"))).toBe(true);
   });
 
   it("matchRemotePattern handles protocol with trailing colon", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { protocol: "https:", hostname: "cdn.example.com" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/img.jpg"))).toBe(true);
   });
 
   it("hasRemoteMatch checks domains list", async () => {
-    const { hasRemoteMatch } = await import("../packages/vinext/src/shims/image-config.js");
+    const { hasRemoteMatch } = await import("../packages/openvite/src/shims/image-config.js");
     const domains = ["cdn.example.com", "images.example.com"];
     expect(hasRemoteMatch(domains, [], new URL("https://cdn.example.com/img.jpg"))).toBe(true);
     expect(hasRemoteMatch(domains, [], new URL("https://images.example.com/img.jpg"))).toBe(true);
@@ -5800,14 +5800,14 @@ describe("image remote pattern matching", () => {
   });
 
   it("hasRemoteMatch checks remotePatterns when domains don't match", async () => {
-    const { hasRemoteMatch } = await import("../packages/vinext/src/shims/image-config.js");
+    const { hasRemoteMatch } = await import("../packages/openvite/src/shims/image-config.js");
     const patterns = [{ protocol: "https", hostname: "**.cdn.example.com" }];
     expect(hasRemoteMatch([], patterns, new URL("https://us.cdn.example.com/img.jpg"))).toBe(true);
     expect(hasRemoteMatch([], patterns, new URL("http://us.cdn.example.com/img.jpg"))).toBe(false);
   });
 
   it("matchRemotePattern handles single * in pathname", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     const pattern = { hostname: "cdn.example.com", pathname: "/images/*" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/images/photo.jpg"))).toBe(true);
     // Single * should not match nested paths
@@ -5815,7 +5815,7 @@ describe("image remote pattern matching", () => {
   });
 
   it("matchRemotePattern handles regex special chars in hostname", async () => {
-    const { matchRemotePattern } = await import("../packages/vinext/src/shims/image-config.js");
+    const { matchRemotePattern } = await import("../packages/openvite/src/shims/image-config.js");
     // Dots in hostname are literal (escaped for regex)
     const pattern = { hostname: "cdn.example.com" };
     expect(matchRemotePattern(pattern, new URL("https://cdn.example.com/img.jpg"))).toBe(true);
@@ -5826,13 +5826,13 @@ describe("image remote pattern matching", () => {
 
 describe("image optimization URL generation", () => {
   it("imageOptimizationUrl generates correct URL", async () => {
-    const { imageOptimizationUrl } = await import("../packages/vinext/src/shims/image.js");
+    const { imageOptimizationUrl } = await import("../packages/openvite/src/shims/image.js");
     const url = imageOptimizationUrl("/images/hero.webp", 1200, 75);
-    expect(url).toBe("/_vinext/image?url=%2Fimages%2Fhero.webp&w=1200&q=75");
+    expect(url).toBe("/_openvite/image?url=%2Fimages%2Fhero.webp&w=1200&q=75");
   });
 
   it("imageOptimizationUrl encodes special characters", async () => {
-    const { imageOptimizationUrl } = await import("../packages/vinext/src/shims/image.js");
+    const { imageOptimizationUrl } = await import("../packages/openvite/src/shims/image.js");
     const url = imageOptimizationUrl("/images/my photo.jpg", 800, 80);
     expect(url).toContain("url=%2Fimages%2Fmy%20photo.jpg");
     expect(url).toContain("w=800");
@@ -5840,7 +5840,7 @@ describe("image optimization URL generation", () => {
   });
 
   it("imageOptimizationUrl uses default quality of 75", async () => {
-    const { imageOptimizationUrl } = await import("../packages/vinext/src/shims/image.js");
+    const { imageOptimizationUrl } = await import("../packages/openvite/src/shims/image.js");
     const url = imageOptimizationUrl("/img.png", 640);
     expect(url).toContain("q=75");
   });
@@ -5848,8 +5848,8 @@ describe("image optimization URL generation", () => {
 
 describe("image optimization request parsing", () => {
   it("parseImageParams extracts url, width, quality", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    const url = new URL("http://localhost/_vinext/image?url=%2Fimages%2Fhero.webp&w=1200&q=75");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    const url = new URL("http://localhost/_openvite/image?url=%2Fimages%2Fhero.webp&w=1200&q=75");
     const params = parseImageParams(url);
     expect(params).not.toBeNull();
     expect(params!.imageUrl).toBe("/images/hero.webp");
@@ -5858,32 +5858,32 @@ describe("image optimization request parsing", () => {
   });
 
   it("parseImageParams returns null when url is missing", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    const url = new URL("http://localhost/_vinext/image?w=800&q=75");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    const url = new URL("http://localhost/_openvite/image?w=800&q=75");
     expect(parseImageParams(url)).toBeNull();
   });
 
   it("parseImageParams blocks absolute http URLs", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    const url = new URL("http://localhost/_vinext/image?url=http%3A%2F%2Fevil.com%2Fimg.jpg&w=800");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    const url = new URL("http://localhost/_openvite/image?url=http%3A%2F%2Fevil.com%2Fimg.jpg&w=800");
     expect(parseImageParams(url)).toBeNull();
   });
 
   it("parseImageParams blocks absolute https URLs", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    const url = new URL("http://localhost/_vinext/image?url=https%3A%2F%2Fevil.com%2Fimg.jpg&w=800");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    const url = new URL("http://localhost/_openvite/image?url=https%3A%2F%2Fevil.com%2Fimg.jpg&w=800");
     expect(parseImageParams(url)).toBeNull();
   });
 
   it("parseImageParams blocks protocol-relative URLs", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    const url = new URL("http://localhost/_vinext/image?url=%2F%2Fevil.com%2Fimg.jpg&w=800");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    const url = new URL("http://localhost/_openvite/image?url=%2F%2Fevil.com%2Fimg.jpg&w=800");
     expect(parseImageParams(url)).toBeNull();
   });
 
   it("parseImageParams defaults width to 0 and quality to 75", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    const url = new URL("http://localhost/_vinext/image?url=%2Fimg.jpg");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    const url = new URL("http://localhost/_openvite/image?url=%2Fimg.jpg");
     const params = parseImageParams(url);
     expect(params).not.toBeNull();
     expect(params!.width).toBe(0);
@@ -5891,91 +5891,91 @@ describe("image optimization request parsing", () => {
   });
 
   it("parseImageParams blocks data: URIs (exotic scheme bypass)", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=data%3Atext%2Fhtml%2C%3Cscript%3Ealert(1)%3C%2Fscript%3E&w=800"))).toBeNull();
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=data%3Atext%2Fhtml%2C%3Cscript%3Ealert(1)%3C%2Fscript%3E&w=800"))).toBeNull();
   });
 
   it("parseImageParams blocks javascript: URIs", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=javascript%3Aalert(1)&w=800"))).toBeNull();
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=javascript%3Aalert(1)&w=800"))).toBeNull();
   });
 
   it("parseImageParams blocks bare filenames (no leading slash)", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=img.jpg&w=800"))).toBeNull();
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=img.jpg&w=800"))).toBeNull();
   });
 
   it("parseImageParams rejects quality outside 1-100", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&q=0"))).toBeNull();
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&q=101"))).toBeNull();
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&q=0"))).toBeNull();
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&q=101"))).toBeNull();
   });
 
   it("parseImageParams blocks backslash-based open redirect (/\\evil.com)", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
     // /\evil.com — browsers and the URL constructor treat this as //evil.com
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=%2F%5Cevil.com&w=800"))).toBeNull();
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=%2F%5Cevil.com&w=800"))).toBeNull();
   });
 
   it("parseImageParams blocks encoded backslash variants", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
     // /\evil.com/img.jpg
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=%2F%5Cevil.com%2Fimg.jpg&w=800"))).toBeNull();
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=%2F%5Cevil.com%2Fimg.jpg&w=800"))).toBeNull();
     // /\\evil.com (double backslash)
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=%2F%5C%5Cevil.com&w=800"))).toBeNull();
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=%2F%5C%5Cevil.com&w=800"))).toBeNull();
   });
 
   it("parseImageParams validates origin hasn't changed after URL construction", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
     // This tests defense-in-depth: even if a future parser differential is found,
     // the origin check catches it.
     // A valid relative URL should pass
-    const good = parseImageParams(new URL("http://localhost/_vinext/image?url=%2Fimages%2Fhero.webp&w=800"));
+    const good = parseImageParams(new URL("http://localhost/_openvite/image?url=%2Fimages%2Fhero.webp&w=800"));
     expect(good).not.toBeNull();
     expect(good!.imageUrl).toBe("/images/hero.webp");
   });
 
   it("parseImageParams normalizes backslashes in returned imageUrl", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
     // /images\hero.webp should be normalized to /images/hero.webp
     // (backslash in the middle of a valid path)
-    const result = parseImageParams(new URL("http://localhost/_vinext/image?url=%2Fimages%5Chero.webp&w=800"));
+    const result = parseImageParams(new URL("http://localhost/_openvite/image?url=%2Fimages%5Chero.webp&w=800"));
     expect(result).not.toBeNull();
     expect(result!.imageUrl).toBe("/images/hero.webp");
   });
 
   it("parseImageParams rejects width exceeding absolute maximum (3840)", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&w=3841"))).toBeNull();
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&w=999999999"))).toBeNull();
-    expect(parseImageParams(new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&w=2147483647"))).toBeNull();
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&w=3841"))).toBeNull();
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&w=999999999"))).toBeNull();
+    expect(parseImageParams(new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&w=2147483647"))).toBeNull();
   });
 
   it("parseImageParams accepts width at the absolute maximum (3840)", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
-    const params = parseImageParams(new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&w=3840"));
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
+    const params = parseImageParams(new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&w=3840"));
     expect(params).not.toBeNull();
     expect(params!.width).toBe(3840);
   });
 
   it("parseImageParams validates against allowedWidths when provided", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
     const allowedWidths = [640, 750, 828, 1080, 1200, 1920, 2048, 3840];
     // Allowed width passes
     const params = parseImageParams(
-      new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&w=1080"),
+      new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&w=1080"),
       allowedWidths,
     );
     expect(params).not.toBeNull();
     expect(params!.width).toBe(1080);
     // Non-allowed width is rejected
     expect(parseImageParams(
-      new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&w=999"),
+      new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&w=999"),
       allowedWidths,
     )).toBeNull();
     // w=0 (no resize) is always allowed even with allowedWidths
     const noResize = parseImageParams(
-      new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&w=0"),
+      new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&w=0"),
       allowedWidths,
     );
     expect(noResize).not.toBeNull();
@@ -5983,10 +5983,10 @@ describe("image optimization request parsing", () => {
   });
 
   it("parseImageParams allows imageSizes (small widths) in allowedWidths", async () => {
-    const { parseImageParams } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { parseImageParams } = await import("../packages/openvite/src/server/image-optimization.js");
     const allowedWidths = [16, 32, 48, 64, 96, 128, 256, 384, 640, 750, 828, 1080, 1200, 1920, 2048, 3840];
     const params = parseImageParams(
-      new URL("http://localhost/_vinext/image?url=%2Fimg.jpg&w=64"),
+      new URL("http://localhost/_openvite/image?url=%2Fimg.jpg&w=64"),
       allowedWidths,
     );
     expect(params).not.toBeNull();
@@ -5994,28 +5994,28 @@ describe("image optimization request parsing", () => {
   });
 
   it("negotiateImageFormat prefers AVIF over WebP", async () => {
-    const { negotiateImageFormat } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { negotiateImageFormat } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(negotiateImageFormat("image/avif,image/webp,image/jpeg")).toBe("image/avif");
   });
 
   it("negotiateImageFormat selects WebP when no AVIF", async () => {
-    const { negotiateImageFormat } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { negotiateImageFormat } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(negotiateImageFormat("image/webp,image/jpeg")).toBe("image/webp");
   });
 
   it("negotiateImageFormat falls back to JPEG", async () => {
-    const { negotiateImageFormat } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { negotiateImageFormat } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(negotiateImageFormat("image/png,image/jpeg")).toBe("image/jpeg");
     expect(negotiateImageFormat(null)).toBe("image/jpeg");
   });
 
-  it("IMAGE_OPTIMIZATION_PATH is /_vinext/image", async () => {
-    const { IMAGE_OPTIMIZATION_PATH } = await import("../packages/vinext/src/server/image-optimization.js");
-    expect(IMAGE_OPTIMIZATION_PATH).toBe("/_vinext/image");
+  it("IMAGE_OPTIMIZATION_PATH is /_openvite/image", async () => {
+    const { IMAGE_OPTIMIZATION_PATH } = await import("../packages/openvite/src/server/image-optimization.js");
+    expect(IMAGE_OPTIMIZATION_PATH).toBe("/_openvite/image");
   });
 
   it("exports DEFAULT_DEVICE_SIZES and DEFAULT_IMAGE_SIZES matching Next.js defaults", async () => {
-    const { DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { DEFAULT_DEVICE_SIZES, DEFAULT_IMAGE_SIZES } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(DEFAULT_DEVICE_SIZES).toEqual([640, 750, 828, 1080, 1200, 1920, 2048, 3840]);
     expect(DEFAULT_IMAGE_SIZES).toEqual([16, 32, 48, 64, 96, 128, 256, 384]);
   });
@@ -6023,7 +6023,7 @@ describe("image optimization request parsing", () => {
 
 describe("isSafeImageContentType", () => {
   it("accepts safe image content types", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType("image/jpeg")).toBe(true);
     expect(isSafeImageContentType("image/png")).toBe(true);
     expect(isSafeImageContentType("image/gif")).toBe(true);
@@ -6035,12 +6035,12 @@ describe("isSafeImageContentType", () => {
   });
 
   it("rejects SVG content type", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType("image/svg+xml")).toBe(false);
   });
 
   it("rejects non-image content types", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType("text/html")).toBe(false);
     expect(isSafeImageContentType("application/javascript")).toBe(false);
     expect(isSafeImageContentType("text/xml")).toBe(false);
@@ -6048,34 +6048,34 @@ describe("isSafeImageContentType", () => {
   });
 
   it("rejects null content type", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType(null)).toBe(false);
   });
 
   it("handles content type with parameters (charset, etc.)", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType("image/jpeg; charset=utf-8")).toBe(true);
     expect(isSafeImageContentType("image/svg+xml; charset=utf-8")).toBe(false);
   });
 
   it("is case-insensitive", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType("Image/JPEG")).toBe(true);
     expect(isSafeImageContentType("IMAGE/SVG+XML")).toBe(false);
   });
 
   it("allows SVG when dangerouslyAllowSVG is true", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType("image/svg+xml", true)).toBe(true);
   });
 
   it("allows SVG with parameters when dangerouslyAllowSVG is true", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType("image/svg+xml; charset=utf-8", true)).toBe(true);
   });
 
   it("still rejects non-image types when dangerouslyAllowSVG is true", async () => {
-    const { isSafeImageContentType } = await import("../packages/vinext/src/server/image-optimization.js");
+    const { isSafeImageContentType } = await import("../packages/openvite/src/server/image-optimization.js");
     expect(isSafeImageContentType("text/html", true)).toBe(false);
     expect(isSafeImageContentType("application/javascript", true)).toBe(false);
     expect(isSafeImageContentType(null, true)).toBe(false);
@@ -6084,8 +6084,8 @@ describe("isSafeImageContentType", () => {
 
 describe("handleImageOptimization", () => {
   it("returns 400 for invalid params", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image");
     const handlers = {
       fetchAsset: async () => new Response("", { status: 200 }),
     };
@@ -6094,8 +6094,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("returns 404 when fetchAsset fails", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800");
     const handlers = {
       fetchAsset: async () => new Response("", { status: 404 }),
     };
@@ -6104,8 +6104,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("returns original image when no transformImage handler", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800");
     const handlers = {
       fetchAsset: async () => new Response("original-image-data", {
         status: 200,
@@ -6120,8 +6120,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("calls transformImage when provided", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800&q=90", {
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800&q=90", {
       headers: { Accept: "image/webp" },
     });
     let capturedOptions: { width: number; format: string; quality: number } | null = null;
@@ -6142,8 +6142,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("falls back to original on transform error", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800");
     const handlers = {
       fetchAsset: async () => new Response("original", {
         status: 200,
@@ -6159,8 +6159,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("returns 400 for backslash open redirect (/\\evil.com)", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2F%5Cevil.com&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2F%5Cevil.com&w=800");
     const handlers = {
       fetchAsset: async () => new Response("should not be called", { status: 200 }),
     };
@@ -6169,8 +6169,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("does not call fetchAsset for backslash URLs", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2F%5Cgoogle.com%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2F%5Cgoogle.com%2Fimg.jpg&w=800");
     let fetchCalled = false;
     const handlers = {
       fetchAsset: async () => {
@@ -6184,8 +6184,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("blocks SVG content type", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fmalicious.svg&w=100&q=75");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fmalicious.svg&w=100&q=75");
     const handlers = {
       fetchAsset: async () => new Response('<svg><script>alert(1)</script></svg>', {
         status: 200,
@@ -6198,8 +6198,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("blocks text/html content type", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Ffake.jpg&w=100&q=75");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Ffake.jpg&w=100&q=75");
     const handlers = {
       fetchAsset: async () => new Response('<html><script>alert(1)</script></html>', {
         status: 200,
@@ -6211,8 +6211,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("blocks responses with no Content-Type", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800");
     const handlers = {
       fetchAsset: async () => new Response("data", { status: 200 }),
     };
@@ -6221,8 +6221,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("sets Content-Security-Policy header on fallback responses", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800");
     const handlers = {
       fetchAsset: async () => new Response("image-data", {
         status: 200,
@@ -6237,8 +6237,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("sets Content-Security-Policy header on transformed responses", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800&q=90", {
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800&q=90", {
       headers: { Accept: "image/webp" },
     });
     const handlers = {
@@ -6258,8 +6258,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("overrides unsafe Content-Type from transform handler", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800&q=90", {
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800&q=90", {
       headers: { Accept: "image/webp" },
     });
     const handlers = {
@@ -6279,8 +6279,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("allows SVG passthrough with dangerouslyAllowSVG: true", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Flogo.svg&w=100&q=75");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Flogo.svg&w=100&q=75");
     const handlers = {
       fetchAsset: async () => new Response('<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>', {
         status: 200,
@@ -6294,8 +6294,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("still blocks SVG when dangerouslyAllowSVG is false", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Flogo.svg&w=100&q=75");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Flogo.svg&w=100&q=75");
     const handlers = {
       fetchAsset: async () => new Response("<svg></svg>", {
         status: 200,
@@ -6307,8 +6307,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("SVG passthrough skips transformImage", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Flogo.svg&w=100&q=75");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Flogo.svg&w=100&q=75");
     let transformCalled = false;
     const handlers = {
       fetchAsset: async () => new Response("<svg></svg>", {
@@ -6327,8 +6327,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("applies security headers on SVG passthrough", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Flogo.svg&w=100&q=75");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Flogo.svg&w=100&q=75");
     const handlers = {
       fetchAsset: async () => new Response("<svg></svg>", {
         status: 200,
@@ -6343,8 +6343,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("applies custom contentDispositionType", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800");
     const handlers = {
       fetchAsset: async () => new Response("image-data", {
         status: 200,
@@ -6357,8 +6357,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("applies custom contentSecurityPolicy", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800");
     const handlers = {
       fetchAsset: async () => new Response("image-data", {
         status: 200,
@@ -6372,8 +6372,8 @@ describe("handleImageOptimization", () => {
   });
 
   it("default behavior unchanged when no imageConfig provided", async () => {
-    const { handleImageOptimization } = await import("../packages/vinext/src/server/image-optimization.js");
-    const request = new Request("http://localhost/_vinext/image?url=%2Fimg.jpg&w=800");
+    const { handleImageOptimization } = await import("../packages/openvite/src/server/image-optimization.js");
+    const request = new Request("http://localhost/_openvite/image?url=%2Fimg.jpg&w=800");
     const handlers = {
       fetchAsset: async () => new Response("image-data", {
         status: 200,
@@ -6391,7 +6391,7 @@ describe("next/navigation enhancements", () => {
   it("exports ReadonlyURLSearchParams type alias", async () => {
     // This is a type-only export, we verify the module loads without error
     const nav = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     // ReadonlyURLSearchParams is a type export, not a runtime value
     // But useServerInsertedHTML should be exported
@@ -6400,7 +6400,7 @@ describe("next/navigation enhancements", () => {
 
   it("useServerInsertedHTML is a no-op function", async () => {
     const { useServerInsertedHTML } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     // Should not throw
     expect(() => useServerInsertedHTML(() => null)).not.toThrow();
@@ -6411,7 +6411,7 @@ describe("next/legacy/image shim", () => {
   it("renders LegacyImage with layout=fill as modern Image with fill prop", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const LegacyImage = (await import("../packages/vinext/src/shims/legacy-image.js")).default;
+    const LegacyImage = (await import("../packages/openvite/src/shims/legacy-image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(LegacyImage, {
@@ -6431,7 +6431,7 @@ describe("next/legacy/image shim", () => {
   it("renders LegacyImage with layout=intrinsic using width/height", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const LegacyImage = (await import("../packages/vinext/src/shims/legacy-image.js")).default;
+    const LegacyImage = (await import("../packages/openvite/src/shims/legacy-image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(LegacyImage, {
@@ -6449,7 +6449,7 @@ describe("next/legacy/image shim", () => {
   it("renders LegacyImage with string width/height (converts to number)", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const LegacyImage = (await import("../packages/vinext/src/shims/legacy-image.js")).default;
+    const LegacyImage = (await import("../packages/openvite/src/shims/legacy-image.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(LegacyImage, {
@@ -6468,7 +6468,7 @@ describe("next/error shim", () => {
   it("renders 404 error page", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const ErrorComponent = (await import("../packages/vinext/src/shims/error.js")).default;
+    const ErrorComponent = (await import("../packages/openvite/src/shims/error.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(ErrorComponent, { statusCode: 404 }),
@@ -6480,7 +6480,7 @@ describe("next/error shim", () => {
   it("renders 500 error page", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const ErrorComponent = (await import("../packages/vinext/src/shims/error.js")).default;
+    const ErrorComponent = (await import("../packages/openvite/src/shims/error.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(ErrorComponent, { statusCode: 500 }),
@@ -6492,7 +6492,7 @@ describe("next/error shim", () => {
   it("renders custom title", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const ErrorComponent = (await import("../packages/vinext/src/shims/error.js")).default;
+    const ErrorComponent = (await import("../packages/openvite/src/shims/error.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(ErrorComponent, { statusCode: 403, title: "Forbidden" }),
@@ -6504,7 +6504,7 @@ describe("next/error shim", () => {
 
 describe("next/constants shim", () => {
   it("exports all phase constants", async () => {
-    const constants = await import("../packages/vinext/src/shims/constants.js");
+    const constants = await import("../packages/openvite/src/shims/constants.js");
     expect(constants.PHASE_PRODUCTION_BUILD).toBe("phase-production-build");
     expect(constants.PHASE_DEVELOPMENT_SERVER).toBe("phase-development-server");
     expect(constants.PHASE_PRODUCTION_SERVER).toBe("phase-production-server");
@@ -6518,7 +6518,7 @@ describe("next/script SSR rendering", () => {
   it("beforeInteractive renders <script> tag in SSR", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Script = (await import("../packages/vinext/src/shims/script.js")).default;
+    const Script = (await import("../packages/openvite/src/shims/script.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Script, {
@@ -6535,7 +6535,7 @@ describe("next/script SSR rendering", () => {
   it("afterInteractive returns null in SSR", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Script = (await import("../packages/vinext/src/shims/script.js")).default;
+    const Script = (await import("../packages/openvite/src/shims/script.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Script, {
@@ -6550,7 +6550,7 @@ describe("next/script SSR rendering", () => {
   it("lazyOnload returns null in SSR", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Script = (await import("../packages/vinext/src/shims/script.js")).default;
+    const Script = (await import("../packages/openvite/src/shims/script.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Script, {
@@ -6564,7 +6564,7 @@ describe("next/script SSR rendering", () => {
   it("default strategy (no strategy prop) returns null in SSR", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Script = (await import("../packages/vinext/src/shims/script.js")).default;
+    const Script = (await import("../packages/openvite/src/shims/script.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Script, {
@@ -6578,7 +6578,7 @@ describe("next/script SSR rendering", () => {
   it("beforeInteractive with dangerouslySetInnerHTML renders inline script", async () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
-    const Script = (await import("../packages/vinext/src/shims/script.js")).default;
+    const Script = (await import("../packages/openvite/src/shims/script.js")).default;
 
     const html = renderToStaticMarkup(
       React.createElement(Script, {
@@ -6593,7 +6593,7 @@ describe("next/script SSR rendering", () => {
   });
 
   it("exports handleClientScriptLoad and initScriptLoader", async () => {
-    const scriptModule = await import("../packages/vinext/src/shims/script.js");
+    const scriptModule = await import("../packages/openvite/src/shims/script.js");
     expect(typeof scriptModule.handleClientScriptLoad).toBe("function");
     expect(typeof scriptModule.initScriptLoader).toBe("function");
   });
@@ -6602,7 +6602,7 @@ describe("next/script SSR rendering", () => {
 describe("next/dist/* internal import shims", () => {
   it("app-router-context exports AppRouterContext and types", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/internal/app-router-context.js"
+      "../packages/openvite/src/shims/internal/app-router-context.js"
     );
     expect(mod.AppRouterContext).toBeDefined();
     expect(mod.GlobalLayoutRouterContext).toBeDefined();
@@ -6613,7 +6613,7 @@ describe("next/dist/* internal import shims", () => {
 
   it("utils exports NEXT_DATA type helpers", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/internal/utils.js"
+      "../packages/openvite/src/shims/internal/utils.js"
     );
     expect(typeof mod.execOnce).toBe("function");
     expect(typeof mod.getLocationOrigin).toBe("function");
@@ -6629,14 +6629,14 @@ describe("next/dist/* internal import shims", () => {
   it("api-utils exports NextApiRequestCookies type", async () => {
     // This module is primarily type-only, but should resolve without errors
     const mod = await import(
-      "../packages/vinext/src/shims/internal/api-utils.js"
+      "../packages/openvite/src/shims/internal/api-utils.js"
     );
     expect(mod).toBeDefined();
   });
 
   it("cookies shim re-exports RequestCookies and ResponseCookies", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/internal/cookies.js"
+      "../packages/openvite/src/shims/internal/cookies.js"
     );
     expect(mod.RequestCookies).toBeDefined();
     expect(mod.ResponseCookies).toBeDefined();
@@ -6644,7 +6644,7 @@ describe("next/dist/* internal import shims", () => {
 
   it("work-unit-async-storage exports AsyncLocalStorage instances", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/internal/work-unit-async-storage.js"
+      "../packages/openvite/src/shims/internal/work-unit-async-storage.js"
     );
     expect(mod.workUnitAsyncStorage).toBeDefined();
     expect(mod.requestAsyncStorage).toBeDefined();
@@ -6654,7 +6654,7 @@ describe("next/dist/* internal import shims", () => {
 
   it("router-context exports RouterContext", async () => {
     const mod = await import(
-      "../packages/vinext/src/shims/internal/router-context.js"
+      "../packages/openvite/src/shims/internal/router-context.js"
     );
     expect(mod.RouterContext).toBeDefined();
   });
@@ -6696,7 +6696,7 @@ describe("KVCacheHandler", () => {
 
   it("stores and retrieves a cache entry", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6721,7 +6721,7 @@ describe("KVCacheHandler", () => {
 
   it("returns null for missing keys", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6732,7 +6732,7 @@ describe("KVCacheHandler", () => {
 
   it("handles tag-based invalidation", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6762,7 +6762,7 @@ describe("KVCacheHandler", () => {
 
   it("returns stale entry when past revalidation time", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6794,7 +6794,7 @@ describe("KVCacheHandler", () => {
 
   it("serializes and restores APP_PAGE with rscData ArrayBuffer", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6824,7 +6824,7 @@ describe("KVCacheHandler", () => {
 
   it("serializes and restores APP_ROUTE with body ArrayBuffer", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6848,7 +6848,7 @@ describe("KVCacheHandler", () => {
 
   it("sets KV expiration TTL based on revalidation period", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6875,7 +6875,7 @@ describe("KVCacheHandler", () => {
 
   it("handles multiple tag invalidation in parallel", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6900,7 +6900,7 @@ describe("KVCacheHandler", () => {
 
   it("handles corrupted KV entries gracefully", async () => {
     const { KVCacheHandler } = await import(
-      "../packages/vinext/src/cloudflare/kv-cache-handler.js"
+      "../packages/openvite/src/cloudflare/kv-cache-handler.js"
     );
     const kv = createMockKV();
     const handler = new KVCacheHandler(kv as any);
@@ -6919,12 +6919,12 @@ describe("KVCacheHandler", () => {
 
 describe("server-only shim", () => {
   it("can be imported without error", async () => {
-    const mod = await import("../packages/vinext/src/shims/server-only.js");
+    const mod = await import("../packages/openvite/src/shims/server-only.js");
     expect(mod).toBeDefined();
   });
 
   it("exports nothing (empty marker module)", async () => {
-    const mod = await import("../packages/vinext/src/shims/server-only.js");
+    const mod = await import("../packages/openvite/src/shims/server-only.js");
     // The module should have no named exports (just the default module namespace)
     const keys = Object.keys(mod).filter((k) => k !== "__esModule" && k !== "default");
     expect(keys).toHaveLength(0);
@@ -6933,12 +6933,12 @@ describe("server-only shim", () => {
 
 describe("client-only shim", () => {
   it("can be imported without error", async () => {
-    const mod = await import("../packages/vinext/src/shims/client-only.js");
+    const mod = await import("../packages/openvite/src/shims/client-only.js");
     expect(mod).toBeDefined();
   });
 
   it("exports nothing (empty marker module)", async () => {
-    const mod = await import("../packages/vinext/src/shims/client-only.js");
+    const mod = await import("../packages/openvite/src/shims/client-only.js");
     const keys = Object.keys(mod).filter((k) => k !== "__esModule" && k !== "default");
     expect(keys).toHaveLength(0);
   });
@@ -6950,7 +6950,7 @@ describe("client-only shim", () => {
 
 describe("next/link onNavigate / NavigateEvent", () => {
   it("exports Link as default and useLinkStatus as named export", async () => {
-    const mod = await import("../packages/vinext/src/shims/link.js");
+    const mod = await import("../packages/openvite/src/shims/link.js");
     expect(typeof mod.default).toBe("object"); // forwardRef returns an object
     expect(typeof mod.useLinkStatus).toBe("function");
   });
@@ -7019,11 +7019,11 @@ describe("next/link onNavigate / NavigateEvent", () => {
 });
 
 // ---------------------------------------------------------------------------
-// vinext:react-canary — ViewTransition & addTransitionType polyfills (Issue #42)
+// openvite:react-canary — ViewTransition & addTransitionType polyfills (Issue #42)
 // ---------------------------------------------------------------------------
 
-describe("vinext:react-canary transform logic", () => {
-  // These tests verify the regex patterns used by the vinext:react-canary plugin
+describe("openvite:react-canary transform logic", () => {
+  // These tests verify the regex patterns used by the openvite:react-canary plugin
   // to detect and rewrite imports of React canary APIs.
 
   const canaryImportRegex = /import\s*\{[^}]*(ViewTransition|addTransitionType)[^}]*\}\s*from\s*['"]react['"]/;
@@ -7086,13 +7086,13 @@ describe("vinext:react-canary transform logic", () => {
     // The transform replaces all `from "react"` in the file
     const result = code.replace(
       /from\s*['"]react['"]/g,
-      'from "virtual:vinext-react-canary"',
+      'from "virtual:openvite-react-canary"',
     );
 
-    expect(result).toContain('from "virtual:vinext-react-canary"');
+    expect(result).toContain('from "virtual:openvite-react-canary"');
     expect(result).not.toContain("from \"react\"");
     // Both import lines should be rewritten
-    expect(result.match(/virtual:vinext-react-canary/g)?.length).toBe(2);
+    expect(result.match(/virtual:openvite-react-canary/g)?.length).toBe(2);
   });
 
   it("handles single-quoted imports", () => {
@@ -7101,9 +7101,9 @@ describe("vinext:react-canary transform logic", () => {
 
     const result = code.replace(
       /from\s*['"]react['"]/g,
-      'from "virtual:vinext-react-canary"',
+      'from "virtual:openvite-react-canary"',
     );
-    expect(result).toBe(`import { ViewTransition } from "virtual:vinext-react-canary";`);
+    expect(result).toBe(`import { ViewTransition } from "virtual:openvite-react-canary";`);
   });
 
   it("handles multiline imports", () => {
@@ -7165,7 +7165,7 @@ describe("next/head SSR security", () => {
     const React = await import("react");
     const { renderToStaticMarkup } = await import("react-dom/server");
     const { default: Head, resetSSRHead, getSSRHeadHTML } = await import(
-      "../packages/vinext/src/shims/head.js"
+      "../packages/openvite/src/shims/head.js"
     );
 
     resetSSRHead();
@@ -7255,7 +7255,7 @@ describe("next/head SSR security", () => {
   it("allows all valid head tags", async () => {
     const React = await import("react");
     const { resetSSRHead } = await import(
-      "../packages/vinext/src/shims/head.js"
+      "../packages/openvite/src/shims/head.js"
     );
 
     const allowedTags = ["title", "meta", "link", "style", "script", "base", "noscript"];
@@ -7270,7 +7270,7 @@ describe("next/head SSR security", () => {
       const html = await collectHeadHTML([el]);
 
       expect(html).toContain(`<${tag}`);
-      expect(html).toContain('data-vinext-head="true"');
+      expect(html).toContain('data-openvite-head="true"');
     }
   });
 });

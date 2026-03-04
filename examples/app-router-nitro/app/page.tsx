@@ -10,7 +10,7 @@ import { s } from "./_styles.js";
 // Static metadata (title uses template from layout)
 export const metadata: Metadata = {
   title: "Home",
-  description: "vinext + nitro home page showcasing many Next.js features",
+  description: "openvite + nitro home page showcasing many Next.js features",
 };
 
 export default async function HomePage() {
@@ -20,8 +20,8 @@ export default async function HomePage() {
   return (
     <main style={s.page}>
       <div>
-        <h1 style={s.title}>vinext + nitro</h1>
-        <p style={s.subtitle}>Server-rendered by vinext and nitro.</p>
+        <h1 style={s.title}>openvite + nitro</h1>
+        <p style={s.subtitle}>Server-rendered by openvite and nitro.</p>
       </div>
 
       <p data-testid="timestamp" style={s.badge}>
@@ -32,8 +32,8 @@ export default async function HomePage() {
       <div style={s.card}>
         <h2 style={s.label}>next/image</h2>
         <Image
-          src="https://placehold.co/300x200/EEE/31343C?text=vinext"
-          alt="vinext placeholder"
+          src="https://placehold.co/300x200/EEE/31343C?text=openvite"
+          alt="openvite placeholder"
           width={300}
           height={200}
           loading="eager"
@@ -91,8 +91,8 @@ export default async function HomePage() {
       </div>
 
       {/* next/script — inline script */}
-      <Script id="vinext-analytics" strategy="afterInteractive">
-        {`console.log("[vinext] page loaded")`}
+      <Script id="openvite-analytics" strategy="afterInteractive">
+        {`console.log("[openvite] page loaded")`}
       </Script>
     </main>
   );

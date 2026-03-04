@@ -9,11 +9,11 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   return NextResponse.json(
-    { message: "vinext route handler" },
+    { message: "openvite route handler" },
     {
       headers: {
         "content-type": "text/html; charset=utf-8",
-        "special-header": "vinext is great",
+        "special-header": "openvite is great",
       },
     },
   );
@@ -57,7 +57,7 @@ export async function HEAD() {
     status: 200,
     headers: {
       "content-type": "text/html; charset=utf-8",
-      "special-header": "vinext is great",
+      "special-header": "openvite is great",
     },
   });
 }
@@ -67,7 +67,7 @@ export async function OPTIONS() {
     status: 204,
     headers: {
       allow: "GET, HEAD, POST, PUT, PATCH, DELETE, OPTIONS",
-      special: "vinext is great",
+      special: "openvite is great",
     },
   });
 }

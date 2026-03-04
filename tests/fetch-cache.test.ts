@@ -28,8 +28,8 @@ const fetchMock = vi.fn(async (input: string | URL | Request, _init?: RequestIni
 vi.stubGlobal("fetch", fetchMock);
 
 // Now import — these will capture fetchMock as "originalFetch"
-const { withFetchCache, runWithFetchCache, getCollectedFetchTags, getOriginalFetch } = await import("../packages/vinext/src/shims/fetch-cache.js");
-const { getCacheHandler, revalidateTag, MemoryCacheHandler, setCacheHandler } = await import("../packages/vinext/src/shims/cache.js");
+const { withFetchCache, runWithFetchCache, getCollectedFetchTags, getOriginalFetch } = await import("../packages/openvite/src/shims/fetch-cache.js");
+const { getCacheHandler, revalidateTag, MemoryCacheHandler, setCacheHandler } = await import("../packages/openvite/src/shims/cache.js");
 
 describe("fetch cache shim", () => {
   let cleanup: (() => void) | null = null;

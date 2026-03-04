@@ -139,7 +139,7 @@ describe("Next.js compat: next/dynamic", () => {
   //   Source: dynamic.test.ts#L38-L41
   //   WHY: Tests chunk loading via a specific /chunk-loading/server page.
   //   Would need a dedicated fixture. Low priority for compat.
-  //   N/A — build manifest structure differs in vinext.
+  //   N/A — build manifest structure differs in openvite.
   //
   // SKIP: 'should render loading by default if loading is specified and loader is slow'
   //   Source: dynamic.test.ts#L43-L50
@@ -158,7 +158,7 @@ describe("Next.js compat: next/dynamic", () => {
   //
   // SKIP: 'should ignore next/dynamic in sitemap'
   //   Source: dynamic.test.ts#L62-L65
-  //   WHY: Tests sitemap.xml generation. Vinext sitemap support is a separate feature.
+  //   WHY: Tests sitemap.xml generation. Openvite sitemap support is a separate feature.
   //   N/A for this suite.
   //
   // SKIP: 'should not render client component imported through ssr: false in client components in edge runtime'

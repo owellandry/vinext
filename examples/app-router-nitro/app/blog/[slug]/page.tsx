@@ -7,7 +7,7 @@ import { s } from "../../_styles.js";
 const posts: Record<string, { title: string; content: string }> = {
   "hello-world": {
     title: "Hello World",
-    content: "Welcome to vinext + nitro. This is a blog post rendered as RSC.",
+    content: "Welcome to openvite + nitro. This is a blog post rendered as RSC.",
   },
   "dynamic-routes": {
     title: "Dynamic Routes",
@@ -16,7 +16,7 @@ const posts: Record<string, { title: string; content: string }> = {
   },
   "server-components": {
     title: "Server Components",
-    content: "React Server Components work seamlessly with vinext and nitro.",
+    content: "React Server Components work seamlessly with openvite and nitro.",
   },
 };
 

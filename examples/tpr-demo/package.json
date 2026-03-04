@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vinext dev",
-    "build": "vinext build",
-    "deploy": "vinext deploy",
+    "dev": "openvite dev",
+    "build": "openvite build",
+    "deploy": "openvite deploy",
     "simulate-traffic": "node scripts/simulate-traffic.mjs"
   },
   "dependencies": {
@@ -13,7 +13,7 @@
     "react-dom": "^19.2.4",
     "react-server-dom-webpack": "^19.2.4",
     "vite": "^7.3.1",
-    "vinext": "workspace:*",
+    "openvite": "workspace:*",
     "@vitejs/plugin-rsc": "^0.5.19"
   },
   "devDependencies": {

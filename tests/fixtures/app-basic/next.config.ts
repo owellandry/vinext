@@ -83,7 +83,7 @@ const nextConfig: NextConfig = {
       // Used by Vitest: app-router.test.ts
       {
         source: "/api/(.*)",
-        headers: [{ key: "X-Custom-Header", value: "vinext-app" }],
+        headers: [{ key: "X-Custom-Header", value: "openvite-app" }],
       },
       // Used by Vitest: app-router.test.ts
       {
@@ -106,7 +106,7 @@ const nextConfig: NextConfig = {
       // Used by E2E: config-redirect.spec.ts (catch-all for e2e header test)
       {
         source: "/(.*)",
-        headers: [{ key: "X-E2E-Header", value: "vinext-e2e" }],
+        headers: [{ key: "X-E2E-Header", value: "openvite-e2e" }],
       },
     ];
   },

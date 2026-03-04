@@ -20,8 +20,8 @@ test.describe("connection() dynamic rendering", () => {
   test("connection() page has no ISR cache header", async ({ request }) => {
     const res = await request.get(`${BASE}/connection-test`);
 
-    // Should NOT have X-Vinext-Cache since it's fully dynamic
-    const cacheHeader = res.headers()["x-vinext-cache"];
+    // Should NOT have X-Openvite-Cache since it's fully dynamic
+    const cacheHeader = res.headers()["x-openvite-cache"];
     expect(cacheHeader).toBeUndefined();
   });
 

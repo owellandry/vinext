@@ -8,7 +8,7 @@ test.describe("Cloudflare Workers API Routes", () => {
 
     expect(response.status()).toBe(200);
     const json = await response.json();
-    expect(json.message).toBe("Hello from vinext on Cloudflare Workers!");
+    expect(json.message).toBe("Hello from openvite on Cloudflare Workers!");
   });
 
   test("API route reports Cloudflare-Workers runtime", async ({ request }) => {

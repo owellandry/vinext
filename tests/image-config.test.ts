@@ -10,7 +10,7 @@ import {
   matchRemotePattern,
   hasRemoteMatch,
   type RemotePattern,
-} from "../packages/vinext/src/shims/image-config.js";
+} from "../packages/openvite/src/shims/image-config.js";
 
 // ─── matchRemotePattern: hostname matching ──────────────────────────────
 

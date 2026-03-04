@@ -399,7 +399,7 @@ describe("Next.js compat: metadata", () => {
   //   Would need dedicated fixture page
   //
   // N/A: 'should support icons field' (basic, string, descriptor)
-  //   Would need dedicated fixture pages — partially covered by existing vinext tests
+  //   Would need dedicated fixture pages — partially covered by existing openvite tests
   //
   // N/A: 'should pick up opengraph-image and twitter-image as static metadata files'
   //   Tests file-based metadata images — different feature
@@ -420,5 +420,5 @@ describe("Next.js compat: metadata", () => {
   //   Tests React.cache() with metadata — Playwright required
   //
   // N/A: Viewport tests
-  //   Partially covered by existing vinext tests (tests/app-router.test.ts)
+  //   Partially covered by existing openvite tests (tests/app-router.test.ts)
 });

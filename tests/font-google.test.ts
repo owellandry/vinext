@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from "vitest";
 import path from "node:path";
 import fs from "node:fs";
-import vinext, { _parseStaticObjectLiteral as parseStaticObjectLiteral } from "../packages/vinext/src/index.js";
+import openvite, { _parseStaticObjectLiteral as parseStaticObjectLiteral } from "../packages/openvite/src/index.js";
 import type { Plugin } from "vite";
 
 // ── Helpers ───────────────────────────────────────────────────
@@ -11,15 +11,15 @@ function unwrapHook(hook: any): Function {
   return typeof hook === "function" ? hook : hook?.handler;
 }
 
-/** Extract the vinext:google-fonts plugin from the plugin array */
+/** Extract the openvite:google-fonts plugin from the plugin array */
 function getGoogleFontsPlugin(): Plugin & {
   _isBuild: boolean;
   _fontCache: Map<string, string>;
   _cacheDir: string;
 } {
-  const plugins = vinext() as Plugin[];
-  const plugin = plugins.find((p) => p.name === "vinext:google-fonts");
-  if (!plugin) throw new Error("vinext:google-fonts plugin not found");
+  const plugins = openvite() as Plugin[];
+  const plugin = plugins.find((p) => p.name === "openvite:google-fonts");
+  if (!plugin) throw new Error("openvite:google-fonts plugin not found");
   return plugin as any;
 }
 
@@ -27,13 +27,13 @@ function getGoogleFontsPlugin(): Plugin & {
 
 describe("next/font/google shim", () => {
   it("exports a Proxy that creates font loaders for any family", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const Inter = (mod.default as any).Inter;
     expect(typeof Inter).toBe("function");
   });
 
   it("named export Inter returns className, style, variable", async () => {
-    const { Inter } = await import("../packages/vinext/src/shims/font-google.js");
+    const { Inter } = await import("../packages/openvite/src/shims/font-google.js");
     const result = Inter({ weight: ["400", "700"], subsets: ["latin"] });
     expect(result.className).toMatch(/^__font_inter_\d+$/);
     expect(result.style.fontFamily).toContain("Inter");
@@ -42,28 +42,28 @@ describe("next/font/google shim", () => {
   });
 
   it("supports custom variable name", async () => {
-    const { Inter } = await import("../packages/vinext/src/shims/font-google.js");
+    const { Inter } = await import("../packages/openvite/src/shims/font-google.js");
     const result = Inter({ weight: ["400"], variable: "--my-font" });
     // variable returns a class name that sets the CSS variable, not the variable name itself
     expect(result.variable).toMatch(/^__variable_inter_\d+$/);
   });
 
   it("supports custom fallback fonts", async () => {
-    const { Inter } = await import("../packages/vinext/src/shims/font-google.js");
+    const { Inter } = await import("../packages/openvite/src/shims/font-google.js");
     const result = Inter({ weight: ["400"], fallback: ["Arial", "Helvetica"] });
     expect(result.style.fontFamily).toContain("Arial");
     expect(result.style.fontFamily).toContain("Helvetica");
   });
 
   it("generates unique classNames for each call", async () => {
-    const { Inter } = await import("../packages/vinext/src/shims/font-google.js");
+    const { Inter } = await import("../packages/openvite/src/shims/font-google.js");
     const a = Inter({ weight: ["400"] });
     const b = Inter({ weight: ["700"] });
     expect(a.className).not.toBe(b.className);
   });
 
   it("proxy creates loaders for arbitrary fonts", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const fonts = mod.default as any;
     const roboto = fonts.Roboto({ weight: ["400"] });
     expect(roboto.className).toMatch(/^__font_roboto_\d+$/);
@@ -71,14 +71,14 @@ describe("next/font/google shim", () => {
   });
 
   it("proxy converts PascalCase to spaced family names", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const fonts = mod.default as any;
     const rm = fonts.RobotoMono({ weight: ["400"] });
     expect(rm.style.fontFamily).toContain("Roboto Mono");
   });
 
   it("accepts _selfHostedCSS option for self-hosted mode", async () => {
-    const { Inter } = await import("../packages/vinext/src/shims/font-google.js");
+    const { Inter } = await import("../packages/openvite/src/shims/font-google.js");
     const fakeCSS = "@font-face { font-family: 'Inter'; src: url(/fonts/inter.woff2); }";
     const result = Inter({ weight: ["400"], _selfHostedCSS: fakeCSS } as any);
     expect(result.className).toBeDefined();
@@ -86,12 +86,12 @@ describe("next/font/google shim", () => {
   });
 
   it("exports buildGoogleFontsUrl", async () => {
-    const { buildGoogleFontsUrl } = await import("../packages/vinext/src/shims/font-google.js");
+    const { buildGoogleFontsUrl } = await import("../packages/openvite/src/shims/font-google.js");
     expect(typeof buildGoogleFontsUrl).toBe("function");
   });
 
   it("buildGoogleFontsUrl generates correct URL for simple weight", async () => {
-    const { buildGoogleFontsUrl } = await import("../packages/vinext/src/shims/font-google.js");
+    const { buildGoogleFontsUrl } = await import("../packages/openvite/src/shims/font-google.js");
     const url = buildGoogleFontsUrl("Inter", { weight: ["400", "700"] });
     expect(url).toContain("fonts.googleapis.com/css2");
     expect(url).toContain("Inter");
@@ -102,26 +102,26 @@ describe("next/font/google shim", () => {
   });
 
   it("buildGoogleFontsUrl handles italic styles", async () => {
-    const { buildGoogleFontsUrl } = await import("../packages/vinext/src/shims/font-google.js");
+    const { buildGoogleFontsUrl } = await import("../packages/openvite/src/shims/font-google.js");
     const url = buildGoogleFontsUrl("Inter", { weight: ["400"], style: ["italic"] });
     expect(url).toContain("ital");
   });
 
   it("buildGoogleFontsUrl handles custom display", async () => {
-    const { buildGoogleFontsUrl } = await import("../packages/vinext/src/shims/font-google.js");
+    const { buildGoogleFontsUrl } = await import("../packages/openvite/src/shims/font-google.js");
     const url = buildGoogleFontsUrl("Inter", { weight: ["400"], display: "optional" });
     expect(url).toContain("display=optional");
   });
 
   it("buildGoogleFontsUrl handles multi-word font names", async () => {
-    const { buildGoogleFontsUrl } = await import("../packages/vinext/src/shims/font-google.js");
+    const { buildGoogleFontsUrl } = await import("../packages/openvite/src/shims/font-google.js");
     const url = buildGoogleFontsUrl("Roboto Mono", { weight: ["400"] });
     // URLSearchParams encodes + as %2B
     expect(url).toMatch(/Roboto[+%].*Mono/);
   });
 
   it("getSSRFontLinks returns collected URLs without clearing", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     // Force a CDN-mode font load (SSR context: document is undefined)
     const fonts = mod.default as any;
     fonts.Nunito_Sans({ weight: ["400"] });
@@ -135,7 +135,7 @@ describe("next/font/google shim", () => {
   });
 
   it("getSSRFontStyles returns collected CSS without clearing", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const styles = mod.getSSRFontStyles();
     // Returns array (may be empty if already cleared)
     expect(Array.isArray(styles)).toBe(true);
@@ -146,7 +146,7 @@ describe("next/font/google shim", () => {
   });
 
   it("exports common font families as named exports", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const names = [
       "Inter", "Roboto", "Roboto_Mono", "Open_Sans", "Lato",
       "Poppins", "Montserrat", "Geist", "Geist_Mono",
@@ -158,7 +158,7 @@ describe("next/font/google shim", () => {
   });
 
   it("exports all Google Fonts as named exports", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const fixturePath = path.join(process.cwd(), "tests/fixtures/google-fonts.json");
     const fixture = JSON.parse(fs.readFileSync(fixturePath, "utf-8")) as {
       families: string[];
@@ -188,7 +188,7 @@ describe("next/font/google shim", () => {
   // ── Security: CSS injection via font family names ──
 
   it("escapes single quotes in font family names", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const fonts = mod.default as any;
     // Proxy converts PascalCase to spaced, so a crafted property name
     // could produce a family with special characters
@@ -202,7 +202,7 @@ describe("next/font/google shim", () => {
   });
 
   it("escapes backslashes in font family names", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const fonts = mod.default as any;
     const result = fonts["Test\\Font"]({ weight: ["400"] });
     // The backslash should be escaped in the CSS string
@@ -210,7 +210,7 @@ describe("next/font/google shim", () => {
   });
 
   it("sanitizes fallback font names with CSS injection attempts", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const { Inter } = mod;
     const result = Inter({
       weight: ["400"],
@@ -230,7 +230,7 @@ describe("next/font/google shim", () => {
   });
 
   it("rejects invalid CSS variable names and falls back to auto-generated", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const { Inter } = mod;
     const beforeStyles = mod.getSSRFontStyles().length;
     const result = Inter({
@@ -250,7 +250,7 @@ describe("next/font/google shim", () => {
   });
 
   it("accepts valid CSS variable names", async () => {
-    const mod = await import("../packages/vinext/src/shims/font-google.js");
+    const mod = await import("../packages/openvite/src/shims/font-google.js");
     const { Inter } = mod;
     const beforeStyles = mod.getSSRFontStyles().length;
     const result = Inter({
@@ -268,10 +268,10 @@ describe("next/font/google shim", () => {
 
 // ── Plugin tests ──────────────────────────────────────────────
 
-describe("vinext:google-fonts plugin", () => {
+describe("openvite:google-fonts plugin", () => {
   it("exists in the plugin array", () => {
     const plugin = getGoogleFontsPlugin();
-    expect(plugin.name).toBe("vinext:google-fonts");
+    expect(plugin.name).toBe("openvite:google-fonts");
     expect(plugin.enforce).toBe("pre");
   });
 

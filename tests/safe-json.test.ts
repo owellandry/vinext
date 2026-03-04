@@ -6,7 +6,7 @@
  * a real attack vector that has been exploited in production SSR frameworks.
  */
 import { describe, it, expect } from "vitest";
-import { safeJsonStringify } from "../packages/vinext/src/server/html.js";
+import { safeJsonStringify } from "../packages/openvite/src/server/html.js";
 
 // ---------------------------------------------------------------------------
 // Core escaping behavior
@@ -356,7 +356,7 @@ describe("safeJsonStringify", () => {
         params: { id: "123" },
       };
 
-      const scriptContent = `<script>self.__VINEXT_RSC__=${safeJsonStringify(embedData)}</script>`;
+      const scriptContent = `<script>self.__OPENVITE_RSC__=${safeJsonStringify(embedData)}</script>`;
 
       // lgtm[js/bad-tag-filter] — counting tags to verify XSS protection, not filtering HTML
       const openTags = scriptContent.match(/<script>/g);
@@ -369,7 +369,7 @@ describe("safeJsonStringify", () => {
       const locale = '</script><script>alert("locale")</script>';
       const locales = ["en", locale, "fr"];
 
-      const script = `<script>window.__VINEXT_LOCALE__=${safeJsonStringify(locale)};window.__VINEXT_LOCALES__=${safeJsonStringify(locales)}</script>`;
+      const script = `<script>window.__OPENVITE_LOCALE__=${safeJsonStringify(locale)};window.__OPENVITE_LOCALES__=${safeJsonStringify(locales)}</script>`;
 
       // lgtm[js/bad-tag-filter] — counting tags to verify XSS protection, not filtering HTML
       const openTags = script.match(/<script>/g);

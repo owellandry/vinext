@@ -1,5 +1,5 @@
 /**
- * Test helpers for vinext integration tests.
+ * Test helpers for openvite integration tests.
  *
  * Eliminates boilerplate for:
  * - Creating Pages Router / App Router dev servers
@@ -8,7 +8,9 @@
  */
 
 import { createServer, type ViteDevServer } from "vite";
-import vinext from "../packages/vinext/src/index.js";
+import openvite from "../packages/openvite/src/index.js";
+import { randomUUID } from "node:crypto";
+import os from "node:os";
 import path from "node:path";
 
 // ── Fixture paths ─────────────────────────────────────────────
@@ -23,9 +25,9 @@ export const APP_FIXTURE_DIR = path.resolve(
 
 // ── Shared RSC virtual module entries (used by @vitejs/plugin-rsc) ──
 export const RSC_ENTRIES = {
-  rsc: "virtual:vinext-rsc-entry",
-  ssr: "virtual:vinext-app-ssr-entry",
-  client: "virtual:vinext-app-browser-entry",
+  rsc: "virtual:openvite-rsc-entry",
+  ssr: "virtual:openvite-app-ssr-entry",
+  client: "virtual:openvite-app-browser-entry",
 } as const;
 
 // ── Server lifecycle helper ───────────────────────────────────
@@ -38,7 +40,7 @@ export interface TestServerResult {
 /**
  * Start a Vite dev server against a fixture directory.
  *
- * vinext() auto-registers @vitejs/plugin-rsc when an app/ directory is
+ * openvite() auto-registers @vitejs/plugin-rsc when an app/ directory is
  * detected, so callers do NOT need to inject rsc() manually.
  *
  * @param fixtureDir - Path to the fixture directory
@@ -48,11 +50,11 @@ export async function startFixtureServer(
   fixtureDir: string,
   opts?: { appRouter?: boolean; listen?: boolean },
 ): Promise<TestServerResult> {
-  // vinext() auto-registers @vitejs/plugin-rsc when app/ is detected.
+  // openvite() auto-registers @vitejs/plugin-rsc when app/ is detected.
   // Pass appDir explicitly since tests run with configFile: false and
   // cwd may not be the fixture directory.
-  // Note: opts.appRouter is accepted but unused — vinext auto-detects.
-  const plugins: any[] = [vinext({ appDir: fixtureDir })];
+  // Note: opts.appRouter is accepted but unused — openvite auto-detects.
+  const plugins: any[] = [openvite({ appDir: fixtureDir })];
 
   const server = await createServer({
     root: fixtureDir,
@@ -62,9 +64,7 @@ export async function startFixtureServer(
     // with @vitejs/plugin-rsc environments) and trigger a re-optimization.
     // In non-browser test clients, we can't "reload" and would otherwise
     // see Vite's "outdated pre-bundle" error responses.
-    optimizeDeps: {
-      holdUntilCrawlEnd: true,
-    },
+    optimizeDeps: isolatedOptimizeDeps(),
     server: { port: 0, cors: false },
     logLevel: "silent",
   });
@@ -79,6 +79,18 @@ export async function startFixtureServer(
   }
 
   return { server, baseUrl };
+}
+
+// ── Deps cache isolation ──────────────────────────────────────
+/**
+ * Returns a unique optimizeDeps config that prevents cache races
+ * when multiple Vite servers target the same fixture directory.
+ */
+export function isolatedOptimizeDeps() {
+  return {
+    holdUntilCrawlEnd: true,
+    cacheDir: path.join(os.tmpdir(), `openvite-test-${randomUUID()}`),
+  };
 }
 
 // ── Fetch helpers ─────────────────────────────────────────────

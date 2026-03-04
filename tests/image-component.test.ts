@@ -2,7 +2,7 @@
  * next/image component unit tests.
  *
  * Mirrors test cases from Next.js test/unit/next-image-new.test.ts and
- * test/unit/next-image-get-img-props.test.ts, adapted for vinext's
+ * test/unit/next-image-get-img-props.test.ts, adapted for openvite's
  * Image shim implementation.
  *
  * Tests SSR output, srcSet generation, getImageProps(), fill mode,
@@ -11,11 +11,11 @@
 import { describe, it, expect } from "vitest";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import Image, { getImageProps, type StaticImageData } from "../packages/vinext/src/shims/image.js";
+import Image, { getImageProps, type StaticImageData } from "../packages/openvite/src/shims/image.js";
 
 /** Helper: expected optimization URL matching what the image shim produces. */
 function optUrl(src: string, w: number, q = 75): string {
-  return `/_vinext/image?url=${encodeURIComponent(src)}&w=${w}&q=${q}`;
+  return `/_openvite/image?url=${encodeURIComponent(src)}&w=${w}&q=${q}`;
 }
 /** Same as optUrl but with HTML entity encoding (for SSR output assertions). */
 function optUrlHtml(src: string, w: number, q = 75): string {
@@ -353,7 +353,7 @@ describe("getImageProps", () => {
     });
 
     expect(props.srcSet).toBeDefined();
-    expect(props.srcSet).toContain("/_vinext/image");
+    expect(props.srcSet).toContain("/_openvite/image");
     expect(props.srcSet).toContain("photo.png");
     expect(props.srcSet).toContain("w");
   });

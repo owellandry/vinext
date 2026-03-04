@@ -8,7 +8,7 @@ const BASE = "http://localhost:4174";
 async function waitForHydration(page: import("@playwright/test").Page) {
   await expect(async () => {
     const ready = await page.evaluate(
-      () => !!(window as any).__VINEXT_RSC_ROOT__,
+      () => !!(window as any).__OPENVITE_RSC_ROOT__,
     );
     expect(ready).toBe(true);
   }).toPass({ timeout: 10_000 });
@@ -159,10 +159,10 @@ test.describe("App Router navigation flows", () => {
     );
 
     // Submit another message
-    await page.fill('[data-testid="message-input"]', "Testing vinext");
+    await page.fill('[data-testid="message-input"]', "Testing openvite");
     await page.click('[data-testid="send-btn"]');
     await expect(page.locator('[data-testid="message-result"]')).toHaveText(
-      "Received: Testing vinext",
+      "Received: Testing openvite",
       { timeout: 10_000 },
     );
   });

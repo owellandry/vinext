@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <meta name="description" content="A vinext test app" />
+        <meta name="description" content="A openvite test app" />
       </Head>
       <body className="custom-body">
         <Main />

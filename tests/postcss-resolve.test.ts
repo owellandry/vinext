@@ -1,12 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import path from "node:path";
 import os from "node:os";
+import { isolatedOptimizeDeps } from "./helpers.js";
 
 describe("resolvePostcssStringPlugins", () => {
-  let resolvePostcssStringPlugins: typeof import("../packages/vinext/src/index.js")["_resolvePostcssStringPlugins"];
+  let resolvePostcssStringPlugins: typeof import("../packages/openvite/src/index.js")["_resolvePostcssStringPlugins"];
 
   beforeAll(async () => {
-    const mod = await import("../packages/vinext/src/index.js");
+    const mod = await import("../packages/openvite/src/index.js");
     resolvePostcssStringPlugins = mod._resolvePostcssStringPlugins;
   });
 
@@ -20,7 +21,7 @@ describe("resolvePostcssStringPlugins", () => {
     opts?: { mockPluginContent?: string },
   ): Promise<string> {
     const fsp = await import("node:fs/promises");
-    const dir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-postcss-"));
+    const dir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-postcss-"));
 
     // Create a mock PostCSS plugin that the config can reference
     const pluginDir = path.join(dir, "node_modules", "mock-postcss-plugin");
@@ -56,7 +57,7 @@ module.exports.postcss = true;
 
   it("returns undefined when no PostCSS config exists", async () => {
     const fsp = await import("node:fs/promises");
-    const dir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-postcss-none-"));
+    const dir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-postcss-none-"));
     try {
       const result = await resolvePostcssStringPlugins(dir);
       expect(result).toBeUndefined();
@@ -196,7 +197,7 @@ module.exports.postcss = true;
 
   it("returns undefined for .postcssrc.json (postcss-load-config handles these)", async () => {
     const fsp = await import("node:fs/promises");
-    const dir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-postcss-json-"));
+    const dir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-postcss-json-"));
     await fsp.writeFile(
       path.join(dir, ".postcssrc.json"),
       JSON.stringify({ plugins: { autoprefixer: {} } }),
@@ -249,7 +250,7 @@ describe("PostCSS string plugin resolution in Vite config", () => {
 
   it("injects resolved PostCSS plugins into Vite css.postcss config", async () => {
     const fsp = await import("node:fs/promises");
-    tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-postcss-int-"));
+    tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-postcss-int-"));
 
     // Symlink node_modules from project root
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
@@ -285,12 +286,13 @@ module.exports.postcss = true;`,
 
     // Create a Vite server to test the resolved config
     const { createServer } = await import("vite");
-    const vinext = (await import("../packages/vinext/src/index.js")).default;
+    const openvite = (await import("../packages/openvite/src/index.js")).default;
 
     const server = await createServer({
       root: tmpDir,
       configFile: false,
-      plugins: [vinext()],
+      plugins: [openvite()],
+      optimizeDeps: isolatedOptimizeDeps(),
       server: { port: 0 },
       logLevel: "silent",
     });

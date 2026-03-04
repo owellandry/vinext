@@ -17,10 +17,10 @@ describe("ALS per-request isolation", () => {
     const {
       runWithHeadersContext,
       headersContextFromRequest,
-    } = await import("../../packages/vinext/src/shims/headers.js");
+    } = await import("../../packages/openvite/src/shims/headers.js");
 
     // We need to dynamically import headers() since it reads from ALS
-    const { headers: headersFn } = await import("../../packages/vinext/src/shims/headers.js");
+    const { headers: headersFn } = await import("../../packages/openvite/src/shims/headers.js");
 
     const CONCURRENCY = 20;
     const results: { id: string; sawId: string }[] = [];
@@ -57,15 +57,15 @@ describe("ALS per-request isolation", () => {
 
   it("concurrent requests see their own navigation context", async () => {
     // Import the navigation-state module to register ALS-backed accessors
-    await import("../../packages/vinext/src/shims/navigation-state.js");
+    await import("../../packages/openvite/src/shims/navigation-state.js");
     const { runWithNavigationContext } = await import(
-      "../../packages/vinext/src/shims/navigation-state.js"
+      "../../packages/openvite/src/shims/navigation-state.js"
     );
 
     // After navigation-state registers its accessors, getNavigationContext
     // reads from the ALS-backed store
     const { setNavigationContext, getNavigationContext } = await import(
-      "../../packages/vinext/src/shims/navigation.js"
+      "../../packages/openvite/src/shims/navigation.js"
     );
 
     const CONCURRENCY = 20;
@@ -100,7 +100,7 @@ describe("ALS per-request isolation", () => {
 
   it("concurrent fetch cache scopes are independent", async () => {
     const { runWithFetchCache, getCollectedFetchTags } = await import(
-      "../../packages/vinext/src/shims/fetch-cache.js"
+      "../../packages/openvite/src/shims/fetch-cache.js"
     );
 
     const CONCURRENCY = 20;
@@ -129,9 +129,9 @@ describe("ALS per-request isolation", () => {
     const {
       runWithHeadersContext,
       headersContextFromRequest,
-    } = await import("../../packages/vinext/src/shims/headers.js");
+    } = await import("../../packages/openvite/src/shims/headers.js");
     const { cookies: cookiesFn } = await import(
-      "../../packages/vinext/src/shims/headers.js"
+      "../../packages/openvite/src/shims/headers.js"
     );
 
     const CONCURRENCY = 20;

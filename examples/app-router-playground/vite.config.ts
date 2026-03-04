@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import vinext from "vinext";
+import openvite from "openvite";
 import { cloudflare } from "@cloudflare/vite-plugin";
 import mdx from "@mdx-js/rollup";
 import { remarkCodeHike, recmaCodeHike, type CodeHikeConfig } from "codehike/mdx";
@@ -10,10 +10,10 @@ const codeHikeConfig: CodeHikeConfig = {
 };
 
 /**
- * Vite config for the Next.js App Router Playground running on vinext.
+ * Vite config for the Next.js App Router Playground running on openvite.
  *
  * This replaces next.config.ts — all Next.js features are provided by
- * the vinext plugin + @vitejs/plugin-rsc for RSC support.
+ * the openvite plugin + @vitejs/plugin-rsc for RSC support.
  *
  * To run: npx vite dev
  * To build: npx vite build
@@ -71,9 +71,9 @@ export default defineConfig({
       recmaPlugins: [[recmaCodeHike, codeHikeConfig]],
     }),
 
-    // vinext plugin (provides all next/* shims, routing, SSR, RSC).
+    // openvite plugin (provides all next/* shims, routing, SSR, RSC).
     // @vitejs/plugin-rsc is auto-registered when app/ is detected.
-    vinext(),
+    openvite(),
 
     // Cloudflare Workers plugin — builds for workerd runtime.
     // The worker entry runs in the RSC environment, with SSR as a child.

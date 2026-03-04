@@ -2,7 +2,7 @@
 description: Full issue-to-merge autopilot — fix, review, address feedback, auto-merge
 ---
 
-Run the full issue-to-merge workflow for GitHub issue #$ARGUMENTS on cloudflare/vinext.
+Run the full issue-to-merge workflow for GitHub issue #$ARGUMENTS on openvite/openvite.
 
 ## Phase 1: Fix the issue
 
@@ -11,12 +11,12 @@ Run the full issue-to-merge workflow for GitHub issue #$ARGUMENTS on cloudflare/
 3. Create a worktree and branch:
    ```
    git fetch origin main
-   git worktree add ../vinext-fix-$ARGUMENTS -b fix/$ARGUMENTS-<slug> origin/main
+   git worktree add ../openvite-fix-$ARGUMENTS -b fix/$ARGUMENTS-<slug> origin/main
    ```
-4. Install dependencies: run `pnpm install` in the worktree.
-5. Fix the issue in `../vinext-fix-$ARGUMENTS/`. Follow AGENTS.md guidelines.
+4. Install dependencies: run `bun install` in the worktree.
+5. Fix the issue in `../openvite-fix-$ARGUMENTS/`. Follow AGENTS.md guidelines.
    - If touching server code, check dev/prod parity across all server files.
-6. Run all checks from the worktree: `pnpm run build && pnpm test && pnpm run typecheck && pnpm run lint`
+6. Run all checks from the worktree: `bun run build && bun run test && bun run typecheck && bun run lint`
 7. Commit: `fix: <description> (#$ARGUMENTS)`
 8. Push: `git push -u origin fix/$ARGUMENTS-<slug>`
 9. Create the PR:
@@ -36,7 +36,7 @@ Run the full issue-to-merge workflow for GitHub issue #$ARGUMENTS on cloudflare/
 Invoke the reviewer subagent to get an independent review from a different model:
 
 ```
-@reviewer Review pull request #<PR_NUMBER> on cloudflare/vinext.
+@reviewer Review pull request #<PR_NUMBER> on openvite/openvite.
 
 1. Run gh pr view <PR_NUMBER> to understand the PR context.
 2. Run gh pr diff <PR_NUMBER> to see all changes.
@@ -52,8 +52,8 @@ Wait for the reviewer to finish before proceeding.
 1. Read all review comments:
    ```
    gh pr view <PR_NUMBER> --comments
-   gh api repos/cloudflare/vinext/pulls/<PR_NUMBER>/reviews
-   gh api repos/cloudflare/vinext/pulls/<PR_NUMBER>/comments
+   gh api repos/openvite/openvite/pulls/<PR_NUMBER>/reviews
+   gh api repos/openvite/openvite/pulls/<PR_NUMBER>/comments
    ```
 
 2. For each comment:
@@ -61,7 +61,7 @@ Wait for the reviewer to finish before proceeding.
    - **Out of scope / pre-existing**: File a GitHub issue with `gh issue create` — include context from the review and a link to the PR. Do NOT skip this.
    - **Disagree**: Reply on the PR explaining why
 
-3. Run all checks again: `pnpm run build && pnpm test && pnpm run typecheck && pnpm run lint`
+3. Run all checks again: `bun run build && bun run test && bun run typecheck && bun run lint`
 
 4. Commit and push: `fix: address review feedback`
 
@@ -80,4 +80,4 @@ Print a summary:
 - Review comments addressed (count)
 - Follow-up issues filed (with links)
 - Auto-merge status
-- Worktree location and cleanup command: `git worktree remove ../vinext-fix-$ARGUMENTS`
+- Worktree location and cleanup command: `git worktree remove ../openvite-fix-$ARGUMENTS`

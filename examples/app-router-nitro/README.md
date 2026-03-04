@@ -9,23 +9,23 @@ Demonstrates server components, client components, dynamic routes, and API route
 1. Install dependencies:
 
 ```sh
-pnpm install
+bun install
 ```
 
 2. Start the dev server:
 
 ```sh
-pnpm dev
+bun run dev
 ```
 
 3. Build for production:
 
 ```sh
-pnpm build
+bun run build
 ```
 
 4. Preview the production build:
 
 ```sh
-pnpm preview
+bun run preview
 ```

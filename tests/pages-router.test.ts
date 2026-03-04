@@ -5,8 +5,8 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import { pathToFileURL } from "node:url";
-import vinext from "../packages/vinext/src/index.js";
-import { PAGES_FIXTURE_DIR, startFixtureServer } from "./helpers.js";
+import openvite from "../packages/openvite/src/index.js";
+import { PAGES_FIXTURE_DIR, startFixtureServer, isolatedOptimizeDeps } from "./helpers.js";
 
 const FIXTURE_DIR = PAGES_FIXTURE_DIR;
 
@@ -28,7 +28,7 @@ describe("Pages Router integration", () => {
     expect(res.headers.get("content-type")).toContain("text/html");
 
     const html = await res.text();
-    expect(html).toContain("Hello, vinext!");
+    expect(html).toContain("Hello, openvite!");
     expect(html).toContain("This is a Pages Router app running on Vite.");
     expect(html).toContain("Go to About");
   });
@@ -99,13 +99,13 @@ describe("Pages Router integration", () => {
   it("renders next/head tags in SSR HTML <head>", async () => {
     const res = await fetch(`${baseUrl}/`);
     const html = await res.text();
-    // Index page has <Head><title>Hello vinext</title></Head>
+    // Index page has <Head><title>Hello openvite</title></Head>
     // This should appear in the actual <head> of the HTML
     expect(html).toContain("<title");
-    expect(html).toContain("Hello vinext");
+    expect(html).toContain("Hello openvite");
     // The title tag should be in <head>, not in <body>
     const headSection = html.split("</head>")[0];
-    expect(headSection).toContain("Hello vinext");
+    expect(headSection).toContain("Hello openvite");
   });
 
   it("includes __NEXT_DATA__ script tag", async () => {
@@ -141,7 +141,7 @@ describe("Pages Router integration", () => {
     // Custom _document sets lang="en" on <html>
     expect(html).toContain('lang="en"');
     // Custom _document adds a meta description
-    expect(html).toContain("A vinext test app");
+    expect(html).toContain("A openvite test app");
     // Custom _document sets className on body
     expect(html).toContain("custom-body");
   });
@@ -233,7 +233,7 @@ describe("Pages Router integration", () => {
 
   it("applies custom headers from next.config.js", async () => {
     const res = await fetch(`${baseUrl}/api/hello`);
-    expect(res.headers.get("x-custom-header")).toBe("vinext");
+    expect(res.headers.get("x-custom-header")).toBe("openvite");
   });
 
   // Ported from PR #47 by @ibruno
@@ -282,9 +282,9 @@ describe("Pages Router integration", () => {
   });
 
   it("percent-encoded header path is decoded before config matching (dev)", async () => {
-    // /%61pi/hello decodes to /api/hello → X-Custom-Header: vinext
+    // /%61pi/hello decodes to /api/hello → X-Custom-Header: openvite
     const res = await fetch(`${baseUrl}/%61pi/hello`);
-    expect(res.headers.get("x-custom-header")).toBe("vinext");
+    expect(res.headers.get("x-custom-header")).toBe("openvite");
   });
 
   it("percent-encoded rewrite path is decoded before config matching (dev)", async () => {
@@ -566,14 +566,15 @@ describe("Virtual server entry generation", () => {
     const testServer = await createServer({
       root: FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext()],
+      plugins: [openvite()],
       server: { port: 0 },
       logLevel: "silent",
+      optimizeDeps: isolatedOptimizeDeps(),
     });
 
     try {
       // Load the virtual module through Vite's SSR pipeline
-      const entry = await testServer.ssrLoadModule("virtual:vinext-server-entry");
+      const entry = await testServer.ssrLoadModule("virtual:openvite-server-entry");
 
       // Verify it exports the expected functions
       expect(typeof entry.renderPage).toBe("function");
@@ -591,13 +592,14 @@ describe("Virtual server entry generation", () => {
     const testServer = await createServer({
       root: FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext()],
+      plugins: [openvite()],
       server: { port: 0 },
       logLevel: "silent",
+      optimizeDeps: isolatedOptimizeDeps(),
     });
 
     try {
-      const resolved = await testServer.pluginContainer.resolveId("virtual:vinext-client-entry");
+      const resolved = await testServer.pluginContainer.resolveId("virtual:openvite-client-entry");
       expect(resolved).toBeTruthy();
       const loaded = await testServer.pluginContainer.load(resolved!.id);
       expect(loaded).toBeTruthy();
@@ -620,8 +622,8 @@ describe("Virtual server entry generation", () => {
 
 describe("Plugin config", () => {
   it("adds resolve.dedupe for React packages to prevent dual instance errors", async () => {
-    const plugins = vinext() as any[];
-    const configPlugin = plugins.find((p) => p.name === "vinext:config");
+    const plugins = openvite() as any[];
+    const configPlugin = plugins.find((p) => p.name === "openvite:config");
     expect(configPlugin).toBeDefined();
 
     // Call the config hook with a minimal config
@@ -636,8 +638,8 @@ describe("Plugin config", () => {
   });
 
   it("suppresses MODULE_LEVEL_DIRECTIVE warnings from Rollup", async () => {
-    const plugins = vinext() as any[];
-    const configPlugin = plugins.find((p) => p.name === "vinext:config");
+    const plugins = openvite() as any[];
+    const configPlugin = plugins.find((p) => p.name === "openvite:config");
     expect(configPlugin).toBeDefined();
 
     const result = await configPlugin.config({ root: FIXTURE_DIR, plugins: [] });
@@ -678,8 +680,8 @@ describe("Plugin config", () => {
   });
 
   it("preserves user-supplied build.rollupOptions.onwarn", async () => {
-    const plugins = vinext() as any[];
-    const configPlugin = plugins.find((p) => p.name === "vinext:config");
+    const plugins = openvite() as any[];
+    const configPlugin = plugins.find((p) => p.name === "openvite:config");
     expect(configPlugin).toBeDefined();
 
     const userOnwarn = vi.fn();
@@ -720,11 +722,11 @@ describe("Production build", () => {
     await build({
       root: FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext()],
+      plugins: [openvite()],
       logLevel: "silent",
       build: {
         outDir: path.join(outDir, "server"),
-        ssr: "virtual:vinext-server-entry",
+        ssr: "virtual:openvite-server-entry",
         rollupOptions: {
           output: {
             entryFileNames: "entry.js",
@@ -747,7 +749,7 @@ describe("Production build", () => {
   });
 
   it("runMiddleware in generated pages prod entry executes named proxy export", async () => {
-    const tmpRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-pages-proxy-"));
+    const tmpRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-pages-proxy-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     const fixtureOutDir = path.join(tmpRoot, "dist");
 
@@ -777,11 +779,11 @@ export const config = { matcher: ["/protected"] };
       await build({
         root: tmpRoot,
         configFile: false,
-        plugins: [vinext()],
+        plugins: [openvite()],
         logLevel: "silent",
         build: {
           outDir: path.join(fixtureOutDir, "server"),
-          ssr: "virtual:vinext-server-entry",
+          ssr: "virtual:openvite-server-entry",
           rollupOptions: {
             output: {
               entryFileNames: "entry.js",
@@ -803,7 +805,7 @@ export const config = { matcher: ["/protected"] };
   });
 
   it("runMiddleware in generated pages prod entry prefers named proxy export over default (matching Next.js)", async () => {
-    const tmpRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-pages-proxy-precedence-"));
+    const tmpRoot = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-pages-proxy-precedence-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     const fixtureOutDir = path.join(tmpRoot, "dist");
 
@@ -847,11 +849,11 @@ export const config = { matcher: ["/protected"] };
       await build({
         root: tmpRoot,
         configFile: false,
-        plugins: [vinext()],
+        plugins: [openvite()],
         logLevel: "silent",
         build: {
           outDir: path.join(fixtureOutDir, "server"),
-          ssr: "virtual:vinext-server-entry",
+          ssr: "virtual:openvite-server-entry",
           rollupOptions: {
             output: {
               entryFileNames: "entry.js",
@@ -877,14 +879,14 @@ export const config = { matcher: ["/protected"] };
     await build({
       root: FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext()],
+      plugins: [openvite()],
       logLevel: "silent",
       build: {
         outDir: path.join(outDir, "client"),
         manifest: true,
         ssrManifest: true,
         rollupOptions: {
-          input: "virtual:vinext-client-entry",
+          input: "virtual:openvite-client-entry",
         },
       },
     });
@@ -911,13 +913,13 @@ export const config = { matcher: ["/protected"] };
     expect(jsFiles.length).toBeGreaterThan(0);
 
     // Client bundle should be code-split: framework (React/ReactDOM) in its
-    // own chunk, vinext runtime in another, and the entry bootstrap should be
+    // own chunk, openvite runtime in another, and the entry bootstrap should be
     // small (not a monolithic bundle containing all vendor code).
     const frameworkChunk = jsFiles.find((f: string) => f.startsWith("framework-"));
-    const vinextChunk = jsFiles.find((f: string) => f.startsWith("vinext-"));
-    const entryChunk = jsFiles.find((f: string) => f.includes("vinext-client-entry"));
+    const openviteChunk = jsFiles.find((f: string) => f.startsWith("openvite-"));
+    const entryChunk = jsFiles.find((f: string) => f.includes("openvite-client-entry"));
     expect(frameworkChunk).toBeDefined();
-    expect(vinextChunk).toBeDefined();
+    expect(openviteChunk).toBeDefined();
     expect(entryChunk).toBeDefined();
 
     // The entry chunk should be small (just the hydration bootstrap, not the
@@ -938,24 +940,24 @@ export const config = { matcher: ["/protected"] };
       await build({
         root: FIXTURE_DIR,
         configFile: false,
-        plugins: [vinext()],
+        plugins: [openvite()],
         logLevel: "silent",
         build: {
           outDir: path.join(outDir, "server"),
-          ssr: "virtual:vinext-server-entry",
+          ssr: "virtual:openvite-server-entry",
           rollupOptions: { output: { entryFileNames: "entry.js" } },
         },
       });
       await build({
         root: FIXTURE_DIR,
         configFile: false,
-        plugins: [vinext()],
+        plugins: [openvite()],
         logLevel: "silent",
         build: {
           outDir: path.join(outDir, "client"),
           manifest: true,
           ssrManifest: true,
-          rollupOptions: { input: "virtual:vinext-client-entry" },
+          rollupOptions: { input: "virtual:openvite-client-entry" },
         },
       });
     }
@@ -1008,7 +1010,7 @@ export const config = { matcher: ["/protected"] };
       const indexRes = await fetch(`${prodUrl}/`);
       expect(indexRes.status).toBe(200);
       const indexHtml = await indexRes.text();
-      expect(indexHtml).toContain("Hello, vinext!");
+      expect(indexHtml).toContain("Hello, openvite!");
       expect(indexHtml).toContain("__NEXT_DATA__");
 
       // Test: about page renders
@@ -1134,30 +1136,30 @@ describe("Production server middleware (Pages Router)", () => {
       await build({
         root: FIXTURE_DIR,
         configFile: false,
-        plugins: [vinext()],
+        plugins: [openvite()],
         logLevel: "silent",
         build: {
           outDir: path.join(outDir, "server"),
-          ssr: "virtual:vinext-server-entry",
+          ssr: "virtual:openvite-server-entry",
           rollupOptions: { output: { entryFileNames: "entry.js" } },
         },
       });
       await build({
         root: FIXTURE_DIR,
         configFile: false,
-        plugins: [vinext()],
+        plugins: [openvite()],
         logLevel: "silent",
         build: {
           outDir: path.join(outDir, "client"),
           manifest: true,
           ssrManifest: true,
-          rollupOptions: { input: "virtual:vinext-client-entry" },
+          rollupOptions: { input: "virtual:openvite-client-entry" },
         },
       });
     }
 
     const { startProdServer } = await import(
-      "../packages/vinext/src/server/prod-server.js"
+      "../packages/openvite/src/server/prod-server.js"
     );
     prodServer = await startProdServer({
       port: 0,
@@ -1228,7 +1230,7 @@ describe("Production server middleware (Pages Router)", () => {
     const res = await fetch(`${prodUrl}/`);
     expect(res.status).toBe(200);
     const html = await res.text();
-    expect(html).toContain("Hello, vinext!");
+    expect(html).toContain("Hello, openvite!");
   });
 
   it("returns 400 for malformed percent-encoded path (not crash)", async () => {
@@ -1260,30 +1262,30 @@ describe("Production server next.config.js features (Pages Router)", () => {
       await build({
         root: FIXTURE_DIR,
         configFile: false,
-        plugins: [vinext()],
+        plugins: [openvite()],
         logLevel: "silent",
         build: {
           outDir: path.join(outDir, "server"),
-          ssr: "virtual:vinext-server-entry",
+          ssr: "virtual:openvite-server-entry",
           rollupOptions: { output: { entryFileNames: "entry.js" } },
         },
       });
       await build({
         root: FIXTURE_DIR,
         configFile: false,
-        plugins: [vinext()],
+        plugins: [openvite()],
         logLevel: "silent",
         build: {
           outDir: path.join(outDir, "client"),
           manifest: true,
           ssrManifest: true,
-          rollupOptions: { input: "virtual:vinext-client-entry" },
+          rollupOptions: { input: "virtual:openvite-client-entry" },
         },
       });
     }
 
     const { startProdServer } = await import(
-      "../packages/vinext/src/server/prod-server.js"
+      "../packages/openvite/src/server/prod-server.js"
     );
     prodServer = await startProdServer({
       port: 0,
@@ -1300,15 +1302,15 @@ describe("Production server next.config.js features (Pages Router)", () => {
     }
   });
 
-  it("server entry exports vinextConfig with correct shape", async () => {
+  it("server entry exports openviteConfig with correct shape", async () => {
     const serverEntryPath = path.join(outDir, "server", "entry.js");
     const serverEntry = await import(pathToFileURL(serverEntryPath).href);
-    expect(serverEntry.vinextConfig).toBeDefined();
-    expect(serverEntry.vinextConfig.redirects).toBeInstanceOf(Array);
-    expect(serverEntry.vinextConfig.rewrites).toBeDefined();
-    expect(serverEntry.vinextConfig.headers).toBeInstanceOf(Array);
-    expect(typeof serverEntry.vinextConfig.basePath).toBe("string");
-    expect(typeof serverEntry.vinextConfig.trailingSlash).toBe("boolean");
+    expect(serverEntry.openviteConfig).toBeDefined();
+    expect(serverEntry.openviteConfig.redirects).toBeInstanceOf(Array);
+    expect(serverEntry.openviteConfig.rewrites).toBeDefined();
+    expect(serverEntry.openviteConfig.headers).toBeInstanceOf(Array);
+    expect(typeof serverEntry.openviteConfig.basePath).toBe("string");
+    expect(typeof serverEntry.openviteConfig.trailingSlash).toBe("boolean");
   });
 
   it("applies redirects from next.config.js (/old-about -> /about)", async () => {
@@ -1334,7 +1336,7 @@ describe("Production server next.config.js features (Pages Router)", () => {
   it("applies custom headers from next.config.js on /api routes", async () => {
     const res = await fetch(`${prodUrl}/api/hello`);
     expect(res.status).toBe(200);
-    expect(res.headers.get("x-custom-header")).toBe("vinext");
+    expect(res.headers.get("x-custom-header")).toBe("openvite");
   });
 
   // Ported from PR #47 by @ibruno
@@ -1356,7 +1358,7 @@ describe("Production server next.config.js features (Pages Router)", () => {
     const res = await fetch(`${prodUrl}/`);
     expect(res.status).toBe(200);
     const html = await res.text();
-    expect(html).toContain("Hello, vinext!");
+    expect(html).toContain("Hello, openvite!");
   });
 
   // ── Percent-encoded paths should be decoded before config matching ──
@@ -1371,10 +1373,10 @@ describe("Production server next.config.js features (Pages Router)", () => {
   });
 
   it("percent-encoded header path is decoded before config matching (prod)", async () => {
-    // /api/(.*) should receive X-Custom-Header: vinext.
+    // /api/(.*) should receive X-Custom-Header: openvite.
     // /%61pi/hello decodes to /api/hello.
     const res = await fetch(`${prodUrl}/%61pi/hello`);
-    expect(res.headers.get("x-custom-header")).toBe("vinext");
+    expect(res.headers.get("x-custom-header")).toBe("openvite");
   });
 
   it("percent-encoded rewrite path is decoded before config matching (prod)", async () => {
@@ -1395,9 +1397,10 @@ describe("Static export (Pages Router)", () => {
     server = await createServer({
       root: FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext()],
+      plugins: [openvite()],
       server: { port: 0 },
       logLevel: "silent",
+      optimizeDeps: isolatedOptimizeDeps(),
     });
     // Don't need to listen — just need the SSR module loader
   });
@@ -1409,13 +1412,13 @@ describe("Static export (Pages Router)", () => {
 
   it("exports static pages to HTML files", async () => {
     const { staticExportPages } = await import(
-      "../packages/vinext/src/build/static-export.js"
+      "../packages/openvite/src/build/static-export.js"
     );
     const { pagesRouter, apiRouter } = await import(
-      "../packages/vinext/src/routing/pages-router.js"
+      "../packages/openvite/src/routing/pages-router.js"
     );
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     const pagesDir = path.resolve(FIXTURE_DIR, "pages");
@@ -1442,7 +1445,7 @@ describe("Static export (Pages Router)", () => {
       "utf-8",
     );
     expect(indexHtml).toContain("<!DOCTYPE html>");
-    expect(indexHtml).toContain("Hello, vinext!");
+    expect(indexHtml).toContain("Hello, openvite!");
 
     // About page
     expect(result.files).toContain("about.html");
@@ -1492,13 +1495,13 @@ describe("Static export (Pages Router)", () => {
   it("reports errors for pages using getServerSideProps", async () => {
     // The result from the first test should have errors for SSR-only pages
     const { staticExportPages } = await import(
-      "../packages/vinext/src/build/static-export.js"
+      "../packages/openvite/src/build/static-export.js"
     );
     const { pagesRouter, apiRouter } = await import(
-      "../packages/vinext/src/routing/pages-router.js"
+      "../packages/openvite/src/routing/pages-router.js"
     );
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     const pagesDir = path.resolve(FIXTURE_DIR, "pages");
@@ -1540,13 +1543,13 @@ describe("Static export (Pages Router)", () => {
 
   it("respects trailingSlash config", async () => {
     const { staticExportPages } = await import(
-      "../packages/vinext/src/build/static-export.js"
+      "../packages/openvite/src/build/static-export.js"
     );
     const { pagesRouter, apiRouter } = await import(
-      "../packages/vinext/src/routing/pages-router.js"
+      "../packages/openvite/src/routing/pages-router.js"
     );
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     const pagesDir = path.resolve(FIXTURE_DIR, "pages");

@@ -51,12 +51,12 @@ export function isImprovement(label: string | null): boolean {
 
 export const RUNNER_LABELS: Record<string, string> = {
   nextjs: "Next.js 16 (Turbopack)",
-  vinext: "vinext (Vite 7 / Rollup)",
-  vinext_rolldown: "vinext (Vite 8 / Rolldown)",
+  openvite: "openvite (Vite 7 / Rollup)",
+  openvite_rolldown: "openvite (Vite 8 / Rolldown)",
 };
 
 export const RUNNER_COLORS: Record<string, string> = {
   nextjs: "var(--color-chart-nextjs, #f97316)",
-  vinext: "var(--color-chart-vinext, #3b82f6)",
-  vinext_rolldown: "var(--color-chart-rolldown, #8b5cf6)",
+  openvite: "var(--color-chart-openvite, #3b82f6)",
+  openvite_rolldown: "var(--color-chart-rolldown, #8b5cf6)",
 };

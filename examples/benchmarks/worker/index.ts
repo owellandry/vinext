@@ -1,11 +1,11 @@
 /**
- * Cloudflare Worker entry point for the vinext Benchmarks Dashboard.
+ * Cloudflare Worker entry point for the openvite Benchmarks Dashboard.
  *
  * Handles two concerns:
  * 1. API routes (/api/upload, /api/results) with D1 database access
- * 2. All other routes delegated to the vinext RSC handler
+ * 2. All other routes delegated to the openvite RSC handler
  */
-import handler from "vinext/server/app-router-entry";
+import handler from "openvite/server/app-router-entry";
 
 interface Env {
   DB: D1Database;
@@ -15,8 +15,8 @@ interface Env {
 /** Map runner keys from the benchmark JSON to DB enum values. */
 const RUNNER_MAP: Record<string, string> = {
   nextjs: "nextjs",
-  vinext: "vinext",
-  vinextRolldown: "vinext_rolldown",
+  openvite: "openvite",
+  openviteRolldown: "openvite_rolldown",
 };
 
 export default {
@@ -39,7 +39,7 @@ export default {
       return handleCommitDetail(sha, env);
     }
 
-    // ─── All other routes: delegate to vinext RSC handler ────────────────
+    // ─── All other routes: delegate to openvite RSC handler ────────────────
     return handler.fetch(request);
   },
 };

@@ -2,14 +2,14 @@
 description: Address PR review comments, file follow-up issues, enable auto-merge
 ---
 
-Address review comments on PR #$ARGUMENTS for cloudflare/vinext.
+Address review comments on PR #$ARGUMENTS for openvite/openvite.
 
 ## Step 1: Read all review feedback
 
 ```
 gh pr view $ARGUMENTS --comments
-gh api repos/cloudflare/vinext/pulls/$ARGUMENTS/reviews
-gh api repos/cloudflare/vinext/pulls/$ARGUMENTS/comments
+gh api repos/openvite/openvite/pulls/$ARGUMENTS/reviews
+gh api repos/openvite/openvite/pulls/$ARGUMENTS/comments
 ```
 
 ## Step 2: Categorize each comment
@@ -22,15 +22,15 @@ For every review comment, decide:
 
 ## Step 3: Make fixes
 
-Work in `../vinext-fix-$ARGUMENTS/`:
+Work in `../openvite-fix-$ARGUMENTS/`:
 
 1. Address each legitimate comment with a code fix
 2. Run the full check suite:
    ```
-   pnpm run build
-   pnpm test
-   pnpm run typecheck
-   pnpm run lint
+   bun run build
+   bun run test
+   bun run typecheck
+   bun run lint
    ```
 3. Commit: `fix: address review feedback`
 4. Push
@@ -57,7 +57,7 @@ Do NOT skip this. The whole point is to avoid losing track of work.
 
 For each comment that was addressed, reply confirming the fix:
 ```
-gh api repos/cloudflare/vinext/pulls/$ARGUMENTS/comments/{comment_id}/replies \
+gh api repos/openvite/openvite/pulls/$ARGUMENTS/comments/{comment_id}/replies \
   -f body="Fixed in <commit sha>"
 ```
 

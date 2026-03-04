@@ -1,8 +1,8 @@
 import { defineConfig } from "vite";
-import vinext from "vinext";
+import openvite from "openvite";
 
 export default defineConfig({
-  plugins: [vinext()],
+  plugins: [openvite()],
   ssr: {
     // Force nuqs through Vite's transform pipeline so our next/* aliases work
     noExternal: ["nuqs"],

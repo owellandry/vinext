@@ -1,4 +1,4 @@
-// Type declarations for vinext shim modules
+// Type declarations for openvite shim modules
 declare module "next/head" {
   export default function Head(props: { children?: React.ReactNode }): React.ReactElement;
   export function resetSSRHead(): void;

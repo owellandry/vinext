@@ -4,8 +4,8 @@ import SystemInfo from 'components/server-info'
 import Footer from 'components/footer'
 
 export const metadata = {
-  title: 'Hacker News — vinext + Cloudflare Workers',
-  description: 'Hacker News clone built with React Server Components, running on vinext + Cloudflare Workers.',
+  title: 'Hacker News — openvite + Cloudflare Workers',
+  description: 'Hacker News clone built with React Server Components, running on openvite + Cloudflare Workers.',
   robots: {
     index: true,
     follow: true

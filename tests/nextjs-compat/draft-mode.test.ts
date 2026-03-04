@@ -93,7 +93,7 @@ describe("Next.js compat: draft-mode", () => {
       getDraftModeCookieHeader,
       runWithHeadersContext,
       headersContextFromRequest,
-    } = await import("../../packages/vinext/src/shims/headers.js");
+    } = await import("../../packages/openvite/src/shims/headers.js");
 
     const origEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";

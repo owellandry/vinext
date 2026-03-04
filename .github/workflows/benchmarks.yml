@@ -20,12 +20,12 @@ jobs:
         with:
           fetch-depth: 0 # Need full history for commit info
 
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
 
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
+          cache: bun
 
       - name: Install hyperfine
         run: |
@@ -33,21 +33,21 @@ jobs:
           echo "5ffe6996aefbbf547f383116eea53569263cc7cf6598ee53f0081e37b702055d  hyperfine_1.19.0_amd64.deb" | sha256sum -c
           sudo dpkg -i hyperfine_1.19.0_amd64.deb
 
-      # Install monorepo deps (builds vinext plugin via pnpm run build)
-      - run: pnpm install --frozen-lockfile
-      - name: Build vinext plugin
-        run: pnpm run build
+      # Install monorepo deps (builds openvite plugin via bun run build)
+      - run: bun install --frozen-lockfile
+      - name: Build openvite plugin
+        run: bun run build
 
       # Generate the shared benchmark app (copies app/ into each project dir)
       - name: Generate benchmark app
         run: node benchmarks/generate-app.mjs
 
-      # Install benchmark-specific deps (outside pnpm workspace)
+      # Install benchmark-specific deps (outside workspace)
       - name: Install benchmark dependencies
         run: |
           cd benchmarks/nextjs && npm install
-          cd ../vinext && npm install
-          cd ../vinext-rolldown && npm install
+          cd ../openvite && npm install
+          cd ../openvite-rolldown && npm install
 
       # Run the benchmarks
       - name: Run benchmarks
@@ -100,7 +100,7 @@ jobs:
               -H "Authorization: Bearer $BENCHMARK_UPLOAD_TOKEN" \
               -H "Content-Type: application/json" \
               -d @- \
-              "https://benchmarks.vinext.workers.dev/api/upload"
+              "$BENCHMARK_UPLOAD_URL"
 
       # Post summary as a GitHub Actions summary
       - name: Post summary

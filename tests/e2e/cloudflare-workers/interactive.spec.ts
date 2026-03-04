@@ -6,7 +6,7 @@ test.describe("App Router interactive behavior on Cloudflare Workers", () => {
   test("counter increments on multiple clicks", async ({ page }) => {
     await page.goto(`${BASE}/`);
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
 
     // Wait for hydration by polling counter clicks
@@ -29,14 +29,14 @@ test.describe("App Router interactive behavior on Cloudflare Workers", () => {
   test("clicking link to About navigates correctly", async ({ page }) => {
     await page.goto(`${BASE}/`);
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
 
     // Click About link
     await page.click('a[href="/about"]');
     await expect(page.locator("h1")).toHaveText("About");
     await expect(page.locator("p:first-of-type")).toContainText(
-      "vinext app deployed on Cloudflare Workers",
+      "openvite app deployed on Cloudflare Workers",
     );
     expect(page.url()).toBe(`${BASE}/about`);
   });
@@ -48,7 +48,7 @@ test.describe("App Router interactive behavior on Cloudflare Workers", () => {
     // Click back link
     await page.click('a[href="/"]');
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
     expect(page.url()).toBe(`${BASE}/`);
   });
@@ -56,7 +56,7 @@ test.describe("App Router interactive behavior on Cloudflare Workers", () => {
   test("browser back button works after navigation", async ({ page }) => {
     await page.goto(`${BASE}/`);
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
 
     // Navigate to about
@@ -66,7 +66,7 @@ test.describe("App Router interactive behavior on Cloudflare Workers", () => {
     // Browser back
     await page.goBack();
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
     expect(page.url()).toBe(`${BASE}/`);
 
@@ -97,7 +97,7 @@ test.describe("App Router interactive behavior on Cloudflare Workers", () => {
   test("counter state resets on full page navigation", async ({ page }) => {
     await page.goto(`${BASE}/`);
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
 
     // Wait for hydration and increment counter
@@ -146,7 +146,7 @@ test.describe("App Router dynamic routes on Cloudflare Workers", () => {
 
     await page.click('a[href="/"]');
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
   });
 });

@@ -2,7 +2,7 @@
  * Route sorting and validation tests — unique cases NOT covered by routing.test.ts.
  *
  * Mirrors test cases from Next.js test/unit/page-route-sorter.test.ts,
- * adapted for vinext's route format (colon params instead of bracket params).
+ * adapted for openvite's route format (colon params instead of bracket params).
  *
  * Tests that dynamic sorts before catch-all, deterministic ordering,
  * static-over-dynamic preference, patternToNextFormat conversion,
@@ -14,8 +14,8 @@
  */
 import { describe, it, expect } from "vitest";
 import path from "node:path";
-import { pagesRouter, matchRoute, apiRouter, patternToNextFormat } from "../packages/vinext/src/routing/pages-router.js";
-import { appRouter, invalidateAppRouteCache } from "../packages/vinext/src/routing/app-router.js";
+import { pagesRouter, matchRoute, apiRouter, patternToNextFormat } from "../packages/openvite/src/routing/pages-router.js";
+import { appRouter, invalidateAppRouteCache } from "../packages/openvite/src/routing/app-router.js";
 
 const PAGES_DIR = path.resolve(import.meta.dirname, "./fixtures/pages-basic/pages");
 const APP_DIR = path.resolve(import.meta.dirname, "./fixtures/app-basic/app");

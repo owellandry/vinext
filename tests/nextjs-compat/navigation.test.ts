@@ -117,7 +117,7 @@ describe("Next.js compat: navigation", () => {
   //   Tests navigation to external domain
   //
   // N/A: next.config.js redirects
-  //   Tests config-based redirects, not supported in vinext the same way
+  //   Tests config-based redirects, not supported in openvite the same way
   //
   // N/A: Middleware redirects
   //   Tests middleware-based redirects

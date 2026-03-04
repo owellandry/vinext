@@ -7,7 +7,7 @@ test.describe("router.events (Pages Router)", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the page and clear any stored events
     await page.goto(`${BASE}/router-events-test`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
     await page.click('[data-testid="clear-events"]');
   });
 

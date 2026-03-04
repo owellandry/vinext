@@ -118,12 +118,12 @@ describe("Next.js compat: app-rendering", () => {
     });
 
     // This tests that subsequent requests get fresh timestamps (revalidation works).
-    // In dev mode, vinext always re-renders (no ISR caching), so timestamps should differ.
+    // In dev mode, openvite always re-renders (no ISR caching), so timestamps should differ.
     // SKIP: The use(getData()) pattern with Date.now() in the ISR layout produces identical
     // timestamps across requests. The async function getData() returns a cached promise at
     // module scope in the RSC environment, so Date.now() is evaluated once.
     //
-    // ROOT CAUSE: vinext's RSC module instances persist across requests in dev mode.
+    // ROOT CAUSE: openvite's RSC module instances persist across requests in dev mode.
     // Next.js re-executes server components fresh per request by invalidating the module cache.
     // Note: The ISR cache has been removed from dev mode (issue #228), but this test still
     // fails because the underlying module caching issue is separate from ISR.

@@ -122,7 +122,7 @@ describe("Next.js compat: not-found", () => {
     expect(html).toContain("404 - Page Not Found");
   });
 
-  // ── Existing vinext tests: dashboard scoped not-found ──────
+  // ── Existing openvite tests: dashboard scoped not-found ──────
   // These exercise the pre-existing dashboard/not-found.tsx with dashboard/missing/page.tsx
   // (not from Next.js test suite, but validates the same pattern)
 
@@ -349,17 +349,17 @@ describe("Next.js compat: not-found", () => {
   //   Source: index.test.ts#L109-L119
   //   WHY SKIPPED: Requires runtime file manipulation and HMR verification.
   //   This tests Vite's HMR + file watcher integration rather than not-found logic per se.
-  //   Not worth porting — vinext's existing HMR tests cover this.
+  //   Not worth porting — openvite's existing HMR tests cover this.
   //   N/A for compat suite.
   //
   // N/A: Build-time tests (file traces, pages manifest, 404.html generation)
   //   Source: index.test.ts#L40-L56, #L121-L129
   //   WHY N/A: These test Next.js build output formats (.next/server/pages/404.html, nft.json).
-  //   Vinext has a different build output structure. Not applicable.
+  //   Openvite has a different build output structure. Not applicable.
   //
   // N/A: Edge runtime variant
   //   Source: index.test.ts#L131-L146
   //   WHY N/A: Tests re-running with `runtime = 'edge'` patched into layout.
-  //   Vinext handles edge via Cloudflare Workers with separate test projects.
+  //   Openvite handles edge via Cloudflare Workers with separate test projects.
   //   Not applicable to the shared fixture approach.
 });

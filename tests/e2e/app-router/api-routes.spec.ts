@@ -16,11 +16,11 @@ test.describe("App Router API Route Handlers", () => {
   test.describe("POST /api/hello", () => {
     test("echoes the request body", async ({ request }) => {
       const response = await request.post(`${BASE}/api/hello`, {
-        data: { name: "vinext", version: 1 },
+        data: { name: "openvite", version: 1 },
       });
       expect(response.status()).toBe(200);
       const body = await response.json();
-      expect(body).toEqual({ echo: { name: "vinext", version: 1 } });
+      expect(body).toEqual({ echo: { name: "openvite", version: 1 } });
     });
 
     test("echoes complex nested data", async ({ request }) => {
@@ -140,7 +140,7 @@ test.describe("App Router API Route Handlers", () => {
  *
  * OpenNext tests every HTTP method (GET, POST, PUT, PATCH, DELETE, HEAD, OPTIONS)
  * plus formData, cookies, redirects, dynamic segments, and query params. These
- * tests verify the same behavior in vinext's route handler implementation.
+ * tests verify the same behavior in openvite's route handler implementation.
  */
 test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
   // Ref: opennextjs-cloudflare methods.test.ts "all supported methods should work in route handlers"
@@ -148,7 +148,7 @@ test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
     const res = await request.get(`${BASE}/api/methods`);
     expect(res.status()).toBe(200);
     const data = await res.json();
-    expect(data.message).toBe("vinext route handler");
+    expect(data.message).toBe("openvite route handler");
   });
 
   test("POST with text body returns status-based response", async ({
@@ -157,7 +157,7 @@ test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
     // Ref: opennextjs-cloudflare methods.test.ts "POST"
     const res = await request.post(`${BASE}/api/methods`, {
       headers: { "Content-Type": "text/plain" },
-      data: "vinext is awesome!",
+      data: "openvite is awesome!",
     });
     expect(res.status()).toBe(202);
     const data = await res.json();
@@ -166,7 +166,7 @@ test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
     // Error case: forbidden content
     const errorRes = await request.post(`${BASE}/api/methods`, {
       headers: { "Content-Type": "text/plain" },
-      data: "vinext is not awesome!",
+      data: "openvite is not awesome!",
     });
     expect(errorRes.status()).toBe(403);
     const errorData = await errorRes.json();
@@ -176,20 +176,20 @@ test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
   test("PUT returns 201 with JSON body merged", async ({ request }) => {
     // Ref: opennextjs-cloudflare methods.test.ts "PUT"
     const res = await request.put(`${BASE}/api/methods`, {
-      data: { message: "vinext PUT" },
+      data: { message: "openvite PUT" },
     });
     expect(res.status()).toBe(201);
     const data = await res.json();
     // Route handler spreads body into response: { message: "ok", ...body }
-    // Since body has message: "vinext PUT", it overrides to "vinext PUT"
-    expect(data.message).toBe("vinext PUT");
+    // Since body has message: "openvite PUT", it overrides to "openvite PUT"
+    expect(data.message).toBe("openvite PUT");
   });
 
   test("PATCH returns 202 with timestamp", async ({ request }) => {
     // Ref: opennextjs-cloudflare methods.test.ts "PATCH"
     const timestampBefore = new Date();
     const res = await request.patch(`${BASE}/api/methods`, {
-      data: { message: "vinext PATCH" },
+      data: { message: "openvite PATCH" },
     });
     expect(res.status()).toBe(202);
     const data = await res.json();
@@ -212,7 +212,7 @@ test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
     expect(res.status()).toBe(200);
     const headers = res.headers();
     expect(headers["content-type"]).toBe("text/html; charset=utf-8");
-    expect(headers["special-header"]).toBe("vinext is great");
+    expect(headers["special-header"]).toBe("openvite is great");
   });
 
   test("OPTIONS returns 204 with Allow header", async ({ request }) => {
@@ -221,7 +221,7 @@ test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
       method: "OPTIONS",
     });
     expect(res.status()).toBe(204);
-    // Vinext's auto-OPTIONS sets Allow based on detected exports
+    // Openvite's auto-OPTIONS sets Allow based on detected exports
     const headers = res.headers();
     const allow = headers["allow"];
     expect(allow).toBeDefined();
@@ -236,25 +236,25 @@ test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
     // Ref: opennextjs-cloudflare methods.test.ts "formData should work in POST route handler"
     const res = await request.post(`${BASE}/api/methods`, {
       form: {
-        name: "vinext [] () %&#!%$#",
-        email: "vinext@vinext.dev",
+        name: "openvite [] () %&#!%$#",
+        email: "openvite@openvite.dev",
       },
     });
     expect(res.status()).toBe(202);
     const data = await res.json();
     expect(data.message).toBe("ok");
-    expect(data.name).toBe("vinext [] () %&#!%$#");
-    expect(data.email).toBe("vinext@vinext.dev");
+    expect(data.name).toBe("openvite [] () %&#!%$#");
+    expect(data.email).toBe("openvite@openvite.dev");
   });
 
   test("query parameters should work in route handlers", async ({
     request,
   }) => {
     // Ref: opennextjs-cloudflare methods.test.ts "query parameters should work in route handlers"
-    const res = await request.get(`${BASE}/api/methods/query?query=vinext+is+awesome`);
+    const res = await request.get(`${BASE}/api/methods/query?query=openvite+is+awesome`);
     expect(res.status()).toBe(200);
     const data = await res.json();
-    expect(data.query).toBe("vinext is awesome");
+    expect(data.query).toBe("openvite is awesome");
   });
 });
 
@@ -266,11 +266,11 @@ test.describe("Route Handler HTTP Methods (OpenNext compat)", () => {
  *
  * In Next.js, a GET-only route handler with `export const revalidate = N`
  * receives Cache-Control: s-maxage=N, stale-while-revalidate.
- * vinext does not read `revalidate` from route handler modules.
+ * openvite does not read `revalidate` from route handler modules.
  */
 test.describe("Route Handler Cache Headers (OpenNext compat)", () => {
   // Ref: opennextjs-cloudflare methods.test.ts — static GET cache headers
-  // vinext does not apply Cache-Control to route handler responses.
+  // openvite does not apply Cache-Control to route handler responses.
   // The dev server only reads `revalidate` from page modules, not route handlers.
   test.fixme(
     "static GET route handler has s-maxage Cache-Control",

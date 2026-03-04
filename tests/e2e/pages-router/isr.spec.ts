@@ -19,7 +19,7 @@ test.describe("Pages Router ISR", () => {
     expect(html).toContain("ISR Page");
     expect(html).toContain("Hello from ISR");
 
-    const cacheHeader = res.headers()["x-vinext-cache"];
+    const cacheHeader = res.headers()["x-openvite-cache"];
     // First request might be MISS or HIT (if a previous test cached it).
     // We primarily verify the header exists.
     expect(cacheHeader).toBeDefined();
@@ -40,7 +40,7 @@ test.describe("Pages Router ISR", () => {
     const html2 = await res2.text();
     const ts2 = html2.match(/data-testid="timestamp">(\d+)</)?.[1];
 
-    const cacheHeader = res2.headers()["x-vinext-cache"];
+    const cacheHeader = res2.headers()["x-openvite-cache"];
     expect(cacheHeader).toBe("HIT");
 
     // Same timestamp = served from cache, not re-rendered
@@ -63,7 +63,7 @@ test.describe("Pages Router ISR", () => {
     const res2 = await request.get(`${BASE}/isr-test`);
     const html2 = await res2.text();
     const ts2 = html2.match(/data-testid="timestamp">(\d+)</)?.[1];
-    const cacheHeader2 = res2.headers()["x-vinext-cache"];
+    const cacheHeader2 = res2.headers()["x-openvite-cache"];
 
     expect(cacheHeader2).toBe("STALE");
     // Stale response serves the old cached content (same timestamp)
@@ -81,14 +81,14 @@ test.describe("Pages Router ISR", () => {
 
     // Trigger STALE (which starts background regen)
     const staleRes = await request.get(`${BASE}/isr-test`);
-    expect(staleRes.headers()["x-vinext-cache"]).toBe("STALE");
+    expect(staleRes.headers()["x-openvite-cache"]).toBe("STALE");
 
     // Wait for background regen to complete
     await new Promise((r) => setTimeout(r, 500));
 
     // Next request should be HIT (regen has re-cached)
     const hitRes = await request.get(`${BASE}/isr-test`);
-    expect(hitRes.headers()["x-vinext-cache"]).toBe("HIT");
+    expect(hitRes.headers()["x-openvite-cache"]).toBe("HIT");
   });
 
   test("Cache-Control header includes s-maxage and stale-while-revalidate", async ({
@@ -105,7 +105,7 @@ test.describe("Pages Router ISR", () => {
   test("non-ISR page does not have ISR cache headers", async ({ request }) => {
     const res = await request.get(`${BASE}/about`);
 
-    const cacheHeader = res.headers()["x-vinext-cache"];
+    const cacheHeader = res.headers()["x-openvite-cache"];
     expect(cacheHeader).toBeUndefined();
   });
 

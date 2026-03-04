@@ -45,7 +45,7 @@ describe("Next.js compat: metadata-suspense", () => {
     );
   });
 
-  // SKIP: Vinext emits duplicate <title> tags when a layout wraps children
+  // SKIP: Openvite emits duplicate <title> tags when a layout wraps children
   // in <Suspense>. The metadata is injected once in the shell and again when
   // the Suspense boundary resolves, producing two <title> elements.
   //
@@ -53,7 +53,7 @@ describe("Next.js compat: metadata-suspense", () => {
   // gets wrapped by Suspense. When SSR streams the shell (with fallback) and
   // then the resolved content, both include the metadata head tags.
   //
-  // TO FIX: `packages/vinext/src/server/app-dev-server.ts` — metadata should
+  // TO FIX: `packages/openvite/src/server/app-dev-server.ts` — metadata should
   // be hoisted above Suspense boundaries (rendered outside the Suspense wrapper
   // in buildPageElement) or deduplicated during SSR HTML assembly.
   //

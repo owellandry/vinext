@@ -2,7 +2,7 @@
  * Cloudflare Worker entry point for the Hacker News example.
  *
  * Based on vercel/next-react-server-components — a Hacker News clone
- * using React Server Components, now running on vinext + Cloudflare Workers.
+ * using React Server Components, now running on openvite + Cloudflare Workers.
  */
 
 export default {
@@ -34,7 +34,7 @@ export default {
 
       return new Response(String(result), { status: 200 });
     } catch (error) {
-      console.error("[vinext] Worker error:", error);
+      console.error("[openvite] Worker error:", error);
       return new Response("Internal Server Error", { status: 500 });
     }
   },

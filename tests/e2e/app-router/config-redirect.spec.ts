@@ -111,7 +111,7 @@ test.describe("Config Custom Headers (OpenNext compat)", () => {
     const res = await request.get(`${BASE}/about`);
     expect(res.status()).toBe(200);
     // The /(.*) catch-all header applies to all routes
-    expect(res.headers()["x-e2e-header"]).toBe("vinext-e2e");
+    expect(res.headers()["x-e2e-header"]).toBe("openvite-e2e");
     // The /about-specific header also applies
     expect(res.headers()["x-page-header"]).toBe("about-page");
   });
@@ -120,13 +120,13 @@ test.describe("Config Custom Headers (OpenNext compat)", () => {
     const res = await request.get(`${BASE}/api/hello`);
     expect(res.status()).toBe(200);
     // The /api/(.*) header
-    expect(res.headers()["x-custom-header"]).toBe("vinext-app");
+    expect(res.headers()["x-custom-header"]).toBe("openvite-app");
     // The /(.*) catch-all header
-    expect(res.headers()["x-e2e-header"]).toBe("vinext-e2e");
+    expect(res.headers()["x-e2e-header"]).toBe("openvite-e2e");
   });
 
   // Ref: opennextjs-cloudflare headers.test.ts — "x-powered-by should be absent"
-  // vinext never sends X-Powered-By (matching Next.js poweredByHeader: false behavior).
+  // openvite never sends X-Powered-By (matching Next.js poweredByHeader: false behavior).
   // Tests: ON-6 #7, ON-8 #3 in TRACKING.md
   test("x-powered-by header is absent from responses", async ({ request }) => {
     const pageRes = await request.get(`${BASE}/about`);
@@ -138,7 +138,7 @@ test.describe("Config Custom Headers (OpenNext compat)", () => {
 
   // Ref: opennextjs-cloudflare headers.test.ts — "Middleware headers override next.config.js headers"
   // In Next.js, `dangerous.middlewareHeadersOverrideNextConfigHeaders` lets middleware
-  // overwrite config headers for the same key. vinext does not implement this config flag.
+  // overwrite config headers for the same key. openvite does not implement this config flag.
   // Tests: ON-8 #2 in TRACKING.md
   test.fixme(
     "middleware headers override config headers for same key",

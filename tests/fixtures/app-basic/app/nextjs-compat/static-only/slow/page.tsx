@@ -2,7 +2,7 @@
  * Next.js compat: Slow static page (tests parallel data fetching)
  * Source: https://github.com/vercel/next.js/blob/canary/test/e2e/app-dir/app-rendering/app/static-only/slow/page.js
  *
- * NOTE: Delay reduced from 5s to 1s to keep vinext tests fast.
+ * NOTE: Delay reduced from 5s to 1s to keep openvite tests fast.
  */
 import { use } from "react";
 

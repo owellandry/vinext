@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 /**
  * Production build E2E tests for Pages Router.
  *
- * These tests run against `vinext build` + `vinext start` output,
+ * These tests run against `openvite build` + `openvite start` output,
  * NOT the dev server. The production server is started on port 4175
  * via the webServer config in playwright.config.ts.
  */
@@ -13,7 +13,7 @@ test.describe("Pages Router Production Build", () => {
   test("index page renders with correct content", async ({ page }) => {
     const response = await page.goto(`${BASE}/`);
     expect(response?.status()).toBe(200);
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
     await expect(page.locator("body")).toContainText(
       "This is a Pages Router app running on Vite.",
     );

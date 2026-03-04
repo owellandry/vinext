@@ -34,7 +34,7 @@ test.describe("App Router ISR", () => {
     const html2 = await res2.text();
     const ts2 = html2.match(/data-testid="timestamp">(\d+)</)?.[1];
 
-    const cacheHeader = res2.headers()["x-vinext-cache"];
+    const cacheHeader = res2.headers()["x-openvite-cache"];
     expect(cacheHeader).toBe("HIT");
     expect(ts2).toBe(ts1);
   });
@@ -53,7 +53,7 @@ test.describe("App Router ISR", () => {
     const res2 = await request.get(`${BASE}/isr-test`);
     const html2 = await res2.text();
     const ts2 = html2.match(/data-testid="timestamp">(\d+)</)?.[1];
-    const cacheHeader2 = res2.headers()["x-vinext-cache"];
+    const cacheHeader2 = res2.headers()["x-openvite-cache"];
 
     expect(cacheHeader2).toBe("STALE");
     expect(ts2).toBe(ts1);
@@ -68,12 +68,12 @@ test.describe("App Router ISR", () => {
     await new Promise((r) => setTimeout(r, 1500));
 
     const staleRes = await request.get(`${BASE}/isr-test`);
-    expect(staleRes.headers()["x-vinext-cache"]).toBe("STALE");
+    expect(staleRes.headers()["x-openvite-cache"]).toBe("STALE");
 
     await new Promise((r) => setTimeout(r, 500));
 
     const hitRes = await request.get(`${BASE}/isr-test`);
-    expect(hitRes.headers()["x-vinext-cache"]).toBe("HIT");
+    expect(hitRes.headers()["x-openvite-cache"]).toBe("HIT");
   });
 
   test("Cache-Control header includes s-maxage and stale-while-revalidate", async ({
@@ -91,7 +91,7 @@ test.describe("App Router ISR", () => {
     const res = await request.get(`${BASE}/about`);
 
     // About page has no `export const revalidate`, so no ISR headers
-    const cacheHeader = res.headers()["x-vinext-cache"];
+    const cacheHeader = res.headers()["x-openvite-cache"];
     // May be undefined or not present — either way, should not be MISS/HIT/STALE
     if (cacheHeader) {
       expect(["MISS", "HIT", "STALE"]).not.toContain(cacheHeader);
@@ -129,7 +129,7 @@ test.describe("App Router ISR", () => {
  *
  * OpenNext verifies that `dynamicParams=true` pages return HIT for prebuilt paths,
  * MISS for non-prebuilt, and 404 for notFound(). `dynamicParams=false` returns 404
- * for unknown params. These tests verify the same cache header semantics in vinext.
+ * for unknown params. These tests verify the same cache header semantics in openvite.
  */
 test.describe("ISR dynamicParams cache headers", () => {
   test.describe("dynamicParams=false (products)", () => {
@@ -137,7 +137,7 @@ test.describe("ISR dynamicParams cache headers", () => {
     test("should return 200 on a prebuilt path", async ({ request }) => {
       // Products fixture uses dynamicParams=false with generateStaticParams [1, 2, 3]
       // Note: products page has no `export const revalidate`, so ISR is not active
-      // and x-vinext-cache may not be set. We verify the page renders correctly.
+      // and x-openvite-cache may not be set. We verify the page renders correctly.
       const res = await request.get(`${BASE}/products/1`);
       expect(res.status()).toBe(200);
 
@@ -168,7 +168,7 @@ test.describe("ISR dynamicParams cache headers", () => {
       const res = await request.get(`${BASE}/dynamic-test`);
       expect(res.status()).toBe(200);
 
-      const cacheHeader = res.headers()["x-vinext-cache"];
+      const cacheHeader = res.headers()["x-openvite-cache"];
       expect(cacheHeader).toBeUndefined();
 
       const cc = res.headers()["cache-control"];
@@ -251,7 +251,7 @@ test.describe("revalidateTag / revalidatePath lifecycle (OpenNext compat)", () =
     // lgtm[js/redos] — applied to trusted SSR output, not user input
     const reqId2 = html2.match(/data-testid="request-id"[^>]*>(?:<!--.*?-->)*RequestID:\s*(?:<!--.*?-->)*([a-z0-9]+)/)?.[1]
       ?? html2.match(/request-id[^>]*>[^<]*?([a-z0-9]{6,})/)?.[1];
-    const cacheHeader = res2.headers()["x-vinext-cache"];
+    const cacheHeader = res2.headers()["x-openvite-cache"];
     if (cacheHeader) {
       expect(["HIT", "STALE"]).toContain(cacheHeader);
     }
@@ -274,7 +274,7 @@ test.describe("revalidateTag / revalidatePath lifecycle (OpenNext compat)", () =
     expect(reqId3).not.toBe(reqId1);
 
     // Cache header should be MISS after invalidation
-    const cacheHeader3 = res3.headers()["x-vinext-cache"];
+    const cacheHeader3 = res3.headers()["x-openvite-cache"];
     if (cacheHeader3) {
       expect(cacheHeader3).toBe("MISS");
     }
@@ -327,7 +327,7 @@ test.describe("revalidateTag / revalidatePath lifecycle (OpenNext compat)", () =
 
     // Second request — should be HIT now
     const hitRes = await request.get(`${BASE}/revalidate-tag-test`);
-    const cacheHeader = hitRes.headers()["x-vinext-cache"];
+    const cacheHeader = hitRes.headers()["x-openvite-cache"];
     if (cacheHeader) {
       expect(cacheHeader).toBe("HIT");
     }

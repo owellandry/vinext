@@ -7,13 +7,13 @@ This playground is used by the DX team to explore, test, and demo new Next.js fe
 1. Install dependencies:
 
 ```sh
-pnpm install
+bun install
 ```
 
 2. Start the dev server:
 
 ```sh
-pnpm dev
+bun run dev
 ```
 
 ## Documentation

@@ -10,14 +10,14 @@ import {
   runCheck,
   formatReport,
   type CheckResult,
-} from "../packages/vinext/src/check.js";
+} from "../packages/openvite/src/check.js";
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
 let tmpDir: string;
 
 beforeEach(() => {
-  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vinext-check-"));
+  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openvite-check-"));
 });
 
 afterEach(() => {
@@ -543,7 +543,7 @@ describe("checkConventions", () => {
     const typeModule = items.find((i) => i.name.includes('"type": "module"'));
     expect(typeModule).toBeDefined();
     expect(typeModule?.status).toBe("unsupported");
-    expect(typeModule?.detail).toContain("vinext init");
+    expect(typeModule?.detail).toContain("openvite init");
   });
 
   it("does not flag type:module when present", () => {
@@ -692,7 +692,7 @@ describe("formatReport", () => {
     const result = runCheck(tmpDir);
     const report = formatReport(result);
 
-    expect(report).toContain("vinext compatibility report");
+    expect(report).toContain("openvite compatibility report");
     expect(report).toContain("Imports");
     expect(report).toContain("Libraries");
     expect(report).toContain("Project structure");
@@ -755,7 +755,7 @@ describe("formatReport", () => {
     };
 
     const report = formatReport(emptyResult);
-    expect(report).toContain("vinext compatibility report");
+    expect(report).toContain("openvite compatibility report");
     expect(report).toContain("100% compatible");
   });
 
@@ -767,7 +767,7 @@ describe("formatReport", () => {
     const report = formatReport(result);
 
     expect(report).toContain("Recommended next steps");
-    expect(report).toContain("vinext init");
+    expect(report).toContain("openvite init");
     expect(report).toContain("Or manually");
     expect(report).toContain('"type": "module"');
     expect(report).toContain("vite.config.ts");

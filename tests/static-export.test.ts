@@ -13,6 +13,7 @@ import { createServer as createViteServer, type ViteDevServer } from "vite";
 import { createServer, type Server } from "node:http";
 import fs from "node:fs";
 import path from "node:path";
+import { isolatedOptimizeDeps } from "./helpers.js";
 
 const PAGES_FIXTURE = path.resolve(import.meta.dirname, "./fixtures/pages-basic");
 const APP_FIXTURE = path.resolve(import.meta.dirname, "./fixtures/app-basic");
@@ -80,6 +81,7 @@ async function startFixtureServer(
   const server = await createViteServer({
     root: fixtureDir,
     configFile: path.join(fixtureDir, "vite.config.ts"),
+    optimizeDeps: isolatedOptimizeDeps(),
     server: { port: 0, strictPort: false },
     logLevel: "silent",
   });
@@ -104,13 +106,13 @@ describe("Static export — Pages Router (served via HTTP)", () => {
 
     // 2. Run static export
     const { staticExportPages } = await import(
-      "../packages/vinext/src/build/static-export.js"
+      "../packages/openvite/src/build/static-export.js"
     );
     const { pagesRouter } = await import(
-      "../packages/vinext/src/routing/pages-router.js"
+      "../packages/openvite/src/routing/pages-router.js"
     );
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     const pagesDir = path.resolve(PAGES_FIXTURE, "pages");
@@ -150,7 +152,7 @@ describe("Static export — Pages Router (served via HTTP)", () => {
     expect(res.headers.get("content-type")).toBe("text/html");
     const html = await res.text();
     expect(html).toContain("<!DOCTYPE html>");
-    expect(html).toContain("Hello, vinext!");
+    expect(html).toContain("Hello, openvite!");
   });
 
   it("serves about page", async () => {
@@ -229,13 +231,13 @@ describe("Static export — App Router (served via HTTP)", () => {
 
     // 2. Run static export
     const { staticExportApp } = await import(
-      "../packages/vinext/src/build/static-export.js"
+      "../packages/openvite/src/build/static-export.js"
     );
     const { appRouter } = await import(
-      "../packages/vinext/src/routing/app-router.js"
+      "../packages/openvite/src/routing/app-router.js"
     );
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     const appDir = path.resolve(APP_FIXTURE, "app");

@@ -6,9 +6,9 @@ Instructions for AI agents working on this codebase.
 
 ## Project Overview
 
-**vinext** is a Vite plugin that reimplements the Next.js API surface, with Cloudflare Workers as the primary deployment target. The goal: take any Next.js app and deploy it to Workers with one command.
+**openvite** is a Vite plugin that reimplements the Next.js API surface, with Cloudflare Workers as the primary deployment target. The goal: take any Next.js app and deploy it to Workers with one command.
 
-vinext reimplements the Next.js API surface using Vite, with Cloudflare Workers as the primary deployment target. The goal is to let developers keep their existing Next.js code and deploy it to Workers.
+openvite reimplements the Next.js API surface using Vite, with Cloudflare Workers as the primary deployment target. The goal is to let developers keep their existing Next.js code and deploy it to Workers.
 
 ---
 
@@ -17,19 +17,19 @@ vinext reimplements the Next.js API surface using Vite, with Cloudflare Workers 
 ### Commands
 
 ```bash
-pnpm test             # Vitest unit + integration tests
-pnpm run test:e2e     # Playwright E2E tests (5 projects)
-pnpm run typecheck    # TypeScript via tsgo (fast)
-pnpm run lint         # oxlint
-pnpm run build        # Build the vinext package
+bun run test             # Vitest unit + integration tests
+bun run test:e2e     # Playwright E2E tests (5 projects)
+bun run typecheck    # TypeScript via tsgo (fast)
+bun run lint         # oxlint
+bun run build        # Build the openvite package
 ```
 
 ### Project Structure
 
 ```
-packages/vinext/src/
+packages/openvite/src/
   index.ts              # Main Vite plugin
-  cli.ts                # vinext CLI
+  cli.ts                # openvite CLI
   shims/                # One file per next/* module
   routing/              # File-system route scanners
   server/               # SSR handlers, ISR, middleware
@@ -76,7 +76,7 @@ For example, when working on middleware:
 - Search for error messages like `"must export"` to find validation tests
 - Check for edge cases like missing exports, misspelled names, invalid configs
 
-**Why this matters:** vinext aims to match Next.js behavior exactly. If Next.js has a test for it, we should have an equivalent test. Missing this step has caused silent behavioral differences, like middleware failing open on invalid exports instead of throwing an error (which Next.js tests explicitly).
+**Why this matters:** openvite aims to match Next.js behavior exactly. If Next.js has a test for it, we should have an equivalent test. Missing this step has caused silent behavioral differences, like middleware failing open on invalid exports instead of throwing an error (which Next.js tests explicitly).
 
 When you find relevant Next.js tests, port the test cases to our test suite and include a comment linking back to the original Next.js test file:
 ```ts
@@ -120,23 +120,24 @@ Add new test pages to fixtures, not to examples. Examples are for user-facing de
 
 ### Examples (Ecosystem Ports)
 
-The `examples/` directory contains real-world Next.js apps ported to run on vinext. These are deployed to Cloudflare Workers on every push to main (see `.github/workflows/deploy-examples.yml`).
+The `examples/` directory contains real-world Next.js apps ported to run on openvite.
 
-| Example | Type | URL |
-|---------|------|-----|
-| `app-router-cloudflare` | App Router basics | `app-router-cloudflare.vinext.workers.dev` |
-| `pages-router-cloudflare` | Pages Router basics | `pages-router-cloudflare.vinext.workers.dev` |
-| `app-router-playground` | Next.js playground (MDX, Tailwind) | `app-router-playground.vinext.workers.dev` |
-| `realworld-api-rest` | RealWorld spec (Pages Router) | `realworld-api-rest.vinext.workers.dev` |
-| `nextra-docs-template` | Nextra docs site (MDX, App Router) | `nextra-docs-template.vinext.workers.dev` |
-| `benchmarks` | Performance benchmarks | `benchmarks.vinext.workers.dev` |
-| `hackernews` | HN clone (App Router, RSC) | `hackernews.vinext.workers.dev` |
+| Example | Type |
+|---------|------|
+| `app-router-cloudflare` | App Router basics |
+| `pages-router-cloudflare` | Pages Router basics |
+| `app-router-playground` | Next.js playground (MDX, Tailwind) |
+| `app-router-nitro` | App Router via Nitro (multi-platform) |
+| `realworld-api-rest` | RealWorld spec (Pages Router) |
+| `nextra-docs-template` | Nextra docs site (MDX, App Router) |
+| `benchmarks` | Performance benchmarks |
+| `hackernews` | HN clone (App Router, RSC) |
 
 #### Adding a New Example
 
-1. Create a directory under `examples/` with a `package.json` (use `"vinext": "workspace:*"`)
-2. Add a `vite.config.ts` with `vinext()` and `cloudflare()` plugins
-3. Add a `wrangler.jsonc` — for simple apps use `"main": "vinext/server/app-router-entry"` (no custom worker entry needed)
+1. Create a directory under `examples/` with a `package.json` (use `"openvite": "workspace:*"`)
+2. Add a `vite.config.ts` with `openvite()` and `cloudflare()` plugins
+3. Add a `wrangler.jsonc` — for simple apps use `"main": "openvite/server/app-router-entry"` (no custom worker entry needed)
 4. Add the example to the deploy matrix in `.github/workflows/deploy-examples.yml`:
    - Add to `matrix.example` array (with `name`, `project`, `wrangler_config`)
    - Add to the `examples` array in the PR comment step
@@ -166,8 +167,8 @@ where `expected-text` is a case-insensitive string that must appear in the respo
 The examples in `.github/repos.json` are the ecosystem of Next.js apps we want to support. When porting one:
 
 1. **Use App Router** unless the original app specifically requires Pages Router
-2. **Keep the same content** — the goal is to prove the app works on vinext, not to rewrite it
-3. **Use `@mdx-js/rollup`** for MDX support (vinext auto-detects and injects it, or you can register it manually in `vite.config.ts`)
+2. **Keep the same content** — the goal is to prove the app works on openvite, not to rewrite it
+3. **Use `@mdx-js/rollup`** for MDX support (openvite auto-detects and injects it, or you can register it manually in `vite.config.ts`)
 4. **File issues** for anything that requires workarounds — missing shims, unsupported config options, etc.
 5. **Don't depend on the original framework's build plugins** — e.g., Nextra's webpack plugin won't work; port the content and build a lightweight equivalent
 
@@ -199,7 +200,7 @@ Use EXA for web search when you need to find recent discussions, blog posts, Git
 
 ### Looking at Next.js Source
 
-**When in doubt, look at how Next.js does it.** Vinext aims to replicate Next.js behavior, so their implementation is the authoritative reference.
+**When in doubt, look at how Next.js does it.** Openvite aims to replicate Next.js behavior, so their implementation is the authoritative reference.
 
 If you're trying to understand how something works under the hood — route matching, RSC streaming, caching behavior, API semantics — the best approach is to go look at the Next.js source code and understand what they're doing, then apply it to how we do things in this project.
 
@@ -277,7 +278,7 @@ Per-request state (pathname, searchParams, params, headers, cookies) must be **e
 
 **Rule of thumb:** Any per-request state that `"use client"` components need during SSR must be passed across the environment boundary. They don't share module state.
 
-### What `@vitejs/plugin-rsc` Does vs What vinext Does
+### What `@vitejs/plugin-rsc` Does vs What openvite Does
 
 The RSC plugin handles:
 - Bundler transforms for `"use client"` / `"use server"` directives
@@ -287,7 +288,7 @@ The RSC plugin handles:
 - HMR for server components
 - Bootstrap script injection for client hydration
 
-vinext handles everything else:
+openvite handles everything else:
 - File-system routing (scanning `app/` and `pages/` directories)
 - Request lifecycle (middleware, headers, redirects, rewrites, then route handling)
 - Layout nesting and React tree construction
@@ -295,7 +296,7 @@ vinext handles everything else:
 - Caching (ISR, `"use cache"`, fetch cache)
 - All `next/*` module shims
 
-The RSC entry's `default` export is the request handler. The plugin calls it for every request; vinext does route matching, builds the React tree, renders to RSC stream, and delegates to the SSR entry for HTML.
+The RSC entry's `default` export is the request handler. The plugin calls it for every request; openvite does route matching, builds the React tree, renders to RSC stream, and delegates to the SSR entry for HTML.
 
 ### Production Builds Require `createBuilder`
 
@@ -303,13 +304,13 @@ You **must** use `createBuilder()` + `builder.buildApp()` for production builds,
 
 ### Virtual Module Resolution Quirks
 
-- **Build-time root prefix:** Vite prefixes virtual module IDs with the project root path when resolving SSR build entries. The `resolveId` hook must handle both `virtual:vinext-server-entry` and `<root>/virtual:vinext-server-entry`.
+- **Build-time root prefix:** Vite prefixes virtual module IDs with the project root path when resolving SSR build entries. The `resolveId` hook must handle both `virtual:openvite-server-entry` and `<root>/virtual:openvite-server-entry`.
 - **`\0` prefix in client environment:** When the RSC plugin generates its browser entry, it imports virtual modules using the already-resolved `\0`-prefixed ID. Vite's `import-analysis` plugin can't resolve this. Fix: strip the `\0` prefix before matching in `resolveId`.
 - **Absolute paths required:** Virtual modules have no real file location, so all imports within them must use absolute paths.
 
 ### Next.js 15+ Thenable Params
 
-Next.js 15 changed `params` and `searchParams` to Promises. For backward compatibility with pre-15 code, vinext creates "thenable objects":
+Next.js 15 changed `params` and `searchParams` to Promises. For backward compatibility with pre-15 code, openvite creates "thenable objects":
 
 ```js
 Object.assign(Promise.resolve(params), params)

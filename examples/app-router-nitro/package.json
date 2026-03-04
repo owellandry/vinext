@@ -1,5 +1,5 @@
 {
-  "name": "vinext-app-router-nitro",
+  "name": "openvite-app-router-nitro",
   "type": "module",
   "private": true,
   "scripts": {
@@ -11,7 +11,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "vite": "^7",
-    "vinext": "workspace:*",
+    "openvite": "workspace:*",
     "nitro": "npm:nitro-nightly@latest"
   }
 }

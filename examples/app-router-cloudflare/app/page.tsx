@@ -3,8 +3,8 @@ import { Counter } from "./components/counter";
 export default function HomePage() {
   return (
     <main>
-      <h1>vinext on Cloudflare Workers</h1>
-      <p>This page is server-rendered by vinext running inside Cloudflare Workers.</p>
+      <h1>openvite on Cloudflare Workers</h1>
+      <p>This page is server-rendered by openvite running inside Cloudflare Workers.</p>
       <p data-testid="timestamp">Rendered at: {new Date().toISOString()}</p>
       <Counter />
       <nav>

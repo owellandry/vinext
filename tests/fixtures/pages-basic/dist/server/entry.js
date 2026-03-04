@@ -1,4 +1,5 @@
-import React, { Children, isValidElement, useEffect, lazy, useState, Suspense, useCallback, useMemo, createContext, forwardRef, useRef } from "react";
+import * as React from "react";
+import React__default, { Children, isValidElement, useEffect, lazy, useState, Suspense, useCallback, useMemo, createContext, forwardRef, useRef } from "react";
 import { renderToReadableStream } from "react-dom/server.edge";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { jsxDEV } from "react/jsx-dev-runtime";
@@ -31,7 +32,7 @@ function reactElementToHTML(child) {
   if (!ALLOWED_HEAD_TAGS.has(tag)) {
     if (process.env.NODE_ENV !== "production") {
       console.warn(
-        `[vinext] <Head> ignoring disallowed tag <${tag}>. Only ${[...ALLOWED_HEAD_TAGS].join(", ")} are allowed.`
+        `[openvite] <Head> ignoring disallowed tag <${tag}>. Only ${[...ALLOWED_HEAD_TAGS].join(", ")} are allowed.`
       );
     }
     return "";
@@ -58,9 +59,9 @@ function reactElementToHTML(child) {
   const attrStr = attrs.length ? " " + attrs.join(" ") : "";
   const selfClosing = ["meta", "link", "base"];
   if (selfClosing.includes(tag)) {
-    return `<${tag}${attrStr} data-vinext-head="true" />`;
+    return `<${tag}${attrStr} data-openvite-head="true" />`;
   }
-  return `<${tag}${attrStr} data-vinext-head="true">${innerHTML}</${tag}>`;
+  return `<${tag}${attrStr} data-openvite-head="true">${innerHTML}</${tag}>`;
 }
 function escapeHTML(s) {
   return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -80,7 +81,7 @@ function Head$1({ children }) {
   }
   useEffect(() => {
     const elements = [];
-    document.querySelectorAll("[data-vinext-head]").forEach((el) => el.remove());
+    document.querySelectorAll("[data-openvite-head]").forEach((el) => el.remove());
     Children.forEach(children, (child) => {
       if (!isValidElement(child)) return;
       if (typeof child.type !== "string") return;
@@ -97,7 +98,7 @@ function Head$1({ children }) {
           domEl.setAttribute(key, value);
         }
       }
-      domEl.setAttribute("data-vinext-head", "true");
+      domEl.setAttribute("data-openvite-head", "true");
       document.head.appendChild(domEl);
       elements.push(domEl);
     });
@@ -110,8 +111,8 @@ function Head$1({ children }) {
 let DynamicErrorBoundary;
 function getDynamicErrorBoundary() {
   if (DynamicErrorBoundary) return DynamicErrorBoundary;
-  if (!React.Component) return null;
-  DynamicErrorBoundary = class extends React.Component {
+  if (!React__default.Component) return null;
+  DynamicErrorBoundary = class extends React__default.Component {
     constructor(props) {
       super(props);
       this.state = { error: null };
@@ -121,7 +122,7 @@ function getDynamicErrorBoundary() {
     }
     render() {
       if (this.state.error) {
-        return React.createElement(this.props.fallback, {
+        return React__default.createElement(this.props.fallback, {
           isLoading: false,
           pastDelay: true,
           error: this.state.error
@@ -143,7 +144,7 @@ function dynamic(loader, options) {
   if (!ssr) {
     if (isServer$1) {
       const SSRFalse = (_props) => {
-        return LoadingComponent ? React.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
+        return LoadingComponent ? React__default.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
       };
       SSRFalse.displayName = "DynamicSSRFalse";
       return SSRFalse;
@@ -157,13 +158,13 @@ function dynamic(loader, options) {
       const [mounted, setMounted] = useState(false);
       useEffect(() => setMounted(true), []);
       if (!mounted) {
-        return LoadingComponent ? React.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
+        return LoadingComponent ? React__default.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
       }
-      const fallback = LoadingComponent ? React.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
-      return React.createElement(
+      const fallback = LoadingComponent ? React__default.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
+      return React__default.createElement(
         Suspense,
         { fallback },
-        React.createElement(LazyComponent2, props)
+        React__default.createElement(LazyComponent2, props)
       );
     };
     ClientSSRFalse.displayName = "DynamicClientSSRFalse";
@@ -176,11 +177,11 @@ function dynamic(loader, options) {
       return { default: mod };
     });
     const ServerDynamic = (props) => {
-      const fallback = LoadingComponent ? React.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
-      const lazyElement = React.createElement(LazyServer, props);
+      const fallback = LoadingComponent ? React__default.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
+      const lazyElement = React__default.createElement(LazyServer, props);
       const ErrorBoundary = LoadingComponent ? getDynamicErrorBoundary() : null;
-      const content = ErrorBoundary ? React.createElement(ErrorBoundary, { fallback: LoadingComponent }, lazyElement) : lazyElement;
-      return React.createElement(Suspense, { fallback }, content);
+      const content = ErrorBoundary ? React__default.createElement(ErrorBoundary, { fallback: LoadingComponent }, lazyElement) : lazyElement;
+      return React__default.createElement(Suspense, { fallback }, content);
     };
     ServerDynamic.displayName = "DynamicServer";
     return ServerDynamic;
@@ -191,11 +192,11 @@ function dynamic(loader, options) {
     return { default: mod };
   });
   const ClientDynamic = (props) => {
-    const fallback = LoadingComponent ? React.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
-    return React.createElement(
+    const fallback = LoadingComponent ? React__default.createElement(LoadingComponent, { isLoading: true, pastDelay: true, error: null }) : null;
+    return React__default.createElement(
       Suspense,
       { fallback },
-      React.createElement(LazyComponent, props)
+      React__default.createElement(LazyComponent, props)
     );
   };
   ClientDynamic.displayName = "DynamicClient";
@@ -243,7 +244,7 @@ function resolveUrl(url) {
 }
 function applyNavigationLocale(url, locale) {
   if (!locale || typeof window === "undefined") return url;
-  const defaultLocale = window.__VINEXT_DEFAULT_LOCALE__;
+  const defaultLocale = window.__OPENVITE_DEFAULT_LOCALE__;
   if (locale === defaultLocale) return url;
   if (url.startsWith(`/${locale}/`) || url === `/${locale}`) return url;
   return `/${locale}${url.startsWith("/") ? url : `/${url}`}`;
@@ -273,13 +274,13 @@ function scrollToHash$1(hash) {
 function saveScrollPosition() {
   const state = window.history.state ?? {};
   window.history.replaceState(
-    { ...state, __vinext_scrollX: window.scrollX, __vinext_scrollY: window.scrollY },
+    { ...state, __openvite_scrollX: window.scrollX, __openvite_scrollY: window.scrollY },
     ""
   );
 }
 function restoreScrollPosition$1(state) {
-  if (state && typeof state === "object" && "__vinext_scrollY" in state) {
-    const { __vinext_scrollX: x, __vinext_scrollY: y } = state;
+  if (state && typeof state === "object" && "__openvite_scrollY" in state) {
+    const { __openvite_scrollX: x, __openvite_scrollY: y } = state;
     requestAnimationFrame(() => window.scrollTo(x, y));
   }
 }
@@ -345,7 +346,7 @@ let _navInProgress = false;
 async function navigateClient(url) {
   if (typeof window === "undefined") return;
   const win = window;
-  const root = win.__VINEXT_ROOT__;
+  const root = win.__OPENVITE_ROOT__;
   if (!root) {
     window.location.href = url;
     return;
@@ -367,7 +368,7 @@ async function navigateClient(url) {
     const nextData = JSON.parse(match[1]);
     const { pageProps } = nextData.props;
     win.__NEXT_DATA__ = nextData;
-    let pageModuleUrl = nextData.__vinext?.pageModuleUrl;
+    let pageModuleUrl = nextData.__openvite?.pageModuleUrl;
     if (!pageModuleUrl) {
       const moduleMatch = html.match(/import\("([^"]+)"\);\s*\n\s*const PageComponent/);
       const altMatch = html.match(/await import\("([^"]+pages\/[^"]+)"\)/);
@@ -378,7 +379,7 @@ async function navigateClient(url) {
       return;
     }
     if (!isValidModulePath(pageModuleUrl)) {
-      console.error("[vinext] Blocked import of invalid page module path:", pageModuleUrl);
+      console.error("[openvite] Blocked import of invalid page module path:", pageModuleUrl);
       window.location.href = url;
       return;
     }
@@ -392,11 +393,11 @@ async function navigateClient(url) {
       return;
     }
     const React2 = (await import("react")).default;
-    let AppComponent = win.__VINEXT_APP__;
-    const appModuleUrl = nextData.__vinext?.appModuleUrl;
+    let AppComponent = win.__OPENVITE_APP__;
+    const appModuleUrl = nextData.__openvite?.appModuleUrl;
     if (!AppComponent && appModuleUrl) {
       if (!isValidModulePath(appModuleUrl)) {
-        console.error("[vinext] Blocked import of invalid app module path:", appModuleUrl);
+        console.error("[openvite] Blocked import of invalid app module path:", appModuleUrl);
       } else {
         try {
           const appModule = await import(
@@ -404,7 +405,7 @@ async function navigateClient(url) {
             appModuleUrl
           );
           AppComponent = appModule.default;
-          win.__VINEXT_APP__ = AppComponent;
+          win.__OPENVITE_APP__ = AppComponent;
         } catch {
         }
       }
@@ -420,7 +421,7 @@ async function navigateClient(url) {
     }
     root.render(element);
   } catch (err) {
-    console.error("[vinext] Client navigation failed:", err);
+    console.error("[openvite] Client navigation failed:", err);
     routerEvents.emit("routeChangeError", err, url);
     window.location.href = url;
   } finally {
@@ -443,8 +444,8 @@ function useRouter() {
     const onNavigate = ((_e) => {
       setState(getPathnameAndQuery());
     });
-    window.addEventListener("vinext:navigate", onNavigate);
-    return () => window.removeEventListener("vinext:navigate", onNavigate);
+    window.addEventListener("openvite:navigate", onNavigate);
+    return () => window.removeEventListener("openvite:navigate", onNavigate);
   }, []);
   const push = useCallback(
     async (url, _as, options) => {
@@ -458,7 +459,7 @@ function useRouter() {
         window.history.pushState({}, "", resolved.startsWith("#") ? resolved : withBasePath$1(resolved));
         scrollToHash$1(hash2);
         setState(getPathnameAndQuery());
-        window.dispatchEvent(new CustomEvent("vinext:navigate"));
+        window.dispatchEvent(new CustomEvent("openvite:navigate"));
         return true;
       }
       saveScrollPosition();
@@ -476,7 +477,7 @@ function useRouter() {
       } else if (options?.scroll !== false) {
         window.scrollTo(0, 0);
       }
-      window.dispatchEvent(new CustomEvent("vinext:navigate"));
+      window.dispatchEvent(new CustomEvent("openvite:navigate"));
       return true;
     },
     []
@@ -493,7 +494,7 @@ function useRouter() {
         window.history.replaceState({}, "", resolved.startsWith("#") ? resolved : withBasePath$1(resolved));
         scrollToHash$1(hash2);
         setState(getPathnameAndQuery());
-        window.dispatchEvent(new CustomEvent("vinext:navigate"));
+        window.dispatchEvent(new CustomEvent("openvite:navigate"));
         return true;
       }
       const full = withBasePath$1(resolved);
@@ -510,7 +511,7 @@ function useRouter() {
       } else if (options?.scroll !== false) {
         window.scrollTo(0, 0);
       }
-      window.dispatchEvent(new CustomEvent("vinext:navigate"));
+      window.dispatchEvent(new CustomEvent("openvite:navigate"));
       return true;
     },
     []
@@ -531,9 +532,9 @@ function useRouter() {
     }
   }, []);
   const _ssrState = _getSSRContext();
-  const locale = typeof window === "undefined" ? _ssrState?.locale : window.__VINEXT_LOCALE__;
-  const locales = typeof window === "undefined" ? _ssrState?.locales : window.__VINEXT_LOCALES__;
-  const defaultLocale = typeof window === "undefined" ? _ssrState?.defaultLocale : window.__VINEXT_DEFAULT_LOCALE__;
+  const locale = typeof window === "undefined" ? _ssrState?.locale : window.__OPENVITE_LOCALE__;
+  const locales = typeof window === "undefined" ? _ssrState?.locales : window.__OPENVITE_LOCALES__;
+  const defaultLocale = typeof window === "undefined" ? _ssrState?.defaultLocale : window.__OPENVITE_DEFAULT_LOCALE__;
   const route = typeof window !== "undefined" ? window.__NEXT_DATA__?.page ?? pathname : pathname;
   const router2 = useMemo(
     () => ({
@@ -575,7 +576,7 @@ if (typeof window !== "undefined") {
     void navigateClient(browserUrl).then(() => {
       routerEvents.emit("routeChangeComplete", appUrl);
       restoreScrollPosition$1(e.state);
-      window.dispatchEvent(new CustomEvent("vinext:navigate"));
+      window.dispatchEvent(new CustomEvent("openvite:navigate"));
     });
   });
 }
@@ -590,7 +591,7 @@ const Router = {
       const hash2 = resolved.includes("#") ? resolved.slice(resolved.indexOf("#")) : "";
       window.history.pushState({}, "", resolved.startsWith("#") ? resolved : withBasePath$1(resolved));
       scrollToHash$1(hash2);
-      window.dispatchEvent(new CustomEvent("vinext:navigate"));
+      window.dispatchEvent(new CustomEvent("openvite:navigate"));
       return true;
     }
     saveScrollPosition();
@@ -607,7 +608,7 @@ const Router = {
     } else if (options?.scroll !== false) {
       window.scrollTo(0, 0);
     }
-    window.dispatchEvent(new CustomEvent("vinext:navigate"));
+    window.dispatchEvent(new CustomEvent("openvite:navigate"));
     return true;
   },
   replace: async (url, _as, options) => {
@@ -620,7 +621,7 @@ const Router = {
       const hash2 = resolved.includes("#") ? resolved.slice(resolved.indexOf("#")) : "";
       window.history.replaceState({}, "", resolved.startsWith("#") ? resolved : withBasePath$1(resolved));
       scrollToHash$1(hash2);
-      window.dispatchEvent(new CustomEvent("vinext:navigate"));
+      window.dispatchEvent(new CustomEvent("openvite:navigate"));
       return true;
     }
     const full = withBasePath$1(resolved);
@@ -636,7 +637,7 @@ const Router = {
     } else if (options?.scroll !== false) {
       window.scrollTo(0, 0);
     }
-    window.dispatchEvent(new CustomEvent("vinext:navigate"));
+    window.dispatchEvent(new CustomEvent("openvite:navigate"));
     return true;
   },
   back: () => window.history.back(),
@@ -665,8 +666,8 @@ const router = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
   setSSRContext,
   useRouter
 }, Symbol.toStringTag, { value: "Module" }));
-const _ALS_KEY$4 = /* @__PURE__ */ Symbol.for("vinext.nextHeadersShim.als");
-const _FALLBACK_KEY$4 = /* @__PURE__ */ Symbol.for("vinext.nextHeadersShim.fallback");
+const _ALS_KEY$4 = /* @__PURE__ */ Symbol.for("openvite.nextHeadersShim.als");
+const _FALLBACK_KEY$4 = /* @__PURE__ */ Symbol.for("openvite.nextHeadersShim.fallback");
 const _g$5 = globalThis;
 _g$5[_ALS_KEY$4] ??= new AsyncLocalStorage();
 _g$5[_FALLBACK_KEY$4] ??= {
@@ -739,8 +740,8 @@ let activeHandler = new MemoryCacheHandler();
 function getCacheHandler() {
   return activeHandler;
 }
-const _ALS_KEY$3 = /* @__PURE__ */ Symbol.for("vinext.cache.als");
-const _FALLBACK_KEY$3 = /* @__PURE__ */ Symbol.for("vinext.cache.fallback");
+const _ALS_KEY$3 = /* @__PURE__ */ Symbol.for("openvite.cache.als");
+const _FALLBACK_KEY$3 = /* @__PURE__ */ Symbol.for("openvite.cache.fallback");
 const _g$4 = globalThis;
 const _cacheAls = _g$4[_ALS_KEY$3] ??= new AsyncLocalStorage();
 _g$4[_FALLBACK_KEY$3] ??= {
@@ -753,7 +754,13 @@ function _runWithCacheState(fn) {
   return _cacheAls.run(state, fn);
 }
 const HEADER_BLOCKLIST = ["traceparent", "tracestate"];
-const CACHE_KEY_PREFIX = "v1";
+const CACHE_KEY_PREFIX = "v2";
+const MAX_CACHE_KEY_BODY_BYTES = 1024 * 1024;
+class BodyTooLargeForCacheKeyError extends Error {
+  constructor() {
+    super("Fetch body too large for cache key generation");
+  }
+}
 function collectHeaders(input, init) {
   const merged = {};
   if (input instanceof Request && input.headers) {
@@ -782,72 +789,82 @@ async function serializeBody(init) {
   const bodyChunks = [];
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
+  let totalBodyBytes = 0;
+  const pushBodyChunk = (chunk) => {
+    totalBodyBytes += encoder.encode(chunk).byteLength;
+    if (totalBodyBytes > MAX_CACHE_KEY_BODY_BYTES) {
+      throw new BodyTooLargeForCacheKeyError();
+    }
+    bodyChunks.push(chunk);
+  };
   if (init.body instanceof Uint8Array) {
-    bodyChunks.push(decoder.decode(init.body));
+    if (init.body.byteLength > MAX_CACHE_KEY_BODY_BYTES) {
+      throw new BodyTooLargeForCacheKeyError();
+    }
+    pushBodyChunk(decoder.decode(init.body));
     init._ogBody = init.body;
   } else if (typeof init.body.getReader === "function") {
     const readableBody = init.body;
-    const chunks = [];
+    const [bodyForHashing, bodyForFetch] = readableBody.tee();
+    init._ogBody = bodyForFetch;
+    const reader = bodyForHashing.getReader();
     try {
-      await readableBody.pipeTo(
-        new WritableStream({
-          write(chunk) {
-            if (typeof chunk === "string") {
-              chunks.push(encoder.encode(chunk));
-              bodyChunks.push(chunk);
-            } else {
-              chunks.push(chunk);
-              bodyChunks.push(decoder.decode(chunk, { stream: true }));
-            }
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (typeof value === "string") {
+          pushBodyChunk(value);
+        } else {
+          totalBodyBytes += value.byteLength;
+          if (totalBodyBytes > MAX_CACHE_KEY_BODY_BYTES) {
+            throw new BodyTooLargeForCacheKeyError();
           }
-        })
-      );
-      bodyChunks.push(decoder.decode());
-      const length = chunks.reduce((total, arr) => total + arr.length, 0);
-      const arrayBuffer = new Uint8Array(length);
-      let offset = 0;
-      for (const chunk of chunks) {
-        arrayBuffer.set(chunk, offset);
-        offset += chunk.length;
-      }
-      init._ogBody = arrayBuffer;
-    } catch (err) {
-      console.error("[vinext] Problem reading body for cache key", err);
-      if (chunks.length > 0) {
-        const length = chunks.reduce((total, arr) => total + arr.length, 0);
-        const partial = new Uint8Array(length);
-        let offset = 0;
-        for (const chunk of chunks) {
-          partial.set(chunk, offset);
-          offset += chunk.length;
+          bodyChunks.push(decoder.decode(value, { stream: true }));
         }
-        init._ogBody = partial;
       }
+      const finalChunk = decoder.decode();
+      if (finalChunk) {
+        pushBodyChunk(finalChunk);
+      }
+    } catch (err) {
+      await reader.cancel();
+      if (err instanceof BodyTooLargeForCacheKeyError) {
+        throw err;
+      }
+      console.error("[openvite] Problem reading body for cache key", err);
     }
   } else if (init.body instanceof URLSearchParams) {
     init._ogBody = init.body;
-    bodyChunks.push(init.body.toString());
+    pushBodyChunk(init.body.toString());
   } else if (typeof init.body.keys === "function") {
     const formData = init.body;
     init._ogBody = init.body;
     for (const key of new Set(formData.keys())) {
       const values = formData.getAll(key);
-      bodyChunks.push(
-        `${key}=${(await Promise.all(
-          values.map(async (val) => {
-            if (typeof val === "string") return val;
-            return await val.text();
-          })
-        )).join(",")}`
+      const serializedValues = await Promise.all(
+        values.map(async (val) => {
+          if (typeof val === "string") return val;
+          if (val.size > MAX_CACHE_KEY_BODY_BYTES || totalBodyBytes + val.size > MAX_CACHE_KEY_BODY_BYTES) {
+            throw new BodyTooLargeForCacheKeyError();
+          }
+          return await val.text();
+        })
       );
+      pushBodyChunk(`${key}=${serializedValues.join(",")}`);
     }
   } else if (typeof init.body.arrayBuffer === "function") {
     const blob = init.body;
-    bodyChunks.push(await blob.text());
+    if (blob.size > MAX_CACHE_KEY_BODY_BYTES) {
+      throw new BodyTooLargeForCacheKeyError();
+    }
+    pushBodyChunk(await blob.text());
     const arrayBuffer = await blob.arrayBuffer();
     init._ogBody = new Blob([arrayBuffer], { type: blob.type });
   } else if (typeof init.body === "string") {
-    bodyChunks.push(init.body);
+    if (init.body.length > MAX_CACHE_KEY_BODY_BYTES) {
+      throw new BodyTooLargeForCacheKeyError();
+    }
+    pushBodyChunk(init.body);
     init._ogBody = init.body;
   }
   return bodyChunks;
@@ -885,11 +902,11 @@ async function buildFetchCacheKey(input, init) {
   const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
   return Array.prototype.map.call(new Uint8Array(hashBuffer), (b) => b.toString(16).padStart(2, "0")).join("");
 }
-const _ORIG_FETCH_KEY = /* @__PURE__ */ Symbol.for("vinext.fetchCache.originalFetch");
+const _ORIG_FETCH_KEY = /* @__PURE__ */ Symbol.for("openvite.fetchCache.originalFetch");
 const _gFetch = globalThis;
 const originalFetch = _gFetch[_ORIG_FETCH_KEY] ??= globalThis.fetch;
-const _ALS_KEY$2 = /* @__PURE__ */ Symbol.for("vinext.fetchCache.als");
-const _FALLBACK_KEY$2 = /* @__PURE__ */ Symbol.for("vinext.fetchCache.fallback");
+const _ALS_KEY$2 = /* @__PURE__ */ Symbol.for("openvite.fetchCache.als");
+const _FALLBACK_KEY$2 = /* @__PURE__ */ Symbol.for("openvite.fetchCache.fallback");
 const _g$3 = globalThis;
 const _als$2 = _g$3[_ALS_KEY$2] ??= new AsyncLocalStorage();
 const _fallbackState$2 = _g$3[_FALLBACK_KEY$2] ??= {
@@ -928,7 +945,16 @@ function createPatchedFetch() {
       }
     }
     const tags = nextOpts?.tags ?? [];
-    const cacheKey = await buildFetchCacheKey(input, init);
+    let cacheKey;
+    try {
+      cacheKey = await buildFetchCacheKey(input, init);
+    } catch (err) {
+      if (err instanceof BodyTooLargeForCacheKeyError) {
+        const cleanInit2 = stripNextFromInit(init);
+        return originalFetch(input, cleanInit2);
+      }
+      throw err;
+    }
     const handler2 = getCacheHandler();
     const reqTags = _getState$2().currentRequestTags;
     if (tags.length > 0) {
@@ -973,7 +999,7 @@ function createPatchedFetch() {
             revalidate: revalidateSeconds
           });
         }).catch((err) => {
-          console.error("[vinext] fetch cache background revalidation failed:", err);
+          console.error("[openvite] fetch cache background revalidation failed:", err);
         });
         return new Response(staleData.body, {
           status: staleData.status ?? 200,
@@ -981,7 +1007,7 @@ function createPatchedFetch() {
         });
       }
     } catch (cacheErr) {
-      console.error("[vinext] fetch cache read error:", cacheErr);
+      console.error("[openvite] fetch cache read error:", cacheErr);
     }
     const cleanInit = stripNextFromInit(init);
     const response = await originalFetch(input, cleanInit);
@@ -1008,7 +1034,7 @@ function createPatchedFetch() {
         tags,
         revalidate: revalidateSeconds
       }).catch((err) => {
-        console.error("[vinext] fetch cache write error:", err);
+        console.error("[openvite] fetch cache write error:", err);
       });
     }
     return response;
@@ -1023,7 +1049,7 @@ function stripNextFromInit(init) {
   }
   return Object.keys(rest).length > 0 ? rest : void 0;
 }
-const _PATCH_KEY = /* @__PURE__ */ Symbol.for("vinext.fetchCache.patchInstalled");
+const _PATCH_KEY = /* @__PURE__ */ Symbol.for("openvite.fetchCache.patchInstalled");
 function _ensurePatchInstalled() {
   if (_g$3[_PATCH_KEY]) return;
   _g$3[_PATCH_KEY] = true;
@@ -1034,8 +1060,8 @@ async function runWithFetchCache(fn) {
   return _als$2.run({ currentRequestTags: [] }, fn);
 }
 new AsyncLocalStorage();
-const _PRIVATE_ALS_KEY = /* @__PURE__ */ Symbol.for("vinext.cacheRuntime.privateAls");
-const _PRIVATE_FALLBACK_KEY = /* @__PURE__ */ Symbol.for("vinext.cacheRuntime.privateFallback");
+const _PRIVATE_ALS_KEY = /* @__PURE__ */ Symbol.for("openvite.cacheRuntime.privateAls");
+const _PRIVATE_FALLBACK_KEY = /* @__PURE__ */ Symbol.for("openvite.cacheRuntime.privateFallback");
 const _g$2 = globalThis;
 const _privateAls = _g$2[_PRIVATE_ALS_KEY] ??= new AsyncLocalStorage();
 _g$2[_PRIVATE_FALLBACK_KEY] ??= {
@@ -1047,8 +1073,8 @@ function runWithPrivateCache(fn) {
   };
   return _privateAls.run(state, fn);
 }
-const _ALS_KEY$1 = /* @__PURE__ */ Symbol.for("vinext.router.als");
-const _FALLBACK_KEY$1 = /* @__PURE__ */ Symbol.for("vinext.router.fallback");
+const _ALS_KEY$1 = /* @__PURE__ */ Symbol.for("openvite.router.als");
+const _FALLBACK_KEY$1 = /* @__PURE__ */ Symbol.for("openvite.router.fallback");
 const _g$1 = globalThis;
 const _als$1 = _g$1[_ALS_KEY$1] ??= new AsyncLocalStorage();
 const _fallbackState$1 = _g$1[_FALLBACK_KEY$1] ??= {
@@ -1076,8 +1102,8 @@ _registerRouterStateAccessors({
     }
   }
 });
-const _ALS_KEY = /* @__PURE__ */ Symbol.for("vinext.head.als");
-const _FALLBACK_KEY = /* @__PURE__ */ Symbol.for("vinext.head.fallback");
+const _ALS_KEY = /* @__PURE__ */ Symbol.for("openvite.head.als");
+const _FALLBACK_KEY = /* @__PURE__ */ Symbol.for("openvite.head.fallback");
 const _g = globalThis;
 const _als = _g[_ALS_KEY] ??= new AsyncLocalStorage();
 const _fallbackState = _g[_FALLBACK_KEY] ??= {
@@ -1188,7 +1214,7 @@ function injectClassNameRule(className, fontFamily) {
   }
   const style = document.createElement("style");
   style.textContent = css;
-  style.setAttribute("data-vinext-font-class", className);
+  style.setAttribute("data-openvite-font-class", className);
   document.head.appendChild(style);
 }
 const injectedVariableRules = /* @__PURE__ */ new Set();
@@ -1209,7 +1235,7 @@ function injectVariableClassRule(variableClassName, cssVarName, fontFamily) {
   }
   const style = document.createElement("style");
   style.textContent = css;
-  style.setAttribute("data-vinext-font-variable", variableClassName);
+  style.setAttribute("data-openvite-font-variable", variableClassName);
   document.head.appendChild(style);
 }
 const ssrFontStyles$1 = [];
@@ -1265,7 +1291,7 @@ function injectSelfHostedCSS(css) {
   }
   const style = document.createElement("style");
   style.textContent = css;
-  style.setAttribute("data-vinext-font-selfhosted", "true");
+  style.setAttribute("data-openvite-font-selfhosted", "true");
   document.head.appendChild(style);
 }
 function createFontLoader(family) {
@@ -1630,6 +1656,7 @@ function middleware(request) {
 const config = {
   matcher: ["/((?!api|_next|favicon\\.ico).*)"]
 };
+typeof React.createContext === "function" ? React.createContext(null) : null;
 const isServer = typeof window === "undefined";
 const MAX_PREFETCH_CACHE_SIZE = 50;
 function toRscUrl(href) {
@@ -1643,18 +1670,18 @@ function toRscUrl(href) {
 function getPrefetchCache() {
   if (isServer) return /* @__PURE__ */ new Map();
   const win = window;
-  if (!win.__VINEXT_RSC_PREFETCH_CACHE__) {
-    win.__VINEXT_RSC_PREFETCH_CACHE__ = /* @__PURE__ */ new Map();
+  if (!win.__OPENVITE_RSC_PREFETCH_CACHE__) {
+    win.__OPENVITE_RSC_PREFETCH_CACHE__ = /* @__PURE__ */ new Map();
   }
-  return win.__VINEXT_RSC_PREFETCH_CACHE__;
+  return win.__OPENVITE_RSC_PREFETCH_CACHE__;
 }
 function getPrefetchedUrls() {
   if (isServer) return /* @__PURE__ */ new Set();
   const win = window;
-  if (!win.__VINEXT_RSC_PREFETCHED_URLS__) {
-    win.__VINEXT_RSC_PREFETCHED_URLS__ = /* @__PURE__ */ new Set();
+  if (!win.__OPENVITE_RSC_PREFETCHED_URLS__) {
+    win.__OPENVITE_RSC_PREFETCHED_URLS__ = /* @__PURE__ */ new Set();
   }
-  return win.__VINEXT_RSC_PREFETCHED_URLS__;
+  return win.__OPENVITE_RSC_PREFETCHED_URLS__;
 }
 function storePrefetchResponse(rscUrl, response) {
   const cache = getPrefetchCache();
@@ -1672,10 +1699,10 @@ let _cachedSearch = !isServer ? window.location.search : "";
 new URLSearchParams(_cachedSearch);
 !isServer ? window.history.replaceState.bind(window.history) : null;
 function restoreScrollPosition(state) {
-  if (state && typeof state === "object" && "__vinext_scrollY" in state) {
-    const { __vinext_scrollX: x, __vinext_scrollY: y } = state;
+  if (state && typeof state === "object" && "__openvite_scrollY" in state) {
+    const { __openvite_scrollX: x, __openvite_scrollY: y } = state;
     void Promise.resolve().then(() => {
-      const pending = window.__VINEXT_RSC_PENDING__ ?? null;
+      const pending = window.__OPENVITE_RSC_PENDING__ ?? null;
       if (pending) {
         void pending.then(() => {
           requestAnimationFrame(() => {
@@ -1769,7 +1796,7 @@ function prefetchUrl(href) {
   const schedule = window.requestIdleCallback ?? ((fn) => setTimeout(fn, 100));
   schedule(() => {
     const win = window;
-    if (typeof win.__VINEXT_RSC_NAVIGATE__ === "function") {
+    if (typeof win.__OPENVITE_RSC_NAVIGATE__ === "function") {
       fetch(rscUrl, {
         headers: { Accept: "text/x-component" },
         credentials: "include",
@@ -1785,7 +1812,7 @@ function prefetchUrl(href) {
       }).catch(() => {
         prefetched.delete(rscUrl);
       });
-    } else if (win.__NEXT_DATA__?.__vinext?.pageModuleUrl) {
+    } else if (win.__NEXT_DATA__?.__openvite?.pageModuleUrl) {
       const link = document.createElement("link");
       link.rel = "prefetch";
       link.href = fullHref;
@@ -1822,9 +1849,9 @@ function getSharedObserver() {
 }
 function getDefaultLocale() {
   if (typeof window !== "undefined") {
-    return window.__VINEXT_DEFAULT_LOCALE__;
+    return window.__OPENVITE_DEFAULT_LOCALE__;
   }
-  return globalThis.__VINEXT_DEFAULT_LOCALE__;
+  return globalThis.__OPENVITE_DEFAULT_LOCALE__;
 }
 function applyLocaleToHref(href, locale) {
   if (locale === false) {
@@ -1845,18 +1872,11 @@ function applyLocaleToHref(href, locale) {
 const Link = forwardRef(function Link2({ href, as, replace = false, prefetch: prefetchProp, scroll = true, children, onClick, onNavigate, ...rest }, forwardedRef) {
   const { locale, ...restWithoutLocale } = rest;
   const resolvedHref = as ?? resolveHref(href);
-  if (typeof resolvedHref === "string" && isDangerousScheme(resolvedHref)) {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn(`<Link> blocked dangerous href: ${resolvedHref}`);
-    }
-    const { passHref: _p2, ...safeProps } = restWithoutLocale;
-    return /* @__PURE__ */ jsxDEV("a", { ...safeProps, children }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/link.tsx",
-      lineNumber: 291,
-      columnNumber: 12
-    }, this);
-  }
-  const localizedHref = applyLocaleToHref(resolvedHref, locale);
+  const isDangerous = typeof resolvedHref === "string" && isDangerousScheme(resolvedHref);
+  const localizedHref = applyLocaleToHref(
+    isDangerous ? "/" : resolvedHref,
+    locale
+  );
   const fullHref = withBasePath(localizedHref);
   const [pending, setPending] = useState(false);
   const mountedRef = useRef(true);
@@ -1867,7 +1887,7 @@ const Link = forwardRef(function Link2({ href, as, replace = false, prefetch: pr
     };
   }, []);
   const internalRef = useRef(null);
-  const shouldPrefetch = prefetchProp !== false;
+  const shouldPrefetch = prefetchProp !== false && !isDangerous;
   const setRefs = useCallback(
     (node) => {
       internalRef.current = node;
@@ -1926,7 +1946,7 @@ const Link = forwardRef(function Link2({ href, as, replace = false, prefetch: pr
     if (!replace) {
       const state = window.history.state ?? {};
       window.history.replaceState(
-        { ...state, __vinext_scrollX: window.scrollX, __vinext_scrollY: window.scrollY },
+        { ...state, __openvite_scrollX: window.scrollX, __openvite_scrollY: window.scrollY },
         ""
       );
     }
@@ -1947,7 +1967,7 @@ const Link = forwardRef(function Link2({ href, as, replace = false, prefetch: pr
     const hashIdx = absoluteFullHref.indexOf("#");
     const hash = hashIdx !== -1 ? absoluteFullHref.slice(hashIdx) : "";
     const win = window;
-    if (typeof win.__VINEXT_RSC_NAVIGATE__ === "function") {
+    if (typeof win.__OPENVITE_RSC_NAVIGATE__ === "function") {
       if (replace) {
         window.history.replaceState(null, "", absoluteFullHref);
       } else {
@@ -1955,7 +1975,7 @@ const Link = forwardRef(function Link2({ href, as, replace = false, prefetch: pr
       }
       setPending(true);
       try {
-        await win.__VINEXT_RSC_NAVIGATE__(absoluteFullHref);
+        await win.__OPENVITE_RSC_NAVIGATE__(absoluteFullHref);
       } finally {
         if (mountedRef.current) setPending(false);
       }
@@ -1986,45 +2006,55 @@ const Link = forwardRef(function Link2({ href, as, replace = false, prefetch: pr
     }
   };
   const { passHref: _p, ...anchorProps } = restWithoutLocale;
-  const linkStatusValue = React.useMemo(() => ({ pending }), [pending]);
+  const linkStatusValue = React__default.useMemo(() => ({ pending }), [pending]);
+  if (isDangerous) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn(`<Link> blocked dangerous href: ${resolvedHref}`);
+    }
+    return /* @__PURE__ */ jsxDEV("a", { ...anchorProps, children }, void 0, false, {
+      fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/link.tsx",
+      lineNumber: 481,
+      columnNumber: 12
+    }, this);
+  }
   return /* @__PURE__ */ jsxDEV(LinkStatusContext.Provider, { value: linkStatusValue, children: /* @__PURE__ */ jsxDEV("a", { ref: setRefs, href: fullHref, onClick: handleClick, ...anchorProps, children }, void 0, false, {
-    fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/link.tsx",
-    lineNumber: 479,
+    fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/link.tsx",
+    lineNumber: 486,
     columnNumber: 7
   }, this) }, void 0, false, {
-    fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/link.tsx",
-    lineNumber: 478,
+    fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/link.tsx",
+    lineNumber: 485,
     columnNumber: 5
   }, this);
 });
 function Home() {
   return /* @__PURE__ */ jsxDEV("div", { children: [
-    /* @__PURE__ */ jsxDEV(Head$1, { children: /* @__PURE__ */ jsxDEV("title", { children: "Hello vinext" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/index.tsx",
+    /* @__PURE__ */ jsxDEV(Head$1, { children: /* @__PURE__ */ jsxDEV("title", { children: "Hello openvite" }, void 0, false, {
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/index.tsx",
       lineNumber: 8,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/index.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/index.tsx",
       lineNumber: 7,
       columnNumber: 7
     }, this),
-    /* @__PURE__ */ jsxDEV("h1", { children: "Hello, vinext!" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/index.tsx",
+    /* @__PURE__ */ jsxDEV("h1", { children: "Hello, openvite!" }, void 0, false, {
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/index.tsx",
       lineNumber: 10,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { children: "This is a Pages Router app running on Vite." }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/index.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/index.tsx",
       lineNumber: 11,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Link, { href: "/about", children: "Go to About" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/index.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/index.tsx",
       lineNumber: 12,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/index.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/index.tsx",
     lineNumber: 6,
     columnNumber: 5
   }, this);
@@ -2036,17 +2066,17 @@ const page_0 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
 function Custom404() {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { "data-testid": "error-title", children: "404 - Page Not Found" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/404.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/404.tsx",
       lineNumber: 4,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { "data-testid": "error-message", children: "Sorry, the page you are looking for does not exist." }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/404.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/404.tsx",
       lineNumber: 5,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/404.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/404.tsx",
     lineNumber: 3,
     columnNumber: 5
   }, this);
@@ -2057,32 +2087,32 @@ const page_1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
 }, Symbol.toStringTag, { value: "Module" }));
 function About() {
   return /* @__PURE__ */ jsxDEV("div", { children: [
-    /* @__PURE__ */ jsxDEV(Head$1, { children: /* @__PURE__ */ jsxDEV("title", { children: "About - vinext" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/about.tsx",
+    /* @__PURE__ */ jsxDEV(Head$1, { children: /* @__PURE__ */ jsxDEV("title", { children: "About - openvite" }, void 0, false, {
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/about.tsx",
       lineNumber: 8,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/about.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/about.tsx",
       lineNumber: 7,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("h1", { children: "About" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/about.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/about.tsx",
       lineNumber: 10,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { children: "This is the about page." }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/about.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/about.tsx",
       lineNumber: 11,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Link, { href: "/", children: "Back to Home" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/about.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/about.tsx",
       lineNumber: 12,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/about.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/about.tsx",
     lineNumber: 6,
     columnNumber: 5
   }, this);
@@ -2094,17 +2124,17 @@ const page_2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProper
 function HeavyComponent$1({ label }) {
   return /* @__PURE__ */ jsxDEV("div", { className: "heavy-component", children: [
     /* @__PURE__ */ jsxDEV("h2", { children: "Heavy Component" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/components/heavy.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/components/heavy.tsx",
       lineNumber: 6,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { children: label ?? "I was dynamically imported!" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/components/heavy.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/components/heavy.tsx",
       lineNumber: 7,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/components/heavy.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/components/heavy.tsx",
     lineNumber: 5,
     columnNumber: 5
   }, this);
@@ -2116,22 +2146,22 @@ const heavy = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
 function AliasTestPage() {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Pages Alias Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/alias-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/alias-test.tsx",
       lineNumber: 6,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { children: "This page imports a component via tsconfig path alias @/" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/alias-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/alias-test.tsx",
       lineNumber: 7,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(HeavyComponent$1, { label: "Loaded via alias" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/alias-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/alias-test.tsx",
       lineNumber: 8,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/alias-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/alias-test.tsx",
     lineNumber: 5,
     columnNumber: 5
   }, this);
@@ -2157,12 +2187,12 @@ function BeforePopStateTest() {
   }, [blocking, router2]);
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Before Pop State Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
       lineNumber: 31,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Link, { href: "/about", "data-testid": "link-about", children: "Go to About" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
       lineNumber: 32,
       columnNumber: 7
     }, this),
@@ -2176,7 +2206,7 @@ function BeforePopStateTest() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
         lineNumber: 35,
         columnNumber: 7
       },
@@ -2192,24 +2222,24 @@ function BeforePopStateTest() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
         lineNumber: 41,
         columnNumber: 7
       },
       this
     ),
     /* @__PURE__ */ jsxDEV("div", { "data-testid": "pop-attempts", children: popAttempts }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
       lineNumber: 47,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { "data-testid": "current-path", children: router2.asPath }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
       lineNumber: 48,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx",
     lineNumber: 30,
     columnNumber: 5
   }, this);
@@ -2217,6 +2247,30 @@ function BeforePopStateTest() {
 const page_4 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: BeforePopStateTest
+}, Symbol.toStringTag, { value: "Module" }));
+var module$1 = { exports: {} };
+module$1.exports = {
+  random: () => 4
+};
+const __CJS__export_default__ = (module$1.exports == null ? {} : module$1.exports).default || module$1.exports;
+const page_6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: __CJS__export_default__
+}, Symbol.toStringTag, { value: "Module" }));
+const { random } = __CJS__export_default__ || page_6;
+function Page() {
+  return /* @__PURE__ */ jsxDEV("div", { "data-testid": "cjs-basic", children: [
+    "Random: ",
+    random()
+  ] }, void 0, true, {
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/cjs/basic.tsx",
+    lineNumber: 4,
+    columnNumber: 10
+  }, this);
+}
+const page_5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: Page
 }, Symbol.toStringTag, { value: "Module" }));
 let runtimeConfig = {
   serverRuntimeConfig: {},
@@ -2230,7 +2284,7 @@ function ConfigTestPage() {
   const appName = publicRuntimeConfig?.appName ?? "default-app";
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Config Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/config-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/config-test.tsx",
       lineNumber: 8,
       columnNumber: 7
     }, this),
@@ -2238,34 +2292,34 @@ function ConfigTestPage() {
       "App: ",
       appName
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/config-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/config-test.tsx",
       lineNumber: 9,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/config-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/config-test.tsx",
     lineNumber: 7,
     columnNumber: 5
   }, this);
 }
-const page_5 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: ConfigTestPage
 }, Symbol.toStringTag, { value: "Module" }));
 function CounterPage() {
   const [count, setCount] = useState(0);
   return /* @__PURE__ */ jsxDEV("div", { children: [
-    /* @__PURE__ */ jsxDEV(Head$1, { children: /* @__PURE__ */ jsxDEV("title", { children: "Counter - vinext" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx",
+    /* @__PURE__ */ jsxDEV(Head$1, { children: /* @__PURE__ */ jsxDEV("title", { children: "Counter - openvite" }, void 0, false, {
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx",
       lineNumber: 10,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx",
       lineNumber: 9,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("h1", { children: "Counter Page" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx",
       lineNumber: 12,
       columnNumber: 7
     }, this),
@@ -2273,38 +2327,38 @@ function CounterPage() {
       "Count: ",
       count
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx",
       lineNumber: 13,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("button", { "data-testid": "increment", onClick: () => setCount((c) => c + 1), children: "Increment" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx",
       lineNumber: 14,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("button", { "data-testid": "decrement", onClick: () => setCount((c) => c - 1), children: "Decrement" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx",
       lineNumber: 17,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Link, { href: "/", children: "Back to Home" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx",
       lineNumber: 20,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx",
     lineNumber: 8,
     columnNumber: 5
   }, this);
 }
-const page_6 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: CounterPage
 }, Symbol.toStringTag, { value: "Module" }));
 const HeavyComponent = dynamic(() => Promise.resolve().then(() => heavy), {
   loading: () => /* @__PURE__ */ jsxDEV("p", { children: "Loading heavy component..." }, void 0, false, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-page.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-page.tsx",
     lineNumber: 5,
     columnNumber: 18
   }, void 0)
@@ -2312,94 +2366,94 @@ const HeavyComponent = dynamic(() => Promise.resolve().then(() => heavy), {
 function DynamicPage() {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Dynamic Import Page" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-page.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-page.tsx",
       lineNumber: 11,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(HeavyComponent, { label: "Loaded dynamically" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-page.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-page.tsx",
       lineNumber: 12,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-page.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-page.tsx",
     lineNumber: 10,
     columnNumber: 5
   }, this);
 }
-const page_7 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: DynamicPage
 }, Symbol.toStringTag, { value: "Module" }));
 const ClientOnly = dynamic(
-  () => import("./assets/client-only-component-C2Nk0WSE.js"),
+  () => import("./assets/client-only-component-Dml__CE9.js"),
   {
     ssr: false,
     loading: () => /* @__PURE__ */ jsxDEV("p", { "data-testid": "loading", children: "Loading client component..." }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
       lineNumber: 7,
       columnNumber: 20
     }, void 0)
   }
 );
 const ClientOnlyNoLoading = dynamic(
-  () => import("./assets/client-only-component-C2Nk0WSE.js"),
+  () => import("./assets/client-only-component-Dml__CE9.js"),
   { ssr: false }
 );
 function DynamicSsrFalsePage() {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Dynamic SSR False Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
       lineNumber: 19,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { "data-testid": "with-loading", children: /* @__PURE__ */ jsxDEV(ClientOnly, {}, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
       lineNumber: 21,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
       lineNumber: 20,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { "data-testid": "without-loading", children: /* @__PURE__ */ jsxDEV(ClientOnlyNoLoading, {}, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
       lineNumber: 24,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
       lineNumber: 23,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx",
     lineNumber: 18,
     columnNumber: 5
   }, this);
 }
-const page_8 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: DynamicSsrFalsePage
 }, Symbol.toStringTag, { value: "Module" }));
 function ISRPage({ timestamp, message }) {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "ISR Page" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/isr-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/isr-test.tsx",
       lineNumber: 9,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { "data-testid": "message", children: message }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/isr-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/isr-test.tsx",
       lineNumber: 10,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { "data-testid": "timestamp", children: timestamp }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/isr-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/isr-test.tsx",
       lineNumber: 11,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/isr-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/isr-test.tsx",
     lineNumber: 8,
     columnNumber: 5
   }, this);
@@ -2414,7 +2468,7 @@ async function getStaticProps$4() {
     // Revalidate every 1 second
   };
 }
-const page_9 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: ISRPage,
   getStaticProps: getStaticProps$4
@@ -2424,32 +2478,32 @@ function LinkTestPage() {
   const [preventedNav, setPreventedNav] = useState(false);
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Link Advanced Props Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
       lineNumber: 11,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { style: { height: "200vh", background: "linear-gradient(white, #eee)" }, children: /* @__PURE__ */ jsxDEV("p", { children: "Tall content area" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
       lineNumber: 15,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
       lineNumber: 14,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { "data-testid": "links", style: { marginTop: 20 }, children: [
       /* @__PURE__ */ jsxDEV(Link, { href: "/about", scroll: false, "data-testid": "link-no-scroll", children: "No Scroll Link" }, void 0, false, {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
         lineNumber: 20,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV(Link, { href: "/about", replace: true, "data-testid": "link-replace", children: "Replace Link" }, void 0, false, {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
         lineNumber: 25,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV(Link, { href: "/blog/[slug]", as: "/blog/test-post", "data-testid": "link-as", children: "As Prop Link" }, void 0, false, {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
         lineNumber: 30,
         columnNumber: 9
       }, this),
@@ -2467,39 +2521,39 @@ function LinkTestPage() {
         void 0,
         false,
         {
-          fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+          fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
           lineNumber: 35,
           columnNumber: 9
         },
         this
       ),
       /* @__PURE__ */ jsxDEV(Link, { href: "/about", target: "_blank", "data-testid": "link-blank", children: "Blank Target Link" }, void 0, false, {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
         lineNumber: 47,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
       lineNumber: 18,
       columnNumber: 7
     }, this),
     preventedNav && /* @__PURE__ */ jsxDEV("div", { "data-testid": "prevented-message", children: "Navigation was prevented" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
       lineNumber: 53,
       columnNumber: 9
     }, this),
     /* @__PURE__ */ jsxDEV("div", { "data-testid": "current-path", children: router2.asPath }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
       lineNumber: 56,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx",
     lineNumber: 10,
     columnNumber: 5
   }, this);
 }
-const page_10 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: LinkTestPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -2507,7 +2561,7 @@ function NavTestPage() {
   const router2 = useRouter();
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Navigation Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
       lineNumber: 8,
       columnNumber: 7
     }, this),
@@ -2515,7 +2569,7 @@ function NavTestPage() {
       "Current: ",
       router2.pathname
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
       lineNumber: 9,
       columnNumber: 7
     }, this),
@@ -2529,7 +2583,7 @@ function NavTestPage() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
         lineNumber: 10,
         columnNumber: 7
       },
@@ -2545,7 +2599,7 @@ function NavTestPage() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
         lineNumber: 16,
         columnNumber: 7
       },
@@ -2561,40 +2615,40 @@ function NavTestPage() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
         lineNumber: 22,
         columnNumber: 7
       },
       this
     ),
     /* @__PURE__ */ jsxDEV(Link, { href: "/", "data-testid": "link-home", children: "Link to Home" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
       lineNumber: 28,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Link, { href: "/about", "data-testid": "link-about", children: "Link to About" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
       lineNumber: 29,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Link, { href: "/ssr", "data-testid": "link-ssr", children: "Link to SSR" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
       lineNumber: 30,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx",
     lineNumber: 7,
     columnNumber: 5
   }, this);
 }
-const page_11 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: NavTestPage
 }, Symbol.toStringTag, { value: "Module" }));
 function MissingPost() {
   return /* @__PURE__ */ jsxDEV("div", { children: "This should never render" }, void 0, false, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/posts/missing.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/posts/missing.tsx",
     lineNumber: 5,
     columnNumber: 10
   }, this);
@@ -2604,14 +2658,14 @@ async function getServerSideProps$5() {
     notFound: true
   };
 }
-const page_12 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_14 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: MissingPost,
   getServerSideProps: getServerSideProps$5
 }, Symbol.toStringTag, { value: "Module" }));
 function RedirectXss() {
   return /* @__PURE__ */ jsxDEV("div", { children: "Should not render" }, void 0, false, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/redirect-xss.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/redirect-xss.tsx",
     lineNumber: 4,
     columnNumber: 10
   }, this);
@@ -2623,7 +2677,7 @@ function getStaticProps$3() {
     }
   };
 }
-const page_13 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_15 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: RedirectXss,
   getStaticProps: getStaticProps$3
@@ -2672,16 +2726,16 @@ function RouterEventsTest() {
   }, [router2]);
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Router Events Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
       lineNumber: 58,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Link, { href: "/about", children: /* @__PURE__ */ jsxDEV("span", { "data-testid": "link-about", children: "Go to About" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
       lineNumber: 60,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
       lineNumber: 59,
       columnNumber: 7
     }, this),
@@ -2695,7 +2749,7 @@ function RouterEventsTest() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
         lineNumber: 62,
         columnNumber: 7
       },
@@ -2711,7 +2765,7 @@ function RouterEventsTest() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
         lineNumber: 68,
         columnNumber: 7
       },
@@ -2730,29 +2784,29 @@ function RouterEventsTest() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
         lineNumber: 74,
         columnNumber: 7
       },
       this
     ),
     /* @__PURE__ */ jsxDEV("div", { "data-testid": "event-log", children: events.join("|") }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
       lineNumber: 83,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("div", { "data-testid": "event-count", children: events.length }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
       lineNumber: 84,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx",
     lineNumber: 57,
     columnNumber: 5
   }, this);
 }
-const page_14 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_16 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: RouterEventsTest
 }, Symbol.toStringTag, { value: "Module" }));
@@ -2770,18 +2824,6 @@ function Script(props) {
     ...rest
   } = props;
   const hasMounted = useRef(false);
-  if (typeof window === "undefined") {
-    if (strategy === "beforeInteractive") {
-      const scriptProps = { ...rest };
-      if (src) scriptProps.src = src;
-      if (id) scriptProps.id = id;
-      if (dangerouslySetInnerHTML) {
-        scriptProps.dangerouslySetInnerHTML = dangerouslySetInnerHTML;
-      }
-      return React.createElement("script", scriptProps, children);
-    }
-    return null;
-  }
   const key = id ?? src ?? "";
   useEffect(() => {
     if (hasMounted.current) return;
@@ -2845,12 +2887,24 @@ function Script(props) {
       load();
     }
   }, [src, id, strategy, onLoad, onReady, onError, children, dangerouslySetInnerHTML, key, rest]);
+  if (typeof window === "undefined") {
+    if (strategy === "beforeInteractive") {
+      const scriptProps = { ...rest };
+      if (src) scriptProps.src = src;
+      if (id) scriptProps.id = id;
+      if (dangerouslySetInnerHTML) {
+        scriptProps.dangerouslySetInnerHTML = dangerouslySetInnerHTML;
+      }
+      return React__default.createElement("script", scriptProps, children);
+    }
+    return null;
+  }
   return null;
 }
 function ScriptTestPage() {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Script Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/script-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/script-test.tsx",
       lineNumber: 6,
       columnNumber: 7
     }, this),
@@ -2864,24 +2918,24 @@ function ScriptTestPage() {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/script-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/script-test.tsx",
         lineNumber: 7,
         columnNumber: 7
       },
       this
     ),
     /* @__PURE__ */ jsxDEV("p", { children: "Page with scripts" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/script-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/script-test.tsx",
       lineNumber: 12,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/script-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/script-test.tsx",
     lineNumber: 5,
     columnNumber: 5
   }, this);
 }
-const page_15 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: ScriptTestPage
 }, Symbol.toStringTag, { value: "Module" }));
@@ -2903,7 +2957,7 @@ function ShallowTestPage({ gsspCallId, serverQuery }) {
   const router2 = useRouter();
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Shallow Routing Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
       lineNumber: 31,
       columnNumber: 7
     }, this),
@@ -2911,27 +2965,27 @@ function ShallowTestPage({ gsspCallId, serverQuery }) {
       "gssp:",
       gsspCallId
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
       lineNumber: 32,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { "data-testid": "router-query", children: JSON.stringify(router2.query) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
       lineNumber: 33,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { "data-testid": "server-query", children: JSON.stringify(serverQuery) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
       lineNumber: 34,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { "data-testid": "router-pathname", children: router2.pathname }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
       lineNumber: 35,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { "data-testid": "router-asPath", children: router2.asPath }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
       lineNumber: 36,
       columnNumber: 7
     }, this),
@@ -2945,7 +2999,7 @@ function ShallowTestPage({ gsspCallId, serverQuery }) {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
         lineNumber: 37,
         columnNumber: 7
       },
@@ -2961,7 +3015,7 @@ function ShallowTestPage({ gsspCallId, serverQuery }) {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
         lineNumber: 43,
         columnNumber: 7
       },
@@ -2977,19 +3031,19 @@ function ShallowTestPage({ gsspCallId, serverQuery }) {
       void 0,
       false,
       {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
         lineNumber: 49,
         columnNumber: 7
       },
       this
     )
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx",
     lineNumber: 30,
     columnNumber: 5
   }, this);
 }
-const page_16 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_18 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: ShallowTestPage,
   getServerSideProps: getServerSideProps$4
@@ -2997,12 +3051,12 @@ const page_16 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
 function SSRPage({ timestamp, message }) {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Server-Side Rendered" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/ssr.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/ssr.tsx",
       lineNumber: 9,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("p", { "data-testid": "message", children: message }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/ssr.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/ssr.tsx",
       lineNumber: 10,
       columnNumber: 7
     }, this),
@@ -3010,12 +3064,12 @@ function SSRPage({ timestamp, message }) {
       "Rendered at: ",
       timestamp
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/ssr.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/ssr.tsx",
       lineNumber: 11,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/ssr.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/ssr.tsx",
     lineNumber: 8,
     columnNumber: 5
   }, this);
@@ -3028,7 +3082,7 @@ async function getServerSideProps$3() {
     }
   };
 }
-const page_17 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: SSRPage,
   getServerSideProps: getServerSideProps$3
@@ -3037,7 +3091,7 @@ const LazyGreeting = lazy(
   () => new Promise((resolve) => {
     resolve({
       default: () => /* @__PURE__ */ jsxDEV("div", { "data-testid": "lazy-greeting", children: "Hello from lazy component" }, void 0, false, {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/suspense-test.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/suspense-test.tsx",
         lineNumber: 12,
         columnNumber: 11
       }, void 0)
@@ -3047,37 +3101,37 @@ const LazyGreeting = lazy(
 function SuspenseTestPage() {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Suspense Test" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/suspense-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/suspense-test.tsx",
       lineNumber: 21,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Suspense, { fallback: /* @__PURE__ */ jsxDEV("div", { "data-testid": "loading", children: "Loading..." }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/suspense-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/suspense-test.tsx",
       lineNumber: 22,
       columnNumber: 27
     }, this), children: /* @__PURE__ */ jsxDEV(LazyGreeting, {}, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/suspense-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/suspense-test.tsx",
       lineNumber: 23,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/suspense-test.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/suspense-test.tsx",
       lineNumber: 22,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/suspense-test.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/suspense-test.tsx",
     lineNumber: 20,
     columnNumber: 5
   }, this);
 }
-const page_18 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_20 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: SuspenseTestPage
 }, Symbol.toStringTag, { value: "Module" }));
 function Article({ id, title }) {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: title }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/articles/[id].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/articles/[id].tsx",
       lineNumber: 11,
       columnNumber: 7
     }, this),
@@ -3085,12 +3139,12 @@ function Article({ id, title }) {
       "Article ID: ",
       id
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/articles/[id].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/articles/[id].tsx",
       lineNumber: 12,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/articles/[id].tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/articles/[id].tsx",
     lineNumber: 10,
     columnNumber: 5
   }, this);
@@ -3116,7 +3170,7 @@ async function getStaticProps$2({ params }) {
     }
   };
 }
-const page_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_21 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Article,
   getStaticPaths: getStaticPaths$2,
@@ -3125,7 +3179,7 @@ const page_19 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
 function BlogPost({ slug, title }) {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { children: title }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/blog/[slug].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/blog/[slug].tsx",
       lineNumber: 11,
       columnNumber: 7
     }, this),
@@ -3133,12 +3187,12 @@ function BlogPost({ slug, title }) {
       "Blog post slug: ",
       slug
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/blog/[slug].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/blog/[slug].tsx",
       lineNumber: 12,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/blog/[slug].tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/blog/[slug].tsx",
     lineNumber: 10,
     columnNumber: 5
   }, this);
@@ -3164,7 +3218,7 @@ async function getStaticProps$1({ params }) {
     }
   };
 }
-const page_20 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: BlogPost,
   getStaticPaths: getStaticPaths$1,
@@ -3177,7 +3231,7 @@ function Post({ id }) {
       "Post: ",
       id
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/posts/[id].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/posts/[id].tsx",
       lineNumber: 12,
       columnNumber: 7
     }, this),
@@ -3185,7 +3239,7 @@ function Post({ id }) {
       "Pathname: ",
       router2.pathname
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/posts/[id].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/posts/[id].tsx",
       lineNumber: 13,
       columnNumber: 7
     }, this),
@@ -3193,12 +3247,12 @@ function Post({ id }) {
       "Query ID: ",
       router2.query.id
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/posts/[id].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/posts/[id].tsx",
       lineNumber: 14,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/posts/[id].tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/posts/[id].tsx",
     lineNumber: 11,
     columnNumber: 5
   }, this);
@@ -3210,7 +3264,7 @@ async function getServerSideProps$2({ params }) {
     }
   };
 }
-const page_21 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Post,
   getServerSideProps: getServerSideProps$2
@@ -3219,7 +3273,7 @@ function Product({ pid, name }) {
   const router2 = useRouter();
   if (router2.isFallback) {
     return /* @__PURE__ */ jsxDEV("div", { children: "Loading product..." }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/products/[pid].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/products/[pid].tsx",
       lineNumber: 15,
       columnNumber: 12
     }, this);
@@ -3229,7 +3283,7 @@ function Product({ pid, name }) {
       "Product: ",
       name
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/products/[pid].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/products/[pid].tsx",
       lineNumber: 20,
       columnNumber: 7
     }, this),
@@ -3237,7 +3291,7 @@ function Product({ pid, name }) {
       "Product ID: ",
       pid
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/products/[pid].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/products/[pid].tsx",
       lineNumber: 21,
       columnNumber: 7
     }, this),
@@ -3245,12 +3299,12 @@ function Product({ pid, name }) {
       "isFallback: ",
       String(router2.isFallback)
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/products/[pid].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/products/[pid].tsx",
       lineNumber: 22,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/products/[pid].tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/products/[pid].tsx",
     lineNumber: 19,
     columnNumber: 5
   }, this);
@@ -3276,7 +3330,7 @@ async function getStaticProps({ params }) {
     }
   };
 }
-const page_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_24 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: Product,
   getStaticPaths,
@@ -3285,7 +3339,7 @@ const page_22 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
 function DocsPage({ slug }) {
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("h1", { "data-testid": "docs-title", children: "Docs" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/docs/[...slug].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/docs/[...slug].tsx",
       lineNumber: 4,
       columnNumber: 7
     }, this),
@@ -3293,12 +3347,12 @@ function DocsPage({ slug }) {
       "Path: ",
       slug.join("/")
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/docs/[...slug].tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/docs/[...slug].tsx",
       lineNumber: 5,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/docs/[...slug].tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/docs/[...slug].tsx",
     lineNumber: 3,
     columnNumber: 5
   }, this);
@@ -3312,7 +3366,7 @@ async function getServerSideProps$1({
     }
   };
 }
-const page_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_25 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: DocsPage,
   getServerSideProps: getServerSideProps$1
@@ -3320,7 +3374,7 @@ const page_23 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePrope
 function SignUpPage({ segments }) {
   return /* @__PURE__ */ jsxDEV("main", { "data-testid": "sign-up-page", children: [
     /* @__PURE__ */ jsxDEV("h1", { children: "Sign Up" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx",
       lineNumber: 4,
       columnNumber: 7
     }, this),
@@ -3328,7 +3382,7 @@ function SignUpPage({ segments }) {
       "Segments: ",
       segments.length
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx",
       lineNumber: 5,
       columnNumber: 7
     }, this),
@@ -3336,12 +3390,12 @@ function SignUpPage({ segments }) {
       "Path: ",
       segments.length > 0 ? segments.join("/") : "(root)"
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx",
       lineNumber: 6,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx",
     lineNumber: 3,
     columnNumber: 5
   }, this);
@@ -3355,7 +3409,7 @@ async function getServerSideProps({
     }
   };
 }
-const page_24 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+const page_26 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: SignUpPage,
   getServerSideProps
@@ -3394,21 +3448,21 @@ const api_3 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.definePropert
 function MyApp({ Component, pageProps }) {
   return /* @__PURE__ */ jsxDEV("div", { id: "app-wrapper", "data-testid": "app-wrapper", children: [
     /* @__PURE__ */ jsxDEV("nav", { "data-testid": "global-nav", children: /* @__PURE__ */ jsxDEV("span", { children: "My App" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_app.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_app.tsx",
       lineNumber: 7,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_app.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_app.tsx",
       lineNumber: 6,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV(Component, { ...pageProps }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_app.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_app.tsx",
       lineNumber: 9,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_app.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_app.tsx",
     lineNumber: 5,
     columnNumber: 5
   }, this);
@@ -3419,7 +3473,7 @@ function Html({
   ...props
 }) {
   return /* @__PURE__ */ jsxDEV("html", { lang, ...props, children }, void 0, false, {
-    fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/document.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/document.tsx",
     lineNumber: 16,
     columnNumber: 5
   }, this);
@@ -3427,71 +3481,71 @@ function Html({
 function Head({ children }) {
   return /* @__PURE__ */ jsxDEV("head", { children: [
     /* @__PURE__ */ jsxDEV("meta", { charSet: "utf-8" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/document.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/document.tsx",
       lineNumber: 29,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("meta", { name: "viewport", content: "width=device-width, initial-scale=1" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/document.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/document.tsx",
       lineNumber: 30,
       columnNumber: 7
     }, this),
     children
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/document.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/document.tsx",
     lineNumber: 28,
     columnNumber: 5
   }, this);
 }
 function Main() {
   return /* @__PURE__ */ jsxDEV("div", { id: "__next", dangerouslySetInnerHTML: { __html: "__NEXT_MAIN__" } }, void 0, false, {
-    fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/document.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/document.tsx",
     lineNumber: 40,
     columnNumber: 10
   }, this);
 }
 function NextScript() {
   return /* @__PURE__ */ jsxDEV("span", { dangerouslySetInnerHTML: { __html: "<!-- __NEXT_SCRIPTS__ -->" } }, void 0, false, {
-    fileName: "/home/runner/work/vinext/vinext/packages/vinext/src/shims/document.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/packages/openvite/src/shims/document.tsx",
     lineNumber: 49,
     columnNumber: 10
   }, this);
 }
 function Document() {
   return /* @__PURE__ */ jsxDEV(Html, { lang: "en", children: [
-    /* @__PURE__ */ jsxDEV(Head, { children: /* @__PURE__ */ jsxDEV("meta", { name: "description", content: "A vinext test app" }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_document.tsx",
+    /* @__PURE__ */ jsxDEV(Head, { children: /* @__PURE__ */ jsxDEV("meta", { name: "description", content: "A openvite test app" }, void 0, false, {
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_document.tsx",
       lineNumber: 7,
       columnNumber: 9
     }, this) }, void 0, false, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_document.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_document.tsx",
       lineNumber: 6,
       columnNumber: 7
     }, this),
     /* @__PURE__ */ jsxDEV("body", { className: "custom-body", children: [
       /* @__PURE__ */ jsxDEV(Main, {}, void 0, false, {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_document.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_document.tsx",
         lineNumber: 10,
         columnNumber: 9
       }, this),
       /* @__PURE__ */ jsxDEV(NextScript, {}, void 0, false, {
-        fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_document.tsx",
+        fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_document.tsx",
         lineNumber: 11,
         columnNumber: 9
       }, this)
     ] }, void 0, true, {
-      fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_document.tsx",
+      fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_document.tsx",
       lineNumber: 9,
       columnNumber: 7
     }, this)
   ] }, void 0, true, {
-    fileName: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/_document.tsx",
+    fileName: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/_document.tsx",
     lineNumber: 5,
     columnNumber: 5
   }, this);
 }
 const i18nConfig = null;
-const vinextConfig = { "basePath": "", "trailingSlash": false, "redirects": [{ "source": "/old-about", "destination": "/about", "permanent": true }], "rewrites": { "beforeFiles": [{ "source": "/before-rewrite", "destination": "/about" }], "afterFiles": [{ "source": "/after-rewrite", "destination": "/about" }], "fallback": [{ "source": "/fallback-rewrite", "destination": "/about" }] }, "headers": [{ "source": "/api/(.*)", "headers": [{ "key": "X-Custom-Header", "value": "vinext" }] }], "i18n": null };
+const openviteConfig = { "basePath": "", "trailingSlash": false, "redirects": [{ "source": "/old-about", "destination": "/about", "permanent": true }], "rewrites": { "beforeFiles": [{ "source": "/before-rewrite", "destination": "/about" }], "afterFiles": [{ "source": "/after-rewrite", "destination": "/about" }], "fallback": [{ "source": "/fallback-rewrite", "destination": "/about" }] }, "headers": [{ "source": "/api/(.*)", "headers": [{ "key": "X-Custom-Header", "value": "openvite" }] }, { "source": "/about", "has": [{ "type": "cookie", "key": "logged-in" }], "headers": [{ "key": "X-Auth-Only-Header", "value": "1" }] }, { "source": "/about", "missing": [{ "type": "cookie", "key": "logged-in" }], "headers": [{ "key": "X-Guest-Only-Header", "value": "1" }] }], "i18n": null, "images": {} };
 async function isrGet(key) {
   const handler2 = getCacheHandler();
   const result = await handler2.get(key);
@@ -3505,7 +3559,7 @@ async function isrSet(key, data, revalidateSeconds, tags) {
 const pendingRegenerations = /* @__PURE__ */ new Map();
 function triggerBackgroundRegeneration(key, renderFn) {
   if (pendingRegenerations.has(key)) return;
-  const promise = renderFn().catch((err) => console.error("[vinext] ISR regen failed for " + key + ":", err)).finally(() => pendingRegenerations.delete(key));
+  const promise = renderFn().catch((err) => console.error("[openvite] ISR regen failed for " + key + ":", err)).finally(() => pendingRegenerations.delete(key));
   pendingRegenerations.set(key, promise);
 }
 async function renderToStringAsync(element) {
@@ -3514,31 +3568,33 @@ async function renderToStringAsync(element) {
   return new Response(stream).text();
 }
 const pageRoutes = [
-  { pattern: "/", isDynamic: false, params: [], module: page_0, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/index.tsx" },
-  { pattern: "/404", isDynamic: false, params: [], module: page_1, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/404.tsx" },
-  { pattern: "/about", isDynamic: false, params: [], module: page_2, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/about.tsx" },
-  { pattern: "/alias-test", isDynamic: false, params: [], module: page_3, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/alias-test.tsx" },
-  { pattern: "/before-pop-state-test", isDynamic: false, params: [], module: page_4, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx" },
-  { pattern: "/config-test", isDynamic: false, params: [], module: page_5, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/config-test.tsx" },
-  { pattern: "/counter", isDynamic: false, params: [], module: page_6, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/counter.tsx" },
-  { pattern: "/dynamic-page", isDynamic: false, params: [], module: page_7, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-page.tsx" },
-  { pattern: "/dynamic-ssr-false", isDynamic: false, params: [], module: page_8, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx" },
-  { pattern: "/isr-test", isDynamic: false, params: [], module: page_9, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/isr-test.tsx" },
-  { pattern: "/link-test", isDynamic: false, params: [], module: page_10, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/link-test.tsx" },
-  { pattern: "/nav-test", isDynamic: false, params: [], module: page_11, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/nav-test.tsx" },
-  { pattern: "/posts/missing", isDynamic: false, params: [], module: page_12, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/posts/missing.tsx" },
-  { pattern: "/redirect-xss", isDynamic: false, params: [], module: page_13, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/redirect-xss.tsx" },
-  { pattern: "/router-events-test", isDynamic: false, params: [], module: page_14, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/router-events-test.tsx" },
-  { pattern: "/script-test", isDynamic: false, params: [], module: page_15, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/script-test.tsx" },
-  { pattern: "/shallow-test", isDynamic: false, params: [], module: page_16, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/shallow-test.tsx" },
-  { pattern: "/ssr", isDynamic: false, params: [], module: page_17, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/ssr.tsx" },
-  { pattern: "/suspense-test", isDynamic: false, params: [], module: page_18, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/suspense-test.tsx" },
-  { pattern: "/articles/:id", isDynamic: true, params: ["id"], module: page_19, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/articles/[id].tsx" },
-  { pattern: "/blog/:slug", isDynamic: true, params: ["slug"], module: page_20, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/blog/[slug].tsx" },
-  { pattern: "/posts/:id", isDynamic: true, params: ["id"], module: page_21, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/posts/[id].tsx" },
-  { pattern: "/products/:pid", isDynamic: true, params: ["pid"], module: page_22, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/products/[pid].tsx" },
-  { pattern: "/docs/:slug+", isDynamic: true, params: ["slug"], module: page_23, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/docs/[...slug].tsx" },
-  { pattern: "/sign-up/:sign-up*", isDynamic: true, params: ["sign-up"], module: page_24, filePath: "/home/runner/work/vinext/vinext/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx" }
+  { pattern: "/", isDynamic: false, params: [], module: page_0, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/index.tsx" },
+  { pattern: "/404", isDynamic: false, params: [], module: page_1, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/404.tsx" },
+  { pattern: "/about", isDynamic: false, params: [], module: page_2, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/about.tsx" },
+  { pattern: "/alias-test", isDynamic: false, params: [], module: page_3, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/alias-test.tsx" },
+  { pattern: "/before-pop-state-test", isDynamic: false, params: [], module: page_4, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/before-pop-state-test.tsx" },
+  { pattern: "/cjs/basic", isDynamic: false, params: [], module: page_5, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/cjs/basic.tsx" },
+  { pattern: "/cjs/random", isDynamic: false, params: [], module: page_6, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/cjs/random.ts" },
+  { pattern: "/config-test", isDynamic: false, params: [], module: page_7, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/config-test.tsx" },
+  { pattern: "/counter", isDynamic: false, params: [], module: page_8, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/counter.tsx" },
+  { pattern: "/dynamic-page", isDynamic: false, params: [], module: page_9, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-page.tsx" },
+  { pattern: "/dynamic-ssr-false", isDynamic: false, params: [], module: page_10, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/dynamic-ssr-false.tsx" },
+  { pattern: "/isr-test", isDynamic: false, params: [], module: page_11, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/isr-test.tsx" },
+  { pattern: "/link-test", isDynamic: false, params: [], module: page_12, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/link-test.tsx" },
+  { pattern: "/nav-test", isDynamic: false, params: [], module: page_13, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/nav-test.tsx" },
+  { pattern: "/posts/missing", isDynamic: false, params: [], module: page_14, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/posts/missing.tsx" },
+  { pattern: "/redirect-xss", isDynamic: false, params: [], module: page_15, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/redirect-xss.tsx" },
+  { pattern: "/router-events-test", isDynamic: false, params: [], module: page_16, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/router-events-test.tsx" },
+  { pattern: "/script-test", isDynamic: false, params: [], module: page_17, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/script-test.tsx" },
+  { pattern: "/shallow-test", isDynamic: false, params: [], module: page_18, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/shallow-test.tsx" },
+  { pattern: "/ssr", isDynamic: false, params: [], module: page_19, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/ssr.tsx" },
+  { pattern: "/suspense-test", isDynamic: false, params: [], module: page_20, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/suspense-test.tsx" },
+  { pattern: "/articles/:id", isDynamic: true, params: ["id"], module: page_21, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/articles/[id].tsx" },
+  { pattern: "/blog/:slug", isDynamic: true, params: ["slug"], module: page_22, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/blog/[slug].tsx" },
+  { pattern: "/posts/:id", isDynamic: true, params: ["id"], module: page_23, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/posts/[id].tsx" },
+  { pattern: "/products/:pid", isDynamic: true, params: ["pid"], module: page_24, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/products/[pid].tsx" },
+  { pattern: "/docs/:slug+", isDynamic: true, params: ["slug"], module: page_25, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/docs/[...slug].tsx" },
+  { pattern: "/sign-up/:sign-up*", isDynamic: true, params: ["sign-up"], module: page_26, filePath: "C:/Users/burge/Documents/framework/openvite/tests/fixtures/pages-basic/pages/sign-up/[[...sign-up]]/index.tsx" }
 ];
 const apiRoutes = [
   { pattern: "/api/binary", isDynamic: false, params: [], module: api_0 },
@@ -3601,13 +3657,13 @@ function patternToNextFormat(pattern) {
   return pattern.replace(/:([\w]+)\*/g, "[[...$1]]").replace(/:([\w]+)\+/g, "[...$1]").replace(/:([\w]+)/g, "[$1]");
 }
 function collectAssetTags(manifest, moduleIds) {
-  const m = manifest && Object.keys(manifest).length > 0 ? manifest : typeof globalThis !== "undefined" && globalThis.__VINEXT_SSR_MANIFEST__ || null;
+  const m = manifest && Object.keys(manifest).length > 0 ? manifest : typeof globalThis !== "undefined" && globalThis.__OPENVITE_SSR_MANIFEST__ || null;
   const tags = [];
   const seen = /* @__PURE__ */ new Set();
-  var lazyChunks = typeof globalThis !== "undefined" && globalThis.__VINEXT_LAZY_CHUNKS__ || null;
+  var lazyChunks = typeof globalThis !== "undefined" && globalThis.__OPENVITE_LAZY_CHUNKS__ || null;
   var lazySet = lazyChunks && lazyChunks.length > 0 ? new Set(lazyChunks) : null;
-  if (typeof globalThis !== "undefined" && globalThis.__VINEXT_CLIENT_ENTRY__) {
-    const entry = globalThis.__VINEXT_CLIENT_ENTRY__;
+  if (typeof globalThis !== "undefined" && globalThis.__OPENVITE_CLIENT_ENTRY__) {
+    const entry = globalThis.__OPENVITE_CLIENT_ENTRY__;
     seen.add(entry);
     tags.push('<link rel="modulepreload" href="/' + entry + '" />');
     tags.push('<script type="module" src="/' + entry + '" crossorigin><\/script>');
@@ -3636,7 +3692,7 @@ function collectAssetTags(manifest, moduleIds) {
         for (var vi = 0; vi < vals.length; vi++) {
           var file = vals[vi];
           var basename = file.split("/").pop() || "";
-          if (basename.startsWith("framework-") || basename.startsWith("vinext-") || basename.includes("vinext-client-entry") || basename.includes("vinext-app-browser-entry")) {
+          if (basename.startsWith("framework-") || basename.startsWith("openvite-") || basename.includes("openvite-client-entry") || basename.includes("openvite-app-browser-entry")) {
             allFiles.push(file);
           }
         }
@@ -3899,7 +3955,7 @@ async function renderPage(request, url, manifest) {
                 if (cached && !cached.isStale && cached.value.value && cached.value.value.kind === "PAGES") {
                   var _hitHeaders = {
                     "Content-Type": "text/html",
-                    "X-Vinext-Cache": "HIT",
+                    "X-Openvite-Cache": "HIT",
                     "Cache-Control": "s-maxage=" + (cached.value.value.revalidate || 60) + ", stale-while-revalidate"
                   };
                   if (_fontLinkHeader) _hitHeaders["Link"] = _fontLinkHeader;
@@ -3914,7 +3970,7 @@ async function renderPage(request, url, manifest) {
                   });
                   var _staleHeaders = {
                     "Content-Type": "text/html",
-                    "X-Vinext-Cache": "STALE",
+                    "X-Openvite-Cache": "STALE",
                     "Cache-Control": "s-maxage=0, stale-while-revalidate"
                   };
                   if (_fontLinkHeader) _staleHeaders["Link"] = _fontLinkHeader;
@@ -3941,9 +3997,9 @@ async function renderPage(request, url, manifest) {
               }
               let element;
               if (MyApp) {
-                element = React.createElement(MyApp, { Component: PageComponent, pageProps });
+                element = React__default.createElement(MyApp, { Component: PageComponent, pageProps });
               } else {
-                element = React.createElement(PageComponent, pageProps);
+                element = React__default.createElement(PageComponent, pageProps);
               }
               if (typeof resetSSRHead === "function") resetSSRHead();
               if (typeof flushPreloads === "function") await flushPreloads();
@@ -3964,7 +4020,7 @@ async function renderPage(request, url, manifest) {
                 if (typeof getSSRFontStyles$1 === "function") allFontStyles.push(...getSSRFontStyles$1());
                 if (typeof getSSRFontStyles === "function") allFontStyles.push(...getSSRFontStyles());
                 if (allFontStyles.length > 0) {
-                  fontHeadHTML += "<style data-vinext-fonts>" + allFontStyles.join("\n") + "</style>\n  ";
+                  fontHeadHTML += "<style data-openvite-fonts>" + allFontStyles.join("\n") + "</style>\n  ";
                 }
               } catch (e) {
               }
@@ -3977,12 +4033,12 @@ async function renderPage(request, url, manifest) {
                 isFallback: false
               };
               if (i18nConfig) ;
-              const localeGlobals = i18nConfig ? ";window.__VINEXT_LOCALE__=" + safeJsonStringify(locale) + ";window.__VINEXT_LOCALES__=" + safeJsonStringify(i18nConfig.locales) + ";window.__VINEXT_DEFAULT_LOCALE__=" + safeJsonStringify(i18nConfig.defaultLocale) : "";
+              const localeGlobals = i18nConfig ? ";window.__OPENVITE_LOCALE__=" + safeJsonStringify(locale) + ";window.__OPENVITE_LOCALES__=" + safeJsonStringify(i18nConfig.locales) + ";window.__OPENVITE_DEFAULT_LOCALE__=" + safeJsonStringify(i18nConfig.defaultLocale) : "";
               const nextDataScript = "<script>window.__NEXT_DATA__ = " + safeJsonStringify(nextDataPayload) + localeGlobals + "<\/script>";
-              var BODY_MARKER = "<!--VINEXT_STREAM_BODY-->";
+              var BODY_MARKER = "<!--OPENVITE_STREAM_BODY-->";
               var shellHtml;
               if (Document) {
-                const docElement = React.createElement(Document);
+                const docElement = React__default.createElement(Document);
                 shellHtml = await renderToStringAsync(docElement);
                 shellHtml = shellHtml.replace("__NEXT_MAIN__", BODY_MARKER);
                 if (ssrHeadHTML || assetTags || fontHeadHTML) {
@@ -4021,9 +4077,9 @@ async function renderPage(request, url, manifest) {
               if (isrRevalidateSeconds !== null && isrRevalidateSeconds > 0) {
                 var isrElement;
                 if (MyApp) {
-                  isrElement = React.createElement(MyApp, { Component: PageComponent, pageProps });
+                  isrElement = React__default.createElement(MyApp, { Component: PageComponent, pageProps });
                 } else {
-                  isrElement = React.createElement(PageComponent, pageProps);
+                  isrElement = React__default.createElement(PageComponent, pageProps);
                 }
                 var isrHtml = await renderToStringAsync(isrElement);
                 var fullHtml = shellPrefix + isrHtml + shellSuffix;
@@ -4034,14 +4090,14 @@ async function renderPage(request, url, manifest) {
               const responseHeaders = { "Content-Type": "text/html" };
               if (isrRevalidateSeconds) {
                 responseHeaders["Cache-Control"] = "s-maxage=" + isrRevalidateSeconds + ", stale-while-revalidate";
-                responseHeaders["X-Vinext-Cache"] = "MISS";
+                responseHeaders["X-Openvite-Cache"] = "MISS";
               }
               if (_fontLinkHeader) {
                 responseHeaders["Link"] = _fontLinkHeader;
               }
               return new Response(compositeStream, { status: 200, headers: responseHeaders });
             } catch (e) {
-              console.error("[vinext] SSR error:", e);
+              console.error("[openvite] SSR error:", e);
               return new Response("Internal Server Error", { status: 500 });
             }
           })
@@ -4104,7 +4160,7 @@ async function handleApiRoute(request, url) {
     res.end();
     return await responsePromise;
   } catch (e) {
-    console.error("[vinext] API error:", e);
+    console.error("[openvite] API error:", e);
     return new Response("Internal Server Error", { status: 500 });
   }
 }
@@ -4190,7 +4246,7 @@ function __isSafeRegex(pattern) {
 }
 function __safeRegExp(pattern, flags) {
   if (!__isSafeRegex(pattern)) {
-    console.warn("[vinext] Ignoring potentially unsafe regex pattern (ReDoS risk): " + pattern);
+    console.warn("[openvite] Ignoring potentially unsafe regex pattern (ReDoS risk): " + pattern);
     return null;
   }
   try {
@@ -4241,8 +4297,12 @@ function matchesMiddleware(pathname, matcher) {
   });
 }
 async function runMiddleware(request) {
-  var middlewareFn = middleware;
-  if (typeof middlewareFn !== "function") return { continue: true };
+  var middlewareFn = middleware ?? void 0;
+  if (typeof middlewareFn !== "function") {
+    var fileType = "Middleware";
+    var expectedExport = "middleware";
+    throw new Error("The " + fileType + " file must export a function named `" + expectedExport + "` or a `default` function.");
+  }
   var config$1 = config;
   var matcher = config$1 && config$1.matcher;
   var url = new URL(request.url);
@@ -4265,7 +4325,7 @@ async function runMiddleware(request) {
   try {
     response = await middlewareFn(nextRequest);
   } catch (e) {
-    console.error("[vinext] Middleware error:", e);
+    console.error("[openvite] Middleware error:", e);
     return { continue: false, response: new Response("Internal Server Error", { status: 500 }) };
   }
   if (!response) return { continue: true };
@@ -4299,7 +4359,7 @@ async function runMiddleware(request) {
 }
 export {
   handleApiRoute,
+  openviteConfig,
   renderPage,
-  runMiddleware,
-  vinextConfig
+  runMiddleware
 };

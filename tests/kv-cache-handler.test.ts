@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { KVCacheHandler } from "../packages/vinext/src/cloudflare/kv-cache-handler.js";
+import { KVCacheHandler } from "../packages/openvite/src/cloudflare/kv-cache-handler.js";
 
 // ---------------------------------------------------------------------------
 // Mock KV namespace
@@ -254,7 +254,7 @@ describe("KVCacheHandler", () => {
       const result = await handler.get("bad-b64-route");
       expect(result).toBeNull();
       expect(kv.delete).toHaveBeenCalledWith("cache:bad-b64-route");
-      expect(consoleSpy).toHaveBeenCalledWith("[vinext] Invalid base64 in cache entry");
+      expect(consoleSpy).toHaveBeenCalledWith("[openvite] Invalid base64 in cache entry");
       consoleSpy.mockRestore();
     });
 

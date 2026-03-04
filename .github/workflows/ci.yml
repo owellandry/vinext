@@ -20,41 +20,41 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run lint
+          cache: bun
+      - run: bun install --frozen-lockfile
+      - run: bun run lint
 
   typecheck:
     name: Typecheck
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm run typecheck
+          cache: bun
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
 
   test:
     name: Vitest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+          cache: bun
+      - run: bun install --frozen-lockfile
       - name: Build plugin (needed by ecosystem fixtures)
-        run: pnpm run build
-      - run: pnpm test
+        run: bun run build
+      - run: bun run test
 
   create-next-app:
     name: create-next-app (${{ matrix.os }})
@@ -65,26 +65,26 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+          cache: bun
+      - run: bun install --frozen-lockfile
       - name: Build plugin
-        run: pnpm run build
-      - name: Pack vinext for local install
+        run: bun run build
+      - name: Pack openvite for local install
         run: npm pack --pack-destination "${{ runner.temp }}"
-        working-directory: packages/vinext
+        working-directory: packages/openvite
       - name: Scaffold a fresh create-next-app project
         run: npx create-next-app@latest "${{ runner.temp }}/cna-test" --yes
-      - name: Install vinext from local tarball
+      - name: Install openvite from local tarball
         working-directory: ${{ runner.temp }}/cna-test
         shell: bash
-        run: npm install "${{ runner.temp }}"/vinext-*.tgz
-      - name: Run vinext init
+        run: npm install "${{ runner.temp }}"/openvite-*.tgz
+      - name: Run openvite init
         working-directory: ${{ runner.temp }}/cna-test
-        run: npx vinext init --skip-check
+        run: npx openvite init --skip-check
       - name: Start dev server and verify HTTP 200
         working-directory: ${{ runner.temp }}/cna-test
         shell: node {0}
@@ -141,16 +141,16 @@ jobs:
           - cloudflare-workers
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
+          cache: bun
+      - run: bun install --frozen-lockfile
       - name: Build plugin
-        run: pnpm run build
-      - run: pnpm exec playwright install chromium
-      - run: pnpm exec playwright test
+        run: bun run build
+      - run: bunx playwright install chromium
+      - run: bunx playwright test
         env:
           CI: true
           PLAYWRIGHT_PROJECT: ${{ matrix.project }}

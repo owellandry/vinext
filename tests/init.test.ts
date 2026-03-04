@@ -11,14 +11,14 @@ import {
   getReactUpgradeDeps,
   updateGitignore,
   type InitOptions,
-} from "../packages/vinext/src/init.js";
+} from "../packages/openvite/src/init.js";
 
 // ─── Test Helpers ────────────────────────────────────────────────────────────
 
 let tmpDir: string;
 
 function createTmpDir(): string {
-  return fs.mkdtempSync(path.join(os.tmpdir(), "vinext-init-test-"));
+  return fs.mkdtempSync(path.join(os.tmpdir(), "openvite-init-test-"));
 }
 
 function writeFile(dir: string, relativePath: string, content: string): void {
@@ -169,14 +169,14 @@ afterEach(() => {
 describe("generateViteConfig", () => {
   it("generates App Router config with RSC plugin", () => {
     const config = generateViteConfig(true);
-    expect(config).toContain('import vinext from "vinext"');
-    expect(config).toContain("vinext()");
+    expect(config).toContain('import openvite from "openvite"');
+    expect(config).toContain("openvite()");
   });
 
   it("generates Pages Router config without RSC", () => {
     const config = generateViteConfig(false);
-    expect(config).toContain('import vinext from "vinext"');
-    expect(config).toContain("vinext()");
+    expect(config).toContain('import openvite from "openvite"');
+    expect(config).toContain("openvite()");
     expect(config).not.toContain("plugin-rsc");
     expect(config).not.toContain("rsc(");
   });
@@ -195,17 +195,17 @@ describe("generateViteConfig", () => {
 // ─── Unit Tests: addScripts ──────────────────────────────────────────────────
 
 describe("addScripts", () => {
-  it("adds dev:vinext and build:vinext scripts", () => {
+  it("adds dev:openvite and build:openvite scripts", () => {
     setupProject(tmpDir, { router: "app" });
 
     const added = addScripts(tmpDir, 3001);
 
-    expect(added).toContain("dev:vinext");
-    expect(added).toContain("build:vinext");
+    expect(added).toContain("dev:openvite");
+    expect(added).toContain("build:openvite");
 
     const pkg = readPkg(tmpDir) as { scripts: Record<string, string> };
-    expect(pkg.scripts["dev:vinext"]).toBe("vite dev --port 3001");
-    expect(pkg.scripts["build:vinext"]).toBe("vite build");
+    expect(pkg.scripts["dev:openvite"]).toBe("vite dev --port 3001");
+    expect(pkg.scripts["build:openvite"]).toBe("vite build");
   });
 
   it("uses custom port", () => {
@@ -214,22 +214,22 @@ describe("addScripts", () => {
     addScripts(tmpDir, 4000);
 
     const pkg = readPkg(tmpDir) as { scripts: Record<string, string> };
-    expect(pkg.scripts["dev:vinext"]).toBe("vite dev --port 4000");
+    expect(pkg.scripts["dev:openvite"]).toBe("vite dev --port 4000");
   });
 
   it("does not overwrite existing scripts", () => {
     setupProject(tmpDir, {
       router: "app",
-      extraPkg: { scripts: { "dev:vinext": "custom-command" } },
+      extraPkg: { scripts: { "dev:openvite": "custom-command" } },
     });
 
     const added = addScripts(tmpDir, 3001);
 
-    expect(added).not.toContain("dev:vinext");
-    expect(added).toContain("build:vinext");
+    expect(added).not.toContain("dev:openvite");
+    expect(added).toContain("build:openvite");
 
     const pkg = readPkg(tmpDir) as { scripts: Record<string, string> };
-    expect(pkg.scripts["dev:vinext"]).toBe("custom-command");
+    expect(pkg.scripts["dev:openvite"]).toBe("custom-command");
   });
 
   it("creates scripts object if missing", () => {
@@ -237,9 +237,9 @@ describe("addScripts", () => {
 
     const added = addScripts(tmpDir, 3001);
 
-    expect(added).toContain("dev:vinext");
+    expect(added).toContain("dev:openvite");
     const pkg = readPkg(tmpDir) as { scripts: Record<string, string> };
-    expect(pkg.scripts["dev:vinext"]).toBeDefined();
+    expect(pkg.scripts["dev:openvite"]).toBeDefined();
   });
 
   it("returns empty array when no package.json", () => {
@@ -251,17 +251,17 @@ describe("addScripts", () => {
 // ─── Unit Tests: getInitDeps / isDepInstalled ────────────────────────────────
 
 describe("getInitDeps", () => {
-  it("returns vinext + vite + @vitejs/plugin-rsc + react-server-dom-webpack for App Router", () => {
+  it("returns openvite + vite + @vitejs/plugin-rsc + react-server-dom-webpack for App Router", () => {
     const deps = getInitDeps(true);
-    expect(deps).toContain("vinext");
+    expect(deps).toContain("openvite");
     expect(deps).toContain("vite");
     expect(deps).toContain("@vitejs/plugin-rsc");
     expect(deps).toContain("react-server-dom-webpack");
   });
 
-  it("returns vinext + vite for Pages Router", () => {
+  it("returns openvite + vite for Pages Router", () => {
     const deps = getInitDeps(false);
-    expect(deps).toContain("vinext");
+    expect(deps).toContain("openvite");
     expect(deps).toContain("vite");
     expect(deps).not.toContain("@vitejs/plugin-rsc");
     expect(deps).not.toContain("react-server-dom-webpack");
@@ -355,7 +355,7 @@ describe("init — basic functionality", () => {
     expect(fs.existsSync(path.join(tmpDir, "vite.config.ts"))).toBe(true);
 
     const config = readFile(tmpDir, "vite.config.ts");
-    expect(config).toContain('import vinext from "vinext"');
+    expect(config).toContain('import openvite from "openvite"');
   });
 
   it("generates vite.config.ts for Pages Router project", async () => {
@@ -365,7 +365,7 @@ describe("init — basic functionality", () => {
 
     expect(result.generatedViteConfig).toBe(true);
     const config = readFile(tmpDir, "vite.config.ts");
-    expect(config).toContain("vinext()");
+    expect(config).toContain("openvite()");
     expect(config).not.toContain("plugin-rsc");
   });
 
@@ -387,41 +387,41 @@ describe("init — basic functionality", () => {
     expect(result.addedTypeModule).toBe(false);
   });
 
-  it("adds dev:vinext and build:vinext scripts", async () => {
+  it("adds dev:openvite and build:openvite scripts", async () => {
     setupProject(tmpDir, { router: "app" });
 
     const { result } = await runInit(tmpDir);
 
-    expect(result.addedScripts).toContain("dev:vinext");
-    expect(result.addedScripts).toContain("build:vinext");
+    expect(result.addedScripts).toContain("dev:openvite");
+    expect(result.addedScripts).toContain("build:openvite");
 
     const pkg = readPkg(tmpDir) as { scripts: Record<string, string> };
-    expect(pkg.scripts["dev:vinext"]).toBe("vite dev --port 3001");
-    expect(pkg.scripts["build:vinext"]).toBe("vite build");
+    expect(pkg.scripts["dev:openvite"]).toBe("vite dev --port 3001");
+    expect(pkg.scripts["build:openvite"]).toBe("vite build");
   });
 
-  it("uses custom port in dev:vinext script", async () => {
+  it("uses custom port in dev:openvite script", async () => {
     setupProject(tmpDir, { router: "app" });
 
     await runInit(tmpDir, { port: 4000 });
 
     const pkg = readPkg(tmpDir) as { scripts: Record<string, string> };
-    expect(pkg.scripts["dev:vinext"]).toBe("vite dev --port 4000");
+    expect(pkg.scripts["dev:openvite"]).toBe("vite dev --port 4000");
   });
 
   it("does not overwrite existing scripts", async () => {
     setupProject(tmpDir, {
       router: "app",
-      extraPkg: { scripts: { "dev:vinext": "custom-command" } },
+      extraPkg: { scripts: { "dev:openvite": "custom-command" } },
     });
 
     const { result } = await runInit(tmpDir);
 
-    expect(result.addedScripts).not.toContain("dev:vinext");
-    expect(result.addedScripts).toContain("build:vinext");
+    expect(result.addedScripts).not.toContain("dev:openvite");
+    expect(result.addedScripts).toContain("build:openvite");
 
     const pkg = readPkg(tmpDir) as { scripts: Record<string, string> };
-    expect(pkg.scripts["dev:vinext"]).toBe("custom-command");
+    expect(pkg.scripts["dev:openvite"]).toBe("custom-command");
   });
 });
 
@@ -453,12 +453,12 @@ describe("init — CJS config renaming", () => {
 // ─── Dependency Installation ─────────────────────────────────────────────────
 
 describe("init — dependency installation", () => {
-  it("detects missing vinext and vite dependencies and installs them", async () => {
+  it("detects missing openvite and vite dependencies and installs them", async () => {
     setupProject(tmpDir, { router: "app" });
 
     const { result } = await runInit(tmpDir);
 
-    expect(result.installedDeps).toContain("vinext");
+    expect(result.installedDeps).toContain("openvite");
     expect(result.installedDeps).toContain("vite");
   });
 
@@ -651,8 +651,8 @@ describe("init — guard rails", () => {
     // ESM migration should still happen
     expect(result.addedTypeModule).toBe(true);
     // Scripts should still be added
-    expect(result.addedScripts).toContain("dev:vinext");
-    expect(result.addedScripts).toContain("build:vinext");
+    expect(result.addedScripts).toContain("dev:openvite");
+    expect(result.addedScripts).toContain("build:openvite");
     // But vite config should be skipped
     expect(result.generatedViteConfig).toBe(false);
     expect(result.skippedViteConfig).toBe(true);
@@ -667,7 +667,7 @@ describe("init — guard rails", () => {
     expect(result.generatedViteConfig).toBe(true);
     expect(result.skippedViteConfig).toBe(false);
     const config = readFile(tmpDir, "vite.config.ts");
-    expect(config).toContain("vinext()");
+    expect(config).toContain("openvite()");
   });
 
   it("exits when no package.json exists", async () => {

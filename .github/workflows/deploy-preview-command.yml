@@ -87,20 +87,20 @@ jobs:
         with:
           ref: ${{ needs.check.outputs.sha }}
 
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
 
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
+          cache: bun
 
-      - run: pnpm install
+      - run: bun install
 
-      - name: Build vinext plugin
-        run: pnpm run build
+      - name: Build openvite plugin
+        run: bun run build
 
       - name: Build example
-        run: pnpm exec vite build
+        run: bunx vite build
         working-directory: examples/${{ matrix.example.name }}
 
       - name: Deploy Preview Version
@@ -153,13 +153,13 @@ jobs:
               issue_number: prNumber,
             });
 
-            const marker = '<!-- vinext-deploy-previews -->';
+            const marker = '<!-- openvite-deploy-previews -->';
             const existingComment = comments.find(c => c.body?.includes(marker));
 
             const rows = examples
               .map(e => {
                 const orig = e.original ? `[original](${e.original})` : '';
-                return `| ${e.name} | [preview](https://${alias}-${e.project}.vinext.workers.dev) | [production](https://${e.project}.vinext.workers.dev) | ${orig} |`;
+                return `| ${e.name} | [preview](https://${alias}-${e.project}.${process.env.DEPLOY_DOMAIN || 'workers.dev'}) | [production](https://${e.project}.${process.env.DEPLOY_DOMAIN || 'workers.dev'}) | ${orig} |`;
               })
               .join('\n');
 

@@ -7,7 +7,7 @@ export default function CounterPage() {
   return (
     <div>
       <Head>
-        <title>Counter - vinext</title>
+        <title>Counter - openvite</title>
       </Head>
       <h1>Counter Page</h1>
       <p data-testid="count">Count: {count}</p>

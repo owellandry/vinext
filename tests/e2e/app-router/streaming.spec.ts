@@ -7,7 +7,7 @@
  *
  * OpenNext verifies that streaming responses arrive incrementally — messages
  * appear one at a time with delays between them, confirming the response is
- * not buffered. These tests verify the same behavior in vinext.
+ * not buffered. These tests verify the same behavior in openvite.
  */
 import { test, expect } from "@playwright/test";
 

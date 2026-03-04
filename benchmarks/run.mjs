@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Benchmark harness: compares Next.js 16 (Turbopack) vs vinext (Vite 7/Rollup) vs vinext (Vite 8/Rolldown)
+ * Benchmark harness: compares Next.js 16 (Turbopack) vs openvite (Vite 7/Rollup) vs openvite (Vite 8/Rolldown)
  *
  * Metrics:
  *   1. Production build time (hyperfine)
@@ -224,14 +224,14 @@ async function main() {
       cpus: (await import("node:os")).cpus().length,
     },
     nextjs: {},
-    vinext: {},
-    vinextRolldown: {},
+    openvite: {},
+    openviteRolldown: {},
   };
 
   const nextjsDir = join(__dirname, "nextjs");
-  const vinextDir = join(__dirname, "vinext");
-  const vinextRolldownDir = join(__dirname, "vinext-rolldown");
-  const hasRolldown = !SKIP_ROLLDOWN && existsSync(join(vinextRolldownDir, "package.json"));
+  const openviteDir = join(__dirname, "openvite");
+  const openviteRolldownDir = join(__dirname, "openvite-rolldown");
+  const hasRolldown = !SKIP_ROLLDOWN && existsSync(join(openviteRolldownDir, "package.json"));
 
   // Detect actual installed versions for reproducibility
   try {
@@ -239,12 +239,12 @@ async function main() {
     results.system.nextjsVersion = njsPkg.version;
   } catch { /* deps not installed yet */ }
   try {
-    const vitePkg = JSON.parse(readFileSync(join(vinextDir, "node_modules", "vite", "package.json"), "utf-8"));
+    const vitePkg = JSON.parse(readFileSync(join(openviteDir, "node_modules", "vite", "package.json"), "utf-8"));
     results.system.viteVersion = vitePkg.version;
   } catch { /* deps not installed yet */ }
   if (hasRolldown) {
     try {
-      const rdPkg = JSON.parse(readFileSync(join(vinextRolldownDir, "node_modules", "vite", "package.json"), "utf-8"));
+      const rdPkg = JSON.parse(readFileSync(join(openviteRolldownDir, "node_modules", "vite", "package.json"), "utf-8"));
       results.system.viteRolldownVersion = rdPkg.version;
     } catch { /* deps not installed yet */ }
   }
@@ -255,26 +255,26 @@ async function main() {
 
     // Clean previous builds
     exec("rm -rf .next", { cwd: nextjsDir });
-    exec("rm -rf dist", { cwd: vinextDir });
-    if (hasRolldown) exec("rm -rf dist", { cwd: vinextRolldownDir });
+    exec("rm -rf dist", { cwd: openviteDir });
+    if (hasRolldown) exec("rm -rf dist", { cwd: openviteRolldownDir });
 
     // Ensure plugin is built
-    console.log("  Building vinext plugin...");
-    exec("./node_modules/.bin/tsc -p packages/vinext/tsconfig.json", { cwd: join(__dirname, "..") });
+    console.log("  Building openvite plugin...");
+    exec("./node_modules/.bin/tsc -p packages/openvite/tsconfig.json", { cwd: join(__dirname, "..") });
 
     // Warmup run for all (not measured)
     console.log("  Warmup: Next.js build...");
     exec("./node_modules/.bin/next build --turbopack", { cwd: nextjsDir, timeout: 120000 });
     exec("rm -rf .next", { cwd: nextjsDir });
 
-    console.log("  Warmup: vinext (Rollup) build...");
-    exec("./node_modules/.bin/vite build", { cwd: vinextDir, timeout: 120000 });
-    exec("rm -rf dist", { cwd: vinextDir });
+    console.log("  Warmup: openvite (Rollup) build...");
+    exec("./node_modules/.bin/vite build", { cwd: openviteDir, timeout: 120000 });
+    exec("rm -rf dist", { cwd: openviteDir });
 
     if (hasRolldown) {
-      console.log("  Warmup: vinext (Rolldown) build...");
-      exec("./node_modules/.bin/vite build", { cwd: vinextRolldownDir, timeout: 120000 });
-      exec("rm -rf dist", { cwd: vinextRolldownDir });
+      console.log("  Warmup: openvite (Rolldown) build...");
+      exec("./node_modules/.bin/vite build", { cwd: openviteRolldownDir, timeout: 120000 });
+      exec("rm -rf dist", { cwd: openviteRolldownDir });
     }
 
     // Measured runs with hyperfine (single invocation with --shuffle for fair ordering)
@@ -295,11 +295,11 @@ async function main() {
       // warmed filesystem caches, CPU thermal state, or residual process state.
       const cmds = [
         `--command-name nextjs 'rm -rf ${nextjsDir}/.next && ./node_modules/.bin/next build --turbopack'`,
-        `--command-name vinext 'rm -rf ${vinextDir}/dist && ./node_modules/.bin/vite build --root ${vinextDir}'`,
+        `--command-name openvite 'rm -rf ${openviteDir}/dist && ./node_modules/.bin/vite build --root ${openviteDir}'`,
       ];
       if (hasRolldown) {
         cmds.push(
-          `--command-name rolldown 'rm -rf ${vinextRolldownDir}/dist && ./node_modules/.bin/vite build --root ${vinextRolldownDir}'`
+          `--command-name rolldown 'rm -rf ${openviteRolldownDir}/dist && ./node_modules/.bin/vite build --root ${openviteRolldownDir}'`
         );
       }
 
@@ -314,17 +314,17 @@ async function main() {
       for (const r of hf.results) {
         if (r.command.includes("next build")) {
           results.nextjs.buildTime = parseHyperfineResult(r);
-        } else if (r.command.includes(vinextDir)) {
-          results.vinext.buildTime = parseHyperfineResult(r);
-        } else if (hasRolldown && r.command.includes(vinextRolldownDir)) {
-          results.vinextRolldown.buildTime = parseHyperfineResult(r);
+        } else if (r.command.includes(openviteDir)) {
+          results.openvite.buildTime = parseHyperfineResult(r);
+        } else if (hasRolldown && r.command.includes(openviteRolldownDir)) {
+          results.openviteRolldown.buildTime = parseHyperfineResult(r);
         }
       }
       results.buildMethodology = "hyperfine --shuffle (randomized)";
     } catch {
       // Fallback: manual timing with randomized runner order to eliminate positional bias
       console.log("  hyperfine failed, falling back to manual timing...");
-      const buildTimes = { nextjs: [], vinext: [], rolldown: [] };
+      const buildTimes = { nextjs: [], openvite: [], rolldown: [] };
 
       const buildRunners = [
         {
@@ -337,21 +337,21 @@ async function main() {
           },
         },
         {
-          key: "vinext",
+          key: "openvite",
           run: () => {
-            exec("rm -rf dist", { cwd: vinextDir });
+            exec("rm -rf dist", { cwd: openviteDir });
             const start = performance.now();
-            exec("./node_modules/.bin/vite build", { cwd: vinextDir, timeout: 120000 });
-            buildTimes.vinext.push(performance.now() - start);
+            exec("./node_modules/.bin/vite build", { cwd: openviteDir, timeout: 120000 });
+            buildTimes.openvite.push(performance.now() - start);
           },
         },
         ...(hasRolldown
           ? [{
               key: "rolldown",
               run: () => {
-                exec("rm -rf dist", { cwd: vinextRolldownDir });
+                exec("rm -rf dist", { cwd: openviteRolldownDir });
                 const start = performance.now();
-                exec("./node_modules/.bin/vite build", { cwd: vinextRolldownDir, timeout: 120000 });
+                exec("./node_modules/.bin/vite build", { cwd: openviteRolldownDir, timeout: 120000 });
                 buildTimes.rolldown.push(performance.now() - start);
               },
             }]
@@ -379,14 +379,14 @@ async function main() {
         min: Math.min(...buildTimes.nextjs),
         max: Math.max(...buildTimes.nextjs),
       };
-      results.vinext.buildTime = {
-        mean: avg(buildTimes.vinext),
-        stddev: stddev(buildTimes.vinext),
-        min: Math.min(...buildTimes.vinext),
-        max: Math.max(...buildTimes.vinext),
+      results.openvite.buildTime = {
+        mean: avg(buildTimes.openvite),
+        stddev: stddev(buildTimes.openvite),
+        min: Math.min(...buildTimes.openvite),
+        max: Math.max(...buildTimes.openvite),
       };
       if (hasRolldown && buildTimes.rolldown.length) {
-        results.vinextRolldown.buildTime = {
+        results.openviteRolldown.buildTime = {
           mean: avg(buildTimes.rolldown),
           stddev: stddev(buildTimes.rolldown),
           min: Math.min(...buildTimes.rolldown),
@@ -409,26 +409,26 @@ async function main() {
     exec("rm -rf .next", { cwd: nextjsDir });
     exec("./node_modules/.bin/next build --turbopack", { cwd: nextjsDir, timeout: 120000 });
 
-    exec("rm -rf dist", { cwd: vinextDir });
-    exec("./node_modules/.bin/vite build", { cwd: vinextDir, timeout: 120000 });
+    exec("rm -rf dist", { cwd: openviteDir });
+    exec("./node_modules/.bin/vite build", { cwd: openviteDir, timeout: 120000 });
 
     // Next.js: client bundles are in .next/static
     const njsSize = bundleSize(join(nextjsDir, ".next", "static"));
     results.nextjs.bundleSize = njsSize;
     console.log(`  Next.js:     ${njsSize.files} files, ${formatBytes(njsSize.raw)} raw, ${formatBytes(njsSize.gzip)} gzip`);
 
-    // vinext (Rollup): client bundles are in dist/client
-    const ncSize = bundleSize(join(vinextDir, "dist", "client"));
-    results.vinext.bundleSize = ncSize;
-    console.log(`  vinext (Rollup):    ${ncSize.files} files, ${formatBytes(ncSize.raw)} raw, ${formatBytes(ncSize.gzip)} gzip`);
+    // openvite (Rollup): client bundles are in dist/client
+    const ncSize = bundleSize(join(openviteDir, "dist", "client"));
+    results.openvite.bundleSize = ncSize;
+    console.log(`  openvite (Rollup):    ${ncSize.files} files, ${formatBytes(ncSize.raw)} raw, ${formatBytes(ncSize.gzip)} gzip`);
 
-    // vinext (Rolldown): client bundles are in dist/client
+    // openvite (Rolldown): client bundles are in dist/client
     if (hasRolldown) {
-      exec("rm -rf dist", { cwd: vinextRolldownDir });
-      exec("./node_modules/.bin/vite build", { cwd: vinextRolldownDir, timeout: 120000 });
-      const rdSize = bundleSize(join(vinextRolldownDir, "dist", "client"));
-      results.vinextRolldown.bundleSize = rdSize;
-      console.log(`  vinext (Rolldown):  ${rdSize.files} files, ${formatBytes(rdSize.raw)} raw, ${formatBytes(rdSize.gzip)} gzip`);
+      exec("rm -rf dist", { cwd: openviteRolldownDir });
+      exec("./node_modules/.bin/vite build", { cwd: openviteRolldownDir, timeout: 120000 });
+      const rdSize = bundleSize(join(openviteRolldownDir, "dist", "client"));
+      results.openviteRolldown.bundleSize = rdSize;
+      console.log(`  openvite (Rolldown):  ${rdSize.files} files, ${formatBytes(rdSize.raw)} raw, ${formatBytes(rdSize.gzip)} gzip`);
     }
   }
 
@@ -436,7 +436,7 @@ async function main() {
   if (!SKIP_DEV) {
     console.log("\n=== Dev Server Cold Start ===\n");
 
-    const devResults = { nextjs: [], vinext: [], rolldown: [] };
+    const devResults = { nextjs: [], openvite: [], rolldown: [] };
 
     // Define the runners; order is randomized each iteration to eliminate
     // positional bias (first-after-kill penalties, OS cache warming, etc.)
@@ -450,21 +450,21 @@ async function main() {
         },
       },
       {
-        key: "vinext",
-        label: "vinext (Rollup)",
+        key: "openvite",
+        label: "openvite (Rollup)",
         run: async () => {
-          exec("rm -rf node_modules/.vite", { cwd: vinextDir });
-          return startAndMeasure("./node_modules/.bin/vite", ["--port", "4101"], vinextDir, "http://localhost:4101");
+          exec("rm -rf node_modules/.vite", { cwd: openviteDir });
+          return startAndMeasure("./node_modules/.bin/vite", ["--port", "4101"], openviteDir, "http://localhost:4101");
         },
       },
       ...(hasRolldown
         ? [
             {
               key: "rolldown",
-              label: "vinext (Rolldown)",
+              label: "openvite (Rolldown)",
               run: async () => {
-                exec("rm -rf node_modules/.vite", { cwd: vinextRolldownDir });
-                return startAndMeasure("./node_modules/.bin/vite", ["--port", "4102"], vinextRolldownDir, "http://localhost:4102");
+                exec("rm -rf node_modules/.vite", { cwd: openviteRolldownDir });
+                return startAndMeasure("./node_modules/.bin/vite", ["--port", "4102"], openviteRolldownDir, "http://localhost:4102");
               },
             },
           ]
@@ -496,13 +496,13 @@ async function main() {
       meanRssKb: avg(devResults.nextjs.map((r) => r.peakRssKb)),
       runs: devResults.nextjs,
     };
-    results.vinext.devColdStart = {
-      meanMs: avg(devResults.vinext.map((r) => r.coldStartMs)),
-      meanRssKb: avg(devResults.vinext.map((r) => r.peakRssKb)),
-      runs: devResults.vinext,
+    results.openvite.devColdStart = {
+      meanMs: avg(devResults.openvite.map((r) => r.coldStartMs)),
+      meanRssKb: avg(devResults.openvite.map((r) => r.peakRssKb)),
+      runs: devResults.openvite,
     };
     if (hasRolldown && devResults.rolldown.length) {
-      results.vinextRolldown.devColdStart = {
+      results.openviteRolldown.devColdStart = {
         meanMs: avg(devResults.rolldown.map((r) => r.coldStartMs)),
         meanRssKb: avg(devResults.rolldown.map((r) => r.peakRssKb)),
         runs: devResults.rolldown,
@@ -512,12 +512,12 @@ async function main() {
   }
 
   // ─── 4. SSR Throughput & TTFB ──────────────────────────────────────────────
-  // TODO: Requires wiring up vinext production server (startProdServer)
+  // TODO: Requires wiring up openvite production server (startProdServer)
   // to serve dynamic SSR pages, not just static preview. Skipped for now.
   if (!SKIP_SSR) {
     console.log("\n=== SSR Throughput & TTFB ===\n");
-    console.log("  Skipped — vinext production server not yet wired for benchmark app.");
-    console.log("  Next.js `next start` does SSR; vinext `vite preview` only serves static.");
+    console.log("  Skipped — openvite production server not yet wired for benchmark app.");
+    console.log("  Next.js `next start` does SSR; openvite `vite preview` only serves static.");
     console.log("  This will be added once the prod server integration is complete.\n");
   }
 
@@ -544,7 +544,7 @@ async function main() {
   md += `> **Note:** TypeScript type checking is disabled for the Next.js build (\`typescript.ignoreBuildErrors: true\`) so that build timings measure bundler/compilation speed only. Vite does not type-check during build.\n\n`;
   md += `> **Methodology:** Build and dev cold start runs are executed in randomized order to eliminate positional bias from filesystem caches, CPU thermal state, and residual process state.\n\n`;
 
-  const hasRolldownResults = results.vinextRolldown && Object.keys(results.vinextRolldown).length > 0;
+  const hasRolldownResults = results.openviteRolldown && Object.keys(results.openviteRolldown).length > 0;
 
   // Format a speed ratio comparison: "2.1x faster" or "1.3x slower"
   function fmtSpeedup(baseline, value) {
@@ -563,41 +563,41 @@ async function main() {
     return "same";
   }
 
-  if (results.nextjs.buildTime && results.vinext.buildTime) {
+  if (results.nextjs.buildTime && results.openvite.buildTime) {
     md += `## Production Build Time\n\n`;
     md += `| Framework | Mean | StdDev | Min | Max | vs Next.js |\n`;
     md += `|-----------|------|--------|-----|-----|------------|\n`;
     md += `| Next.js 16 (Turbopack) | ${formatMs(results.nextjs.buildTime.mean)} | ±${formatMs(results.nextjs.buildTime.stddev)} | ${formatMs(results.nextjs.buildTime.min)} | ${formatMs(results.nextjs.buildTime.max)} | baseline |\n`;
-    md += `| vinext (Vite 7 / Rollup) | ${formatMs(results.vinext.buildTime.mean)} | ±${formatMs(results.vinext.buildTime.stddev)} | ${formatMs(results.vinext.buildTime.min)} | ${formatMs(results.vinext.buildTime.max)} | ${fmtSpeedup(results.nextjs.buildTime.mean, results.vinext.buildTime.mean)} |\n`;
+    md += `| openvite (Vite 7 / Rollup) | ${formatMs(results.openvite.buildTime.mean)} | ±${formatMs(results.openvite.buildTime.stddev)} | ${formatMs(results.openvite.buildTime.min)} | ${formatMs(results.openvite.buildTime.max)} | ${fmtSpeedup(results.nextjs.buildTime.mean, results.openvite.buildTime.mean)} |\n`;
 
-    if (hasRolldownResults && results.vinextRolldown.buildTime) {
-      md += `| vinext (Vite 8 / Rolldown) | ${formatMs(results.vinextRolldown.buildTime.mean)} | ±${formatMs(results.vinextRolldown.buildTime.stddev)} | ${formatMs(results.vinextRolldown.buildTime.min)} | ${formatMs(results.vinextRolldown.buildTime.max)} | ${fmtSpeedup(results.nextjs.buildTime.mean, results.vinextRolldown.buildTime.mean)} |\n`;
+    if (hasRolldownResults && results.openviteRolldown.buildTime) {
+      md += `| openvite (Vite 8 / Rolldown) | ${formatMs(results.openviteRolldown.buildTime.mean)} | ±${formatMs(results.openviteRolldown.buildTime.stddev)} | ${formatMs(results.openviteRolldown.buildTime.min)} | ${formatMs(results.openviteRolldown.buildTime.max)} | ${fmtSpeedup(results.nextjs.buildTime.mean, results.openviteRolldown.buildTime.mean)} |\n`;
     }
     md += "\n";
   }
 
-  if (results.nextjs.bundleSize && results.vinext.bundleSize) {
+  if (results.nextjs.bundleSize && results.openvite.bundleSize) {
     md += `## Production Bundle Size (Client)\n\n`;
     md += `| Framework | Files | Raw | Gzipped | vs Next.js (gzip) |\n`;
     md += `|-----------|-------|-----|----------|--------------------|\n`;
     md += `| Next.js 16 | ${results.nextjs.bundleSize.files} | ${formatBytes(results.nextjs.bundleSize.raw)} | ${formatBytes(results.nextjs.bundleSize.gzip)} | baseline |\n`;
-    md += `| vinext (Rollup) | ${results.vinext.bundleSize.files} | ${formatBytes(results.vinext.bundleSize.raw)} | ${formatBytes(results.vinext.bundleSize.gzip)} | ${fmtSizeReduction(results.nextjs.bundleSize.gzip, results.vinext.bundleSize.gzip)} |\n`;
+    md += `| openvite (Rollup) | ${results.openvite.bundleSize.files} | ${formatBytes(results.openvite.bundleSize.raw)} | ${formatBytes(results.openvite.bundleSize.gzip)} | ${fmtSizeReduction(results.nextjs.bundleSize.gzip, results.openvite.bundleSize.gzip)} |\n`;
 
-    if (hasRolldownResults && results.vinextRolldown.bundleSize) {
-      md += `| vinext (Rolldown) | ${results.vinextRolldown.bundleSize.files} | ${formatBytes(results.vinextRolldown.bundleSize.raw)} | ${formatBytes(results.vinextRolldown.bundleSize.gzip)} | ${fmtSizeReduction(results.nextjs.bundleSize.gzip, results.vinextRolldown.bundleSize.gzip)} |\n`;
+    if (hasRolldownResults && results.openviteRolldown.bundleSize) {
+      md += `| openvite (Rolldown) | ${results.openviteRolldown.bundleSize.files} | ${formatBytes(results.openviteRolldown.bundleSize.raw)} | ${formatBytes(results.openviteRolldown.bundleSize.gzip)} | ${fmtSizeReduction(results.nextjs.bundleSize.gzip, results.openviteRolldown.bundleSize.gzip)} |\n`;
     }
     md += "\n";
   }
 
-  if (results.nextjs.devColdStart && results.vinext.devColdStart) {
+  if (results.nextjs.devColdStart && results.openvite.devColdStart) {
     md += `## Dev Server Cold Start\n\n`;
     md += `| Framework | Mean Cold Start | Mean Peak RSS | vs Next.js |\n`;
     md += `|-----------|----------------|----------------|------------|\n`;
     md += `| Next.js 16 (Turbopack) | ${formatMs(results.nextjs.devColdStart.meanMs)} | ${Math.round(results.nextjs.devColdStart.meanRssKb / 1024)} MB | baseline |\n`;
-    md += `| vinext (Vite 7 / Rollup) | ${formatMs(results.vinext.devColdStart.meanMs)} | ${Math.round(results.vinext.devColdStart.meanRssKb / 1024)} MB | ${fmtSpeedup(results.nextjs.devColdStart.meanMs, results.vinext.devColdStart.meanMs)} |\n`;
+    md += `| openvite (Vite 7 / Rollup) | ${formatMs(results.openvite.devColdStart.meanMs)} | ${Math.round(results.openvite.devColdStart.meanRssKb / 1024)} MB | ${fmtSpeedup(results.nextjs.devColdStart.meanMs, results.openvite.devColdStart.meanMs)} |\n`;
 
-    if (hasRolldownResults && results.vinextRolldown.devColdStart) {
-      md += `| vinext (Vite 8 / Rolldown) | ${formatMs(results.vinextRolldown.devColdStart.meanMs)} | ${Math.round(results.vinextRolldown.devColdStart.meanRssKb / 1024)} MB | ${fmtSpeedup(results.nextjs.devColdStart.meanMs, results.vinextRolldown.devColdStart.meanMs)} |\n`;
+    if (hasRolldownResults && results.openviteRolldown.devColdStart) {
+      md += `| openvite (Vite 8 / Rolldown) | ${formatMs(results.openviteRolldown.devColdStart.meanMs)} | ${Math.round(results.openviteRolldown.devColdStart.meanRssKb / 1024)} MB | ${fmtSpeedup(results.nextjs.devColdStart.meanMs, results.openviteRolldown.devColdStart.meanMs)} |\n`;
     }
     md += "\n";
   }

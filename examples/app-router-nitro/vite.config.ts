@@ -1,10 +1,10 @@
 import { defineConfig } from "vite";
-import vinext from "vinext";
+import openvite from "openvite";
 import { nitro } from "nitro/vite";
 
 export default defineConfig({
   plugins: [
-    vinext(),
+    openvite(),
     nitro(),
   ],
 });

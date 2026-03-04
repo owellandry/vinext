@@ -10,7 +10,7 @@ set -euo pipefail
 # Checks every deployed example returns HTTP 200 with HTML content.
 # Exits non-zero if any check fails.
 
-DOMAIN="vinext.workers.dev"
+DOMAIN="${DEPLOY_DOMAIN:-workers.dev}"
 PREVIEW_ALIAS=""
 
 while [[ $# -gt 0 ]]; do
@@ -33,10 +33,10 @@ done
 # Each entry: worker-name path expected-text
 # expected-text is a simple string that must appear in the response body.
 CHECKS=(
-  "app-router-cloudflare         /       vinext"
-  "pages-router-cloudflare       /       vinext"
+  "app-router-cloudflare         /       openvite"
+  "pages-router-cloudflare       /       openvite"
   "app-router-playground         /       Playground"
-  "realworld-api-rest            /       vinext"
+  "realworld-api-rest            /       openvite"
   "nextra-docs-template          /       Introduction"
   "nextra-docs-template          /about  About"
   "benchmarks                    /       Benchmark"

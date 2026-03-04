@@ -8,7 +8,7 @@ test.describe("Dynamic routes with getServerSideProps", () => {
     await expect(page.locator('[data-testid="post-title"]')).toHaveText(
       "Post: 123",
     );
-    // vinext returns the resolved pathname (not the route pattern)
+    // openvite returns the resolved pathname (not the route pattern)
     await expect(page.locator('[data-testid="pathname"]')).toHaveText(
       "Pathname: /posts/123",
     );

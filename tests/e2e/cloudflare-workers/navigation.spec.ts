@@ -6,7 +6,7 @@ test.describe("Cloudflare Workers Navigation", () => {
   test("navigating between pages via links", async ({ page }) => {
     await page.goto(`${BASE}/`);
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
 
     // Click About link
@@ -16,14 +16,14 @@ test.describe("Cloudflare Workers Navigation", () => {
     // Click back to home
     await page.click('a[href="/"]');
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
   });
 
   test("browser back/forward works", async ({ page }) => {
     await page.goto(`${BASE}/`);
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
 
     await page.click('a[href="/about"]');
@@ -31,7 +31,7 @@ test.describe("Cloudflare Workers Navigation", () => {
 
     await page.goBack();
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
 
     await page.goForward();

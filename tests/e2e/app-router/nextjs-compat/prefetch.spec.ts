@@ -13,7 +13,7 @@ const BASE = "http://localhost:4174";
 async function waitForHydration(page: import("@playwright/test").Page) {
   await expect(async () => {
     const ready = await page.evaluate(
-      () => !!(window as any).__VINEXT_RSC_ROOT__,
+      () => !!(window as any).__OPENVITE_RSC_ROOT__,
     );
     expect(ready).toBe(true);
   }).toPass({ timeout: 10_000 });
@@ -82,7 +82,7 @@ test.describe("Next.js compat: prefetch (browser)", () => {
     // Wait for prefetch to complete (requestIdleCallback + fetch)
     await expect(async () => {
       const cacheSize = await page.evaluate(() => {
-        const cache = (window as any).__VINEXT_RSC_PREFETCH_CACHE__;
+        const cache = (window as any).__OPENVITE_RSC_PREFETCH_CACHE__;
         return cache ? cache.size : 0;
       });
       // The prefetch-enabled link should have populated the cache
@@ -92,7 +92,7 @@ test.describe("Next.js compat: prefetch (browser)", () => {
 
     // Verify the cached URL is for the prefetch target
     const cachedUrls = await page.evaluate(() => {
-      const cache = (window as any).__VINEXT_RSC_PREFETCH_CACHE__;
+      const cache = (window as any).__OPENVITE_RSC_PREFETCH_CACHE__;
       return cache ? Array.from(cache.keys()) : [];
     });
     expect((cachedUrls as string[]).some((url) => url.includes("prefetch-test/target.rsc"))).toBe(true);
@@ -109,7 +109,7 @@ test.describe("Next.js compat: prefetch (browser)", () => {
     // that the no-prefetch target is NOT in the cache.
     await expect(async () => {
       const cacheSize = await page.evaluate(() => {
-        const cache = (window as any).__VINEXT_RSC_PREFETCH_CACHE__;
+        const cache = (window as any).__OPENVITE_RSC_PREFETCH_CACHE__;
         return cache ? cache.size : 0;
       });
       // The prefetch-enabled link should have populated the cache by now
@@ -118,7 +118,7 @@ test.describe("Next.js compat: prefetch (browser)", () => {
 
     // Verify the no-prefetch target is NOT in the cache
     const hasNoPrefetchCached = await page.evaluate(() => {
-      const cache = (window as any).__VINEXT_RSC_PREFETCH_CACHE__;
+      const cache = (window as any).__OPENVITE_RSC_PREFETCH_CACHE__;
       if (!cache) return false;
       for (const key of cache.keys()) {
         if (key.includes("no-prefetch.rsc")) return true;
@@ -138,7 +138,7 @@ test.describe("Next.js compat: prefetch (browser)", () => {
     // Wait for prefetch to populate the cache
     await expect(async () => {
       const cacheSize = await page.evaluate(() => {
-        const cache = (window as any).__VINEXT_RSC_PREFETCH_CACHE__;
+        const cache = (window as any).__OPENVITE_RSC_PREFETCH_CACHE__;
         return cache ? cache.size : 0;
       });
       expect(cacheSize).toBeGreaterThanOrEqual(1);
@@ -160,13 +160,13 @@ test.describe("Next.js compat: prefetch (browser)", () => {
     );
 
     // The cache should have been consumed (no extra network request for the .rsc)
-    // The prefetch fetch already happened, but __VINEXT_RSC_NAVIGATE__ should
+    // The prefetch fetch already happened, but __OPENVITE_RSC_NAVIGATE__ should
     // NOT have made an additional fetch — it used the cached response.
     expect(rscRequests.length).toBe(0);
 
     // The cache entry should have been consumed (deleted after use)
     const cacheHasTarget = await page.evaluate(() => {
-      const cache = (window as any).__VINEXT_RSC_PREFETCH_CACHE__;
+      const cache = (window as any).__OPENVITE_RSC_PREFETCH_CACHE__;
       if (!cache) return false;
       for (const key of cache.keys()) {
         if (key.includes("target.rsc")) return true;

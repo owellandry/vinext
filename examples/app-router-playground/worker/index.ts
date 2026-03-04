@@ -1,11 +1,11 @@
 /**
  * Cloudflare Worker entry point with image optimization.
  *
- * For apps without image optimization, use vinext/server/app-router-entry
- * directly in wrangler.jsonc: "main": "vinext/server/app-router-entry"
+ * For apps without image optimization, use openvite/server/app-router-entry
+ * directly in wrangler.jsonc: "main": "openvite/server/app-router-entry"
  */
-import { handleImageOptimization } from "vinext/server/image-optimization";
-import handler from "vinext/server/app-router-entry";
+import { handleImageOptimization } from "openvite/server/image-optimization";
+import handler from "openvite/server/app-router-entry";
 
 interface Env {
   ASSETS: Fetcher;
@@ -23,7 +23,7 @@ export default {
     const url = new URL(request.url);
 
     // Image optimization via Cloudflare Images binding
-    if (url.pathname === "/_vinext/image") {
+    if (url.pathname === "/_openvite/image") {
       return handleImageOptimization(request, {
         fetchAsset: (path) => env.ASSETS.fetch(new Request(new URL(path, request.url))),
         transformImage: async (body, { width, format, quality }) => {
@@ -33,7 +33,7 @@ export default {
       });
     }
 
-    // Delegate everything else to vinext
+    // Delegate everything else to openvite
     return handler.fetch(request);
   },
 };

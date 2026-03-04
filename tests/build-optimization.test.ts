@@ -10,7 +10,7 @@ import {
   clientManualChunks,
   clientTreeshakeConfig,
   computeLazyChunks,
-} from "../packages/vinext/src/index.js";
+} from "../packages/openvite/src/index.js";
 
 // ─── clientTreeshakeConfig ────────────────────────────────────────────────────
 
@@ -67,13 +67,13 @@ describe("clientManualChunks", () => {
 
 // ─── optimizeDeps.exclude — prevents esbuild scanning virtual module imports ─
 
-describe("optimizeDeps.exclude for vinext", () => {
-  it("excludes vinext at top level for Pages Router builds", async () => {
-    const vinext = (await import("../packages/vinext/src/index.js")).default;
-    const plugins = vinext();
+describe("optimizeDeps.exclude for openvite", () => {
+  it("excludes openvite at top level for Pages Router builds", async () => {
+    const openvite = (await import("../packages/openvite/src/index.js")).default;
+    const plugins = openvite();
 
     const mainPlugin = plugins.find(
-      (p: any) => p.name === "vinext:config" && typeof p.config === "function",
+      (p: any) => p.name === "openvite:config" && typeof p.config === "function",
     );
     expect(mainPlugin).toBeDefined();
 
@@ -81,7 +81,7 @@ describe("optimizeDeps.exclude for vinext", () => {
     const fsp = await import("node:fs/promises");
     const path = await import("node:path");
 
-    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-ts-test-optdeps-"));
+    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-ts-test-optdeps-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     await fsp.symlink(rootNodeModules, path.join(tmpDir, "node_modules"), "junction");
 
@@ -99,18 +99,18 @@ describe("optimizeDeps.exclude for vinext", () => {
       const mockConfig = { root: tmpDir, build: {}, plugins: [] };
       const result = await (mainPlugin as any).config(mockConfig, { command: "build" });
 
-      expect(result.optimizeDeps?.exclude).toContain("vinext");
+      expect(result.optimizeDeps?.exclude).toContain("openvite");
     } finally {
       await fsp.rm(tmpDir, { recursive: true, force: true }).catch(() => {});
     }
   }, 15000);
 
-  it("excludes vinext in all environments for App Router builds", async () => {
-    const vinext = (await import("../packages/vinext/src/index.js")).default;
-    const plugins = vinext();
+  it("excludes openvite in all environments for App Router builds", async () => {
+    const openvite = (await import("../packages/openvite/src/index.js")).default;
+    const plugins = openvite();
 
     const mainPlugin = plugins.find(
-      (p: any) => p.name === "vinext:config" && typeof p.config === "function",
+      (p: any) => p.name === "openvite:config" && typeof p.config === "function",
     );
     expect(mainPlugin).toBeDefined();
 
@@ -118,7 +118,7 @@ describe("optimizeDeps.exclude for vinext", () => {
     const fsp = await import("node:fs/promises");
     const path = await import("node:path");
 
-    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-ts-test-optdeps-app-"));
+    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-ts-test-optdeps-app-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     await fsp.symlink(rootNodeModules, path.join(tmpDir, "node_modules"), "junction");
 
@@ -141,11 +141,11 @@ describe("optimizeDeps.exclude for vinext", () => {
       const result = await (mainPlugin as any).config(mockConfig, { command: "build" });
 
       // Top-level
-      expect(result.optimizeDeps?.exclude).toContain("vinext");
+      expect(result.optimizeDeps?.exclude).toContain("openvite");
       // Per-environment
-      expect(result.environments.rsc.optimizeDeps?.exclude).toContain("vinext");
-      expect(result.environments.ssr.optimizeDeps?.exclude).toContain("vinext");
-      expect(result.environments.client.optimizeDeps?.exclude).toContain("vinext");
+      expect(result.environments.rsc.optimizeDeps?.exclude).toContain("openvite");
+      expect(result.environments.ssr.optimizeDeps?.exclude).toContain("openvite");
+      expect(result.environments.client.optimizeDeps?.exclude).toContain("openvite");
     } finally {
       await fsp.rm(tmpDir, { recursive: true, force: true }).catch(() => {});
     }
@@ -156,12 +156,12 @@ describe("optimizeDeps.exclude for vinext", () => {
 
 describe("treeshake config integration", () => {
   it("plugin config hook applies treeshake to non-SSR builds", async () => {
-    const vinext = (await import("../packages/vinext/src/index.js")).default;
-    const plugins = vinext();
+    const openvite = (await import("../packages/openvite/src/index.js")).default;
+    const plugins = openvite();
 
-    // Find the main vinext plugin (has a config hook)
+    // Find the main openvite plugin (has a config hook)
     const mainPlugin = plugins.find(
-      (p: any) => p.name === "vinext:config" && typeof p.config === "function",
+      (p: any) => p.name === "openvite:config" && typeof p.config === "function",
     );
     expect(mainPlugin).toBeDefined();
 
@@ -170,7 +170,7 @@ describe("treeshake config integration", () => {
     const fsp = await import("node:fs/promises");
     const path = await import("node:path");
 
-    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-ts-test-"));
+    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-ts-test-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     await fsp.symlink(rootNodeModules, path.join(tmpDir, "node_modules"), "junction");
 
@@ -203,11 +203,11 @@ describe("treeshake config integration", () => {
   }, 15000);
 
   it("plugin config hook does NOT apply treeshake to SSR builds", async () => {
-    const vinext = (await import("../packages/vinext/src/index.js")).default;
-    const plugins = vinext();
+    const openvite = (await import("../packages/openvite/src/index.js")).default;
+    const plugins = openvite();
 
     const mainPlugin = plugins.find(
-      (p: any) => p.name === "vinext:config" && typeof p.config === "function",
+      (p: any) => p.name === "openvite:config" && typeof p.config === "function",
     );
     expect(mainPlugin).toBeDefined();
 
@@ -215,7 +215,7 @@ describe("treeshake config integration", () => {
     const fsp = await import("node:fs/promises");
     const path = await import("node:path");
 
-    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-ts-test-ssr-"));
+    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-ts-test-ssr-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     await fsp.symlink(rootNodeModules, path.join(tmpDir, "node_modules"), "junction");
 
@@ -232,7 +232,7 @@ describe("treeshake config integration", () => {
     try {
       const mockConfig = {
         root: tmpDir,
-        build: { ssr: "virtual:vinext-server-entry" },
+        build: { ssr: "virtual:openvite-server-entry" },
         plugins: [],
       };
       const result = await (mainPlugin as any).config(mockConfig, { command: "build" });
@@ -248,11 +248,11 @@ describe("treeshake config integration", () => {
     // In App Router builds (multi-env), treeshake must NOT be set globally
     // (which would leak into RSC/SSR) — it should only appear on the client
     // environment's rollupOptions.
-    const vinext = (await import("../packages/vinext/src/index.js")).default;
-    const plugins = vinext();
+    const openvite = (await import("../packages/openvite/src/index.js")).default;
+    const plugins = openvite();
 
     const mainPlugin = plugins.find(
-      (p: any) => p.name === "vinext:config" && typeof p.config === "function",
+      (p: any) => p.name === "openvite:config" && typeof p.config === "function",
     );
     expect(mainPlugin).toBeDefined();
 
@@ -260,7 +260,7 @@ describe("treeshake config integration", () => {
     const fsp = await import("node:fs/promises");
     const path = await import("node:path");
 
-    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-ts-test-multienv-"));
+    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-ts-test-multienv-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     await fsp.symlink(rootNodeModules, path.join(tmpDir, "node_modules"), "junction");
 
@@ -305,11 +305,11 @@ describe("treeshake config integration", () => {
   }, 15000);
 
   it("client output config includes experimentalMinChunkSize", async () => {
-    const vinext = (await import("../packages/vinext/src/index.js")).default;
-    const plugins = vinext();
+    const openvite = (await import("../packages/openvite/src/index.js")).default;
+    const plugins = openvite();
 
     const mainPlugin = plugins.find(
-      (p: any) => p.name === "vinext:config" && typeof p.config === "function",
+      (p: any) => p.name === "openvite:config" && typeof p.config === "function",
     );
     expect(mainPlugin).toBeDefined();
 
@@ -317,7 +317,7 @@ describe("treeshake config integration", () => {
     const fsp = await import("node:fs/promises");
     const path = await import("node:path");
 
-    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-ts-test-mcs-"));
+    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-ts-test-mcs-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     await fsp.symlink(rootNodeModules, path.join(tmpDir, "node_modules"), "junction");
 
@@ -351,15 +351,15 @@ describe("treeshake config integration", () => {
 
   it("App Router client env gets manifest: true when Cloudflare plugin is present", async () => {
     // When deploying to Cloudflare Workers, the client environment must produce
-    // a build manifest (manifest.json) so the vinext:cloudflare-build plugin can
+    // a build manifest (manifest.json) so the openvite:cloudflare-build plugin can
     // read dynamicImports and compute lazy chunks. Without this, all chunks get
     // modulepreloaded on every page, defeating code-splitting for React.lazy()
     // and next/dynamic boundaries.
-    const vinext = (await import("../packages/vinext/src/index.js")).default;
-    const plugins = vinext();
+    const openvite = (await import("../packages/openvite/src/index.js")).default;
+    const plugins = openvite();
 
     const mainPlugin = plugins.find(
-      (p: any) => p.name === "vinext:config" && typeof p.config === "function",
+      (p: any) => p.name === "openvite:config" && typeof p.config === "function",
     );
     expect(mainPlugin).toBeDefined();
 
@@ -367,7 +367,7 @@ describe("treeshake config integration", () => {
     const fsp = await import("node:fs/promises");
     const path = await import("node:path");
 
-    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "vinext-ts-test-cf-manifest-"));
+    const tmpDir = await fsp.mkdtemp(path.join(os.tmpdir(), "openvite-ts-test-cf-manifest-"));
     const rootNodeModules = path.resolve(import.meta.dirname, "../node_modules");
     await fsp.symlink(rootNodeModules, path.join(tmpDir, "node_modules"), "junction");
 
@@ -388,7 +388,7 @@ describe("treeshake config integration", () => {
 
     try {
       // Simulate having the Cloudflare plugin in the plugin list.
-      // The vinext config hook detects it by checking plugin names.
+      // The openvite config hook detects it by checking plugin names.
       const fakeCloudflarePlugin = { name: "vite-plugin-cloudflare" };
       const mockConfig = {
         root: tmpDir,
@@ -637,11 +637,11 @@ describe("computeLazyChunks", () => {
   it("handles realistic mermaid-like scenario", () => {
     // Simulates: client entry -> page (dynamic) -> streamdown (static from page)
     //            streamdown -> mermaid (dynamic via React.lazy)
-    // The page itself is dynamic from the entry (vinext pattern), but
+    // The page itself is dynamic from the entry (openvite pattern), but
     // mermaid is dynamic from streamdown — mermaid should be lazy
     const manifest = {
-      "virtual:vinext-client-entry": {
-        file: "assets/vinext-client-entry-abc.js",
+      "virtual:openvite-client-entry": {
+        file: "assets/openvite-client-entry-abc.js",
         isEntry: true,
         imports: ["node_modules/react/index.js", "node_modules/react-dom/client.js"],
         dynamicImports: ["src/pages/index.tsx", "src/pages/about.tsx"],
@@ -681,7 +681,7 @@ describe("computeLazyChunks", () => {
     // dynamic from entry — so streamdown is also lazy
     expect(lazy).toContain("assets/streamdown-chunk.js");
     // Framework and entry should NOT be lazy
-    expect(lazy).not.toContain("assets/vinext-client-entry-abc.js");
+    expect(lazy).not.toContain("assets/openvite-client-entry-abc.js");
     expect(lazy).not.toContain("assets/framework-xyz.js");
   });
 });
@@ -731,7 +731,7 @@ describe("collectAssetTags lazy chunk filtering", () => {
 
   it("excludes lazy JS chunks from modulepreload and script tags", () => {
     const buildManifest = {
-      "virtual:vinext-client-entry": {
+      "virtual:openvite-client-entry": {
         file: "assets/entry.js",
         isEntry: true,
         imports: ["node_modules/react/index.js"],
@@ -872,7 +872,7 @@ describe("collectAssetTags lazy chunk filtering", () => {
   });
 
   it("deduplicates entries when SSR manifest has leading slashes and client entry does not", () => {
-    // The client entry (from __VINEXT_CLIENT_ENTRY__) uses values without
+    // The client entry (from __OPENVITE_CLIENT_ENTRY__) uses values without
     // leading slashes ("assets/entry.js"), while SSR manifest values have
     // them ("/assets/entry.js"). After normalization, both should resolve
     // to the same key and the entry should appear only once.

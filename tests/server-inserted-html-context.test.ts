@@ -13,19 +13,19 @@ import { renderToString } from "react-dom/server";
 describe("ServerInsertedHTMLContext", () => {
   beforeEach(async () => {
     const { clearServerInsertedHTML } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     clearServerInsertedHTML();
   });
 
   it("is exported from next/navigation shim", async () => {
-    const mod = await import("../packages/vinext/src/shims/navigation.js");
+    const mod = await import("../packages/openvite/src/shims/navigation.js");
     expect(mod.ServerInsertedHTMLContext).toBeDefined();
   });
 
   it("is a valid React.Context with Provider and Consumer", async () => {
     const { ServerInsertedHTMLContext } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     expect(ServerInsertedHTMLContext).not.toBeNull();
     expect(ServerInsertedHTMLContext).toHaveProperty("Provider");
@@ -34,7 +34,7 @@ describe("ServerInsertedHTMLContext", () => {
 
   it("has null as default value (no Provider)", async () => {
     const { ServerInsertedHTMLContext } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
     // Without a Provider, useContext returns the default value (null).
     // This is correct — Apollo checks for null and throws a clear error
@@ -44,7 +44,7 @@ describe("ServerInsertedHTMLContext", () => {
 
   it("provides a callback registration function when wrapped with Provider", async () => {
     const { ServerInsertedHTMLContext } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
 
     let contextValue: unknown = "not-set";
@@ -70,7 +70,7 @@ describe("ServerInsertedHTMLContext", () => {
 
   it("Apollo Client pattern: useContext returns a usable registration function", async () => {
     const { ServerInsertedHTMLContext, useServerInsertedHTML, flushServerInsertedHTML } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
 
     // Simulate Apollo's actual usage pattern:
@@ -113,7 +113,7 @@ describe("ServerInsertedHTMLContext", () => {
 
   it("works alongside direct useServerInsertedHTML calls", async () => {
     const { ServerInsertedHTMLContext, useServerInsertedHTML, flushServerInsertedHTML } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
 
     // Component using direct useServerInsertedHTML (styled-components pattern)
@@ -152,7 +152,7 @@ describe("ServerInsertedHTMLContext", () => {
 
   it("returns null without Provider (Apollo throws clear error)", async () => {
     const { ServerInsertedHTMLContext } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
 
     let contextValue: unknown = "not-set";
@@ -171,7 +171,7 @@ describe("ServerInsertedHTMLContext", () => {
 
   it("supports multiple callback registrations from context", async () => {
     const { ServerInsertedHTMLContext, useServerInsertedHTML, flushServerInsertedHTML } = await import(
-      "../packages/vinext/src/shims/navigation.js"
+      "../packages/openvite/src/shims/navigation.js"
     );
 
     function MultiCallbackComponent() {

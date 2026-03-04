@@ -55,7 +55,7 @@ async function sendEmail() {
     },
     signal: AbortSignal.timeout(30_000),
     body: JSON.stringify({
-      subject: `vinext tip build failed -- ${repository}`,
+      subject: `openvite tip build failed -- ${repository}`,
       body: [
         "The scheduled Next.js tip (canary) build failed.",
         "",

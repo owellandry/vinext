@@ -4,7 +4,7 @@ import {
   isCrossSiteNoCorsRequest,
   validateDevRequest,
   generateDevOriginCheckCode,
-} from "../packages/vinext/src/server/dev-origin-check.js";
+} from "../packages/openvite/src/server/dev-origin-check.js";
 
 describe("dev origin check", () => {
   // ── isAllowedDevOrigin ────────────────────────────────────────────────

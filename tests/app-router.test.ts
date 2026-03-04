@@ -3,9 +3,9 @@ import { createBuilder, type ViteDevServer } from "vite";
 import path from "node:path";
 import fs from "node:fs";
 import os from "node:os";
-import vinext from "../packages/vinext/src/index.js";
-import { APP_FIXTURE_DIR, RSC_ENTRIES, startFixtureServer, fetchHtml } from "./helpers.js";
-import { generateRscEntry } from "../packages/vinext/src/server/app-dev-server.js";
+import openvite from "../packages/openvite/src/index.js";
+import { APP_FIXTURE_DIR, RSC_ENTRIES, startFixtureServer, fetchHtml, isolatedOptimizeDeps } from "./helpers.js";
+import { generateRscEntry } from "../packages/openvite/src/server/app-dev-server.js";
 
 describe("App Router integration", () => {
   let server: ViteDevServer;
@@ -712,7 +712,7 @@ describe("App Router integration", () => {
     // Description meta tag
     expect(html).toMatch(/name="description".*content="A page to test the metadata API"/);
     // Keywords meta tag
-    expect(html).toMatch(/name="keywords".*content="test,metadata,vinext"/);
+    expect(html).toMatch(/name="keywords".*content="test,metadata,openvite"/);
     // Open Graph tags
     expect(html).toMatch(/property="og:title".*content="OG Title"/);
     expect(html).toMatch(/property="og:type".*content="website"/);
@@ -899,7 +899,7 @@ describe("App Router integration", () => {
     // force-static should set s-maxage for indefinite caching
     const cacheControl = res.headers.get("cache-control");
     expect(cacheControl).toContain("s-maxage=31536000");
-    expect(res.headers.get("x-vinext-cache")).toBe("STATIC");
+    expect(res.headers.get("x-openvite-cache")).toBe("STATIC");
   });
 
   it("force-static pages have empty headers/cookies context", async () => {
@@ -922,7 +922,7 @@ describe("App Router integration", () => {
     // Should be treated as static — long-lived cache
     const cacheControl = res.headers.get("cache-control");
     expect(cacheControl).toContain("s-maxage=31536000");
-    expect(res.headers.get("x-vinext-cache")).toBe("STATIC");
+    expect(res.headers.get("x-openvite-cache")).toBe("STATIC");
   });
 
   it("pages with fetchCache, maxDuration, preferredRegion, runtime exports render fine", async () => {
@@ -1039,7 +1039,7 @@ describe("App Router integration", () => {
     //
     // SSR: react-dom/server.edge is used for both renderToReadableStream
     // (static import) and renderToStaticMarkup (dynamic import) in the
-    // SSR entry. It's included by @vitejs/plugin-rsc, so vinext doesn't
+    // SSR entry. It's included by @vitejs/plugin-rsc, so openvite doesn't
     // need to add it explicitly.
     //
     // Client: react, react-dom, and react-dom/client are framework deps
@@ -1220,7 +1220,7 @@ describe("App Router Production build", () => {
     const builder = await createBuilder({
       root: APP_FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext({ appDir: APP_FIXTURE_DIR })],
+      plugins: [openvite({ appDir: APP_FIXTURE_DIR })],
       logLevel: "silent",
     });
     await builder.buildApp();
@@ -1257,7 +1257,7 @@ describe("App Router Production build", () => {
     const previewServer = await preview({
       root: APP_FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext({ appDir: APP_FIXTURE_DIR })],
+      plugins: [openvite({ appDir: APP_FIXTURE_DIR })],
       preview: { port: 0 },
       logLevel: "silent",
     });
@@ -1317,14 +1317,14 @@ describe("App Router Production server (startProdServer)", () => {
     const builder = await createBuilder({
       root: APP_FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext({ appDir: APP_FIXTURE_DIR })],
+      plugins: [openvite({ appDir: APP_FIXTURE_DIR })],
       logLevel: "silent",
     });
     await builder.buildApp();
 
     // Start the production server on a random available port
     const { startProdServer } = await import(
-      "../packages/vinext/src/server/prod-server.js"
+      "../packages/openvite/src/server/prod-server.js"
     );
     server = await startProdServer({ port: 0, outDir, noCompression: false });
     const addr = server.address();
@@ -1489,13 +1489,13 @@ describe("App Router Static export", () => {
 
   it("exports static App Router pages to HTML files", async () => {
     const { staticExportApp } = await import(
-      "../packages/vinext/src/build/static-export.js"
+      "../packages/openvite/src/build/static-export.js"
     );
     const { appRouter } = await import(
-      "../packages/vinext/src/routing/app-router.js"
+      "../packages/openvite/src/routing/app-router.js"
     );
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     const appDir = path.resolve(APP_FIXTURE_DIR, "app");
@@ -1559,10 +1559,10 @@ describe("App Router Static export", () => {
 
   it("reports errors for dynamic routes without generateStaticParams", async () => {
     const { staticExportApp } = await import(
-      "../packages/vinext/src/build/static-export.js"
+      "../packages/openvite/src/build/static-export.js"
     );
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     // Create a fake route with isDynamic but no generateStaticParams
@@ -1610,10 +1610,10 @@ describe("App Router Static export", () => {
 
   it("skips route handlers with warning", async () => {
     const { staticExportApp } = await import(
-      "../packages/vinext/src/build/static-export.js"
+      "../packages/openvite/src/build/static-export.js"
     );
     const { resolveNextConfig } = await import(
-      "../packages/vinext/src/config/next-config.js"
+      "../packages/openvite/src/config/next-config.js"
     );
 
     // Create a fake API route
@@ -1708,7 +1708,7 @@ describe("metadata routes integration (App Router)", () => {
 
   it("scanMetadataFiles discovers icon.tsx as a dynamic icon route", async () => {
     const { scanMetadataFiles } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const appDir = path.resolve(import.meta.dirname, "./fixtures/app-basic/app");
     const routes = scanMetadataFiles(appDir);
@@ -1723,7 +1723,7 @@ describe("metadata routes integration (App Router)", () => {
 
   it("scanMetadataFiles discovers static apple-icon.png at root", async () => {
     const { scanMetadataFiles } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const appDir = path.resolve(import.meta.dirname, "./fixtures/app-basic/app");
     const routes = scanMetadataFiles(appDir);
@@ -1737,7 +1737,7 @@ describe("metadata routes integration (App Router)", () => {
 
   it("scanMetadataFiles discovers nested opengraph-image.png", async () => {
     const { scanMetadataFiles } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const appDir = path.resolve(import.meta.dirname, "./fixtures/app-basic/app");
     const routes = scanMetadataFiles(appDir);
@@ -1777,7 +1777,7 @@ describe("metadata routes integration (App Router)", () => {
 
   it("scanMetadataFiles discovers static favicon.ico at root", async () => {
     const { scanMetadataFiles } = await import(
-      "../packages/vinext/src/server/metadata-routes.js"
+      "../packages/openvite/src/server/metadata-routes.js"
     );
     const appDir = path.resolve(import.meta.dirname, "./fixtures/app-basic/app");
     const routes = scanMetadataFiles(appDir);
@@ -1847,7 +1847,7 @@ describe("App Router next.config.js features (dev server integration)", () => {
 
   it("applies custom headers from next.config.js on API routes", async () => {
     const res = await fetch(`${baseUrl}/api/hello`);
-    expect(res.headers.get("x-custom-header")).toBe("vinext-app");
+    expect(res.headers.get("x-custom-header")).toBe("openvite-app");
   });
 
   it("applies custom headers from next.config.js on page routes", async () => {
@@ -1976,13 +1976,13 @@ describe("App Router next.config.js features (generateRscEntry)", () => {
   it("generates custom header handling code when headers are provided", () => {
     const code = generateRscEntry("/tmp/test/app", minimalRoutes, null, [], null, "", false, {
       headers: [
-        { source: "/api/(.*)", headers: [{ key: "X-Custom-Header", value: "vinext" }] },
+        { source: "/api/(.*)", headers: [{ key: "X-Custom-Header", value: "openvite" }] },
       ],
     });
     expect(code).toContain("__configHeaders");
     expect(code).toContain("__applyConfigHeaders");
     expect(code).toContain("X-Custom-Header");
-    expect(code).toContain("vinext");
+    expect(code).toContain("openvite");
   });
 
   it("embeds empty config arrays when no config is provided", () => {
@@ -2284,17 +2284,17 @@ describe("App Router middleware with NextRequest", () => {
 
 describe("SSR entry CSS preload fix", () => {
   it("generateSsrEntry includes fixPreloadAs function", async () => {
-    const { generateSsrEntry } = await import("../packages/vinext/src/server/app-dev-server.js");
+    const { generateSsrEntry } = await import("../packages/openvite/src/server/app-dev-server.js");
     const code = generateSsrEntry();
     expect(code).toContain("fixPreloadAs");
     expect(code).toContain('as="style"');
   });
 
   it("generateSsrEntry includes fixFlightHints in RSC embed transform", async () => {
-    const { generateSsrEntry } = await import("../packages/vinext/src/server/app-dev-server.js");
+    const { generateSsrEntry } = await import("../packages/openvite/src/server/app-dev-server.js");
     const code = generateSsrEntry();
     // The RSC embed stream should fix HL hint "stylesheet" → "style" before
-    // chunks are embedded as __VINEXT_RSC_CHUNKS__ for client-side processing
+    // chunks are embedded as __OPENVITE_RSC_CHUNKS__ for client-side processing
     expect(code).toContain("fixFlightHints");
     expect(code).toContain('"style"');
   });
@@ -2341,7 +2341,7 @@ describe("SSR entry CSS preload fix", () => {
 
   it("fixFlightHints regex correctly replaces \"stylesheet\" with \"style\" in RSC Flight HL hints", () => {
     // Replicate the fixFlightHints regex from the generated SSR entry.
-    // This runs on the raw Flight protocol text embedded in __VINEXT_RSC_CHUNKS__
+    // This runs on the raw Flight protocol text embedded in __OPENVITE_RSC_CHUNKS__
     // so that client-side React creates valid <link rel="preload" as="style"> instead
     // of invalid <link rel="preload" as="stylesheet">.
     function fixFlightHints(text: string): string {
@@ -2387,7 +2387,7 @@ describe("SSR entry CSS preload fix", () => {
 
 describe("Tick-buffered RSC delivery", () => {
   it("generateSsrEntry uses setTimeout-based tick buffering for RSC scripts", async () => {
-    const { generateSsrEntry } = await import("../packages/vinext/src/server/app-dev-server.js");
+    const { generateSsrEntry } = await import("../packages/openvite/src/server/app-dev-server.js");
     const code = generateSsrEntry();
     // Should use setTimeout(0) for tick buffering instead of emitting
     // RSC scripts synchronously between HTML chunks
@@ -2403,7 +2403,7 @@ describe("Tick-buffered RSC delivery", () => {
   });
 
   it("generateBrowserEntry uses monkey-patched push() instead of polling", async () => {
-    const { generateBrowserEntry } = await import("../packages/vinext/src/server/app-dev-server.js");
+    const { generateBrowserEntry } = await import("../packages/openvite/src/server/app-dev-server.js");
     const code = generateBrowserEntry();
     // Should override push() for immediate chunk delivery
     expect(code).toContain("arr.push = function");
@@ -2424,7 +2424,7 @@ describe("RSC plugin auto-registration", () => {
   let baseUrl: string;
 
   beforeAll(async () => {
-    // Create a server with ONLY vinext() — no explicit @vitejs/plugin-rsc.
+    // Create a server with ONLY openvite() — no explicit @vitejs/plugin-rsc.
     // The plugin should auto-detect the app/ directory and inject RSC.
     // Note: appDir is passed because process.cwd() differs from root in tests.
     // In real projects, cwd === root so appDir is not needed.
@@ -2432,8 +2432,8 @@ describe("RSC plugin auto-registration", () => {
     server = await createServer({
       root: APP_FIXTURE_DIR,
       configFile: false,
-      plugins: [vinext({ appDir: APP_FIXTURE_DIR })],
-      optimizeDeps: { holdUntilCrawlEnd: true },
+      plugins: [openvite({ appDir: APP_FIXTURE_DIR })],
+      optimizeDeps: isolatedOptimizeDeps(),
       server: { port: 0, cors: false },
       logLevel: "silent",
     });
@@ -2466,16 +2466,16 @@ describe("RSC plugin auto-registration", () => {
     const { createServer } = await import("vite");
     const rsc = (await import("@vitejs/plugin-rsc")).default;
 
-    // Create a server with BOTH vinext({ rsc: false }) and explicit rsc().
+    // Create a server with BOTH openvite({ rsc: false }) and explicit rsc().
     // Should work without errors (no duplicate registration).
     const serverWithExplicitRsc = await createServer({
       root: APP_FIXTURE_DIR,
       configFile: false,
       plugins: [
-        vinext({ appDir: APP_FIXTURE_DIR, rsc: false }),
+        openvite({ appDir: APP_FIXTURE_DIR, rsc: false }),
         rsc({ entries: RSC_ENTRIES }),
       ],
-      optimizeDeps: { holdUntilCrawlEnd: true },
+      optimizeDeps: isolatedOptimizeDeps(),
       server: { port: 0, cors: false },
       logLevel: "silent",
     });
@@ -2499,7 +2499,7 @@ describe("RSC plugin auto-registration", () => {
     const { createBuilder } = await import("vite");
     const rsc = (await import("@vitejs/plugin-rsc")).default;
 
-    // vinext() auto-registers @vitejs/plugin-rsc when app/ is detected.
+    // openvite() auto-registers @vitejs/plugin-rsc when app/ is detected.
     // Manually adding rsc() on top should throw a clear error telling
     // the user to fix their config — not silently double the build time.
     await expect(
@@ -2507,7 +2507,7 @@ describe("RSC plugin auto-registration", () => {
         root: APP_FIXTURE_DIR,
         configFile: false,
         plugins: [
-          vinext({ appDir: APP_FIXTURE_DIR }),
+          openvite({ appDir: APP_FIXTURE_DIR }),
           rsc({ entries: RSC_ENTRIES }),
         ],
         logLevel: "silent",
@@ -2518,7 +2518,7 @@ describe("RSC plugin auto-registration", () => {
   it("auto-injects RSC plugin when src/app exists but root-level app/ does not", () => {
     // Regression test: the early detection path (before config()) must check
     // both {base}/app and {base}/src/app to match the full config() logic.
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vinext-src-app-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openvite-src-app-"));
     try {
       // Create only src/app/ — no root-level app/ directory.
       fs.mkdirSync(path.join(tmpDir, "src", "app"), { recursive: true });
@@ -2534,7 +2534,7 @@ describe("RSC plugin auto-registration", () => {
         "junction",
       );
 
-      const plugins = vinext({ appDir: tmpDir });
+      const plugins = openvite({ appDir: tmpDir });
 
       // When auto-RSC fires, the returned array includes a Promise<Plugin[]>
       // for the lazily-loaded @vitejs/plugin-rsc. Verify it's present.
@@ -2548,10 +2548,10 @@ describe("RSC plugin auto-registration", () => {
   });
 
   it("does NOT auto-inject RSC plugin when neither app/ nor src/app/ exists", () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "vinext-no-app-"));
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "openvite-no-app-"));
     try {
       // Empty directory — no app/ or src/app/.
-      const plugins = vinext({ appDir: tmpDir });
+      const plugins = openvite({ appDir: tmpDir });
 
       const hasRscPromise = plugins.some(
         (p) => p && typeof (p as any).then === "function",

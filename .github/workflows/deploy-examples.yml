@@ -44,20 +44,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v4
+      - uses: oven-sh/setup-bun@v2
 
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: pnpm
+          cache: bun
 
-      - run: pnpm install --frozen-lockfile
+      - run: bun install --frozen-lockfile
 
-      - name: Build vinext plugin
-        run: pnpm run build
+      - name: Build openvite plugin
+        run: bun run build
 
       - name: Build example
-        run: pnpm exec vite build
+        run: bunx vite build
         working-directory: examples/${{ matrix.example.name }}
 
       - name: Apply D1 migrations (benchmarks only)
@@ -67,7 +67,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: examples/benchmarks
-          command: d1 migrations apply vinext-benchmarks --remote
+          command: d1 migrations apply openvite-benchmarks --remote
 
       - name: Deploy to Cloudflare Workers (Production)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -133,13 +133,13 @@ jobs:
               issue_number: prNumber,
             });
             
-            const marker = '<!-- vinext-deploy-previews -->';
+            const marker = '<!-- openvite-deploy-previews -->';
             const existingComment = comments.find(c => c.body?.includes(marker));
             
             const rows = examples
               .map(e => {
                 const orig = e.original ? `[original](${e.original})` : '';
-                return `| ${e.name} | [preview](https://${alias}-${e.project}.vinext.workers.dev) | [production](https://${e.project}.vinext.workers.dev) | ${orig} |`;
+                return `| ${e.name} | [preview](https://${alias}-${e.project}.${process.env.DEPLOY_DOMAIN || 'workers.dev'}) | [production](https://${e.project}.${process.env.DEPLOY_DOMAIN || 'workers.dev'}) | ${orig} |`;
               })
               .join('\n');
             

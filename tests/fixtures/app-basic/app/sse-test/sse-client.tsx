@@ -1,9 +1,9 @@
 /**
  * Client component for SSE test page.
  * Separated from page.tsx to avoid "use client" at page level,
- * which can interfere with vinext's SSR of dynamic() client components.
+ * which can interfere with openvite's SSR of dynamic() client components.
  *
- * See: https://github.com/cloudflare/vinext/issues/75
+ * See SSE streaming implementation notes.
  */
 "use client";
 

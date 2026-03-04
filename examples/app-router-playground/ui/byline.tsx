@@ -6,7 +6,7 @@ export default function Byline() {
       <div className="flex gap-4 text-sm font-medium text-gray-600">
         <a
           className="transition-colors hover:text-gray-200"
-          href="https://github.com/cloudflare/vinext/tree/main/examples/app-router-playground"
+          href="https://github.com/openvite/openvite/tree/main/examples/app-router-playground"
           target="_blank"
           rel="noreferrer"
         >
@@ -24,11 +24,11 @@ export default function Byline() {
         <span className="text-gray-800">/</span>
         <a
           className="flex items-center gap-2 transition-colors hover:text-gray-200"
-          href="https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/vinext/tree/main/examples/app-router-playground"
+          href="https://github.com/openvite/openvite"
           target="_blank"
           rel="noreferrer"
         >
-          Deploy to Cloudflare
+          GitHub
         </a>
       </div>
     </Boundary>

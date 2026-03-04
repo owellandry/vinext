@@ -1,9 +1,8 @@
 {
-  "name": "vinext-monorepo",
+  "name": "openvite-monorepo",
   "private": true,
-  "packageManager": "pnpm@10.30.0",
   "scripts": {
-    "build": "pnpm --filter vinext run build",
+    "build": "cd packages/openvite && bun run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "generate:google-fonts": "node scripts/generate-google-fonts.js",
@@ -11,6 +10,12 @@
     "lint": "oxlint --deny-warnings",
     "test:e2e": "playwright test"
   },
+  "workspaces": [
+    "packages/*",
+    "examples/*",
+    "tests/fixtures/*",
+    "tests/fixtures/ecosystem/*"
+  ],
   "devDependencies": {
     "@playwright/test": "^1.58.2",
     "@types/node": "^25.2.3",
@@ -32,17 +37,12 @@
     "@mdx-js/rollup": "^3.1.1",
     "@unpic/react": "^1.0.2"
   },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": ["next", "webpack"]
-    },
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "esbuild",
-      "sharp",
-      "workerd",
-      "@parcel/watcher",
-      "@swc/core"
-    ]
-  }
+  "trustedDependencies": [
+    "better-sqlite3",
+    "esbuild",
+    "sharp",
+    "workerd",
+    "@parcel/watcher",
+    "@swc/core"
+  ]
 }

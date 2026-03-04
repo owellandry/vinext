@@ -2,13 +2,13 @@
  * next/head shim unit tests.
  *
  * Mirrors test cases from Next.js test/unit/next-head-rendering.test.ts,
- * plus comprehensive coverage for vinext's Head SSR collection, HTML
+ * plus comprehensive coverage for openvite's Head SSR collection, HTML
  * generation, allowed tags, and escaping.
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import Head, { resetSSRHead, getSSRHeadHTML, escapeAttr } from "../packages/vinext/src/shims/head.js";
+import Head, { resetSSRHead, getSSRHeadHTML, escapeAttr } from "../packages/openvite/src/shims/head.js";
 
 // ─── SSR rendering (mirrors Next.js test/unit/next-head-rendering.test.ts) ──
 
@@ -57,7 +57,7 @@ describe("Head SSR collection", () => {
     expect(headHtml).toContain("<title");
     expect(headHtml).toContain("My Page Title");
     expect(headHtml).toContain("</title>");
-    expect(headHtml).toContain('data-vinext-head="true"');
+    expect(headHtml).toContain('data-openvite-head="true"');
   });
 
   it("collects meta elements as self-closing", () => {

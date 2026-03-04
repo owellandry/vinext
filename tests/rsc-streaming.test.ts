@@ -8,7 +8,7 @@
  *
  * 1. RSC scripts are interleaved between HTML flush cycles
  * 2. No RSC scripts are injected mid-HTML-chunk (DOM corruption case)
- * 3. The __VINEXT_RSC_DONE__ signal appears after all content
+ * 3. The __OPENVITE_RSC_DONE__ signal appears after all content
  * 4. Head injection happens correctly
  * 5. Multiple HTML chunks in the same macrotask are batched correctly
  *
@@ -25,7 +25,7 @@
  *   - fixPreloadAs(): rewrites as="stylesheet" → as="style" in HTML preloads
  */
 import { describe, it, expect } from "vitest";
-import { safeJsonStringify } from "../packages/vinext/src/server/html.js";
+import { safeJsonStringify } from "../packages/openvite/src/server/html.js";
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 
@@ -69,7 +69,7 @@ function createRscEmbedTransform(embedStream: ReadableStream<Uint8Array>) {
       let scripts = "";
       for (const chunk of chunks) {
         scripts +=
-          "<script>self.__VINEXT_RSC_CHUNKS__=self.__VINEXT_RSC_CHUNKS__||[];self.__VINEXT_RSC_CHUNKS__.push(" +
+          "<script>self.__OPENVITE_RSC_CHUNKS__=self.__OPENVITE_RSC_CHUNKS__||[];self.__OPENVITE_RSC_CHUNKS__.push(" +
           safeJsonStringify(chunk) +
           ")</script>";
       }
@@ -79,7 +79,7 @@ function createRscEmbedTransform(embedStream: ReadableStream<Uint8Array>) {
     async finalize() {
       await pumpPromise;
       let scripts = this.flush();
-      scripts += "<script>self.__VINEXT_RSC_DONE__=true</script>";
+      scripts += "<script>self.__OPENVITE_RSC_DONE__=true</script>";
       return scripts;
     },
   };
@@ -278,9 +278,9 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     const output = await collectStream(htmlStream.pipeThrough(transform));
 
     // RSC scripts should be present in output
-    expect(output).toContain("__VINEXT_RSC_CHUNKS__");
+    expect(output).toContain("__OPENVITE_RSC_CHUNKS__");
     // Done signal should be present
-    expect(output).toContain("__VINEXT_RSC_DONE__=true");
+    expect(output).toContain("__OPENVITE_RSC_DONE__=true");
     // HTML content should be intact
     expect(output).toContain("<div id='root'>");
     expect(output).toContain("<div>Suspense resolved</div>");
@@ -322,7 +322,7 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     );
 
     // RSC scripts should still be present (after the HTML, not mid-element)
-    expect(output).toContain("__VINEXT_RSC_CHUNKS__");
+    expect(output).toContain("__OPENVITE_RSC_CHUNKS__");
 
     // Verify no <script> tag appears between the split HTML fragments
     // by checking that the linearGradient element is contiguous
@@ -361,7 +361,7 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
 
     // RSC scripts should appear AFTER all the HTML chunks
     const htmlEnd = output.indexOf("<div>chunk2</div>") + "<div>chunk2</div>".length;
-    const scriptStart = output.indexOf("__VINEXT_RSC_CHUNKS__");
+    const scriptStart = output.indexOf("__OPENVITE_RSC_CHUNKS__");
     expect(scriptStart).toBeGreaterThan(htmlEnd);
   });
 
@@ -412,14 +412,14 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     expect(output).toContain("<div>Boundary 2</div>");
 
     // RSC scripts should be present for all chunks
-    expect(output).toContain("__VINEXT_RSC_CHUNKS__");
+    expect(output).toContain("__OPENVITE_RSC_CHUNKS__");
 
     // Done signal at the end
-    expect(output).toContain("__VINEXT_RSC_DONE__=true");
+    expect(output).toContain("__OPENVITE_RSC_DONE__=true");
 
     // The done signal should come AFTER all HTML content
     const lastHtmlPos = output.indexOf("</html>");
-    const donePos = output.indexOf("__VINEXT_RSC_DONE__=true");
+    const donePos = output.indexOf("__OPENVITE_RSC_DONE__=true");
     expect(donePos).toBeGreaterThan(lastHtmlPos);
   });
 
@@ -430,7 +430,7 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     const rscEmbed = createRscEmbedTransform(rsc.stream);
     await new Promise((resolve) => setTimeout(resolve, 10));
 
-    const injectHTML = '<script>self.__VINEXT_RSC_PARAMS__={"slug":"test"}</script>';
+    const injectHTML = '<script>self.__OPENVITE_RSC_PARAMS__={"slug":"test"}</script>';
 
     const htmlStream = createMockHtmlStream([
       ["<html><head><title>Test</title></head><body>content</body></html>"],
@@ -440,7 +440,7 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     const output = await collectStream(htmlStream.pipeThrough(transform));
 
     // Injected content should appear before </head>
-    const injectPos = output.indexOf('__VINEXT_RSC_PARAMS__');
+    const injectPos = output.indexOf('__OPENVITE_RSC_PARAMS__');
     const headEndPos = output.indexOf("</head>");
     expect(injectPos).toBeGreaterThan(-1);
     expect(injectPos).toBeLessThan(headEndPos);
@@ -495,7 +495,7 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     expect(output).toContain('name="fallback"');
   });
 
-  it("emits __VINEXT_RSC_DONE__ signal even with empty RSC stream", async () => {
+  it("emits __OPENVITE_RSC_DONE__ signal even with empty RSC stream", async () => {
     const rsc = createMockRscStream();
     rsc.close(); // Close immediately — no RSC chunks
 
@@ -510,9 +510,9 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     const output = await collectStream(htmlStream.pipeThrough(transform));
 
     // Done signal must always be present so the browser knows streaming is complete
-    expect(output).toContain("__VINEXT_RSC_DONE__=true");
+    expect(output).toContain("__OPENVITE_RSC_DONE__=true");
     // No RSC chunks should be present
-    expect(output).not.toContain("__VINEXT_RSC_CHUNKS__");
+    expect(output).not.toContain("__OPENVITE_RSC_CHUNKS__");
   });
 
   it("handles RSC chunks arriving after HTML stream closes", async () => {
@@ -539,9 +539,9 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     // HTML should be present
     expect(output).toContain("Shell");
     // The late RSC chunk should still be emitted (finalize waits for RSC stream)
-    expect(output).toContain("__VINEXT_RSC_CHUNKS__");
+    expect(output).toContain("__OPENVITE_RSC_CHUNKS__");
     // Done signal must be present
-    expect(output).toContain("__VINEXT_RSC_DONE__=true");
+    expect(output).toContain("__OPENVITE_RSC_DONE__=true");
   });
 
   it("preserves RSC chunk ordering", async () => {
@@ -565,7 +565,7 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     const output = await collectStream(htmlStream.pipeThrough(transform));
 
     // Extract RSC script contents to verify ordering
-    const scriptRegex = /__VINEXT_RSC_CHUNKS__\.push\(([^)]+)\)/g;
+    const scriptRegex = /__OPENVITE_RSC_CHUNKS__\.push\(([^)]+)\)/g;
     const matches: string[] = [];
     let match;
     while ((match = scriptRegex.exec(output)) !== null) {
@@ -626,17 +626,17 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     }
 
     // All RSC chunks should be present (initial + 5 boundaries = 6 total)
-    // Count .push() calls, not raw occurrences of __VINEXT_RSC_CHUNKS__
-    // (each script tag contains __VINEXT_RSC_CHUNKS__ multiple times in the init pattern)
-    const scriptCount = (output.match(/__VINEXT_RSC_CHUNKS__\.push\(/g) || []).length;
+    // Count .push() calls, not raw occurrences of __OPENVITE_RSC_CHUNKS__
+    // (each script tag contains __OPENVITE_RSC_CHUNKS__ multiple times in the init pattern)
+    const scriptCount = (output.match(/__OPENVITE_RSC_CHUNKS__\.push\(/g) || []).length;
     expect(scriptCount).toBe(6);
 
     // Done signal at the end
-    expect(output).toContain("__VINEXT_RSC_DONE__=true");
+    expect(output).toContain("__OPENVITE_RSC_DONE__=true");
 
     // Done signal should be the last script
-    const lastChunksPos = output.lastIndexOf("__VINEXT_RSC_CHUNKS__");
-    const donePos = output.indexOf("__VINEXT_RSC_DONE__");
+    const lastChunksPos = output.lastIndexOf("__OPENVITE_RSC_CHUNKS__");
+    const donePos = output.indexOf("__OPENVITE_RSC_DONE__");
     expect(donePos).toBeGreaterThan(lastChunksPos);
   });
 
@@ -659,7 +659,7 @@ describe("Tick-buffered RSC streaming (behavioral)", () => {
     const output = await collectStream(htmlStream.pipeThrough(transform));
 
     // The output should contain the RSC chunk
-    expect(output).toContain("__VINEXT_RSC_CHUNKS__");
+    expect(output).toContain("__OPENVITE_RSC_CHUNKS__");
 
     // RSC data is now stored as a JSON text string. safeJsonStringify escapes
     // <, >, and & characters so that </script> in the RSC data cannot break

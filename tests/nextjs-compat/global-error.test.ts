@@ -42,8 +42,8 @@ describe("Next.js compat: global-error", () => {
     await server?.close();
   });
 
-  // ── Pre-existing vinext error tests ─────────────────────────
-  // These validate that vinext's existing error handling works,
+  // ── Pre-existing openvite error tests ─────────────────────────
+  // These validate that openvite's existing error handling works,
   // providing a baseline before we test Next.js-specific patterns.
 
   it("error-server-test: server component throw is caught by error.tsx", async () => {
@@ -64,14 +64,14 @@ describe("Next.js compat: global-error", () => {
   // Source: https://github.com/vercel/next.js/blob/canary/test/e2e/app-dir/global-error/basic/index.test.ts#L29-L49
   //
   // In Next.js, a server component that throws with NO local error.tsx
-  // falls through to global-error.js. In vinext, the behavior may differ
+  // falls through to global-error.js. In openvite, the behavior may differ
   // (the RSC error might produce a 500 or the global-error might render).
 
   it("server component throw without local error.tsx returns a response", async () => {
     // global-error-rsc/page.tsx throws "server page error" with no error.tsx
     const res = await fetch(`${baseUrl}/nextjs-compat/global-error-rsc`);
     // Should not crash the server — should return some response
-    // Next.js returns 200 with global-error rendered. Vinext might return 500.
+    // Next.js returns 200 with global-error rendered. Openvite might return 500.
     expect(res.status).toBeLessThan(600);
     const html = await res.text();
     // At minimum, a response was returned (server didn't hang)
@@ -143,6 +143,6 @@ describe("Next.js compat: global-error", () => {
   // SKIP: Dev-only Redbox display verification
   //   Source: Multiple tests in index.test.ts
   //   WHY SKIPPED: Tests Next.js-specific dev overlay (Redbox) error display format.
-  //   Vinext uses Vite's error overlay which has different formatting.
+  //   Openvite uses Vite's error overlay which has different formatting.
   //   N/A for compat suite.
 });

@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Test vinext against ecosystem repos from .github/repos.json
+# Test openvite against ecosystem repos from .github/repos.json
 # Usage: ./scripts/test-repos.sh
 #
-# Clones each repo, installs vinext, runs build + dev server smoke test
+# Clones each repo, installs openvite, runs build + dev server smoke test
 # (hits the index page). All repos run in parallel. Results summarized at the end.
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
-VINEXT_PKG="$ROOT_DIR/packages/vinext"
+OPENVITE_PKG="$ROOT_DIR/packages/openvite"
 WORK_DIR="$ROOT_DIR/.ecosystem-test"
 REPOS_JSON="$ROOT_DIR/.github/repos.json"
 RESULTS_DIR="$WORK_DIR/results"
@@ -44,7 +44,7 @@ repos=$(jq -c '.[]' "$REPOS_JSON")
 repo_count=$(echo "$repos" | wc -l | tr -d ' ')
 
 echo ""
-echo -e "${BOLD}vinext ecosystem test${NC}"
+echo -e "${BOLD}openvite ecosystem test${NC}"
 echo -e "Testing $repo_count repos from .github/repos.json"
 echo ""
 
@@ -63,7 +63,7 @@ test_repo() {
   {
     echo "clone=fail"
     echo "install=skip"
-    echo "vinext_install=skip"
+    echo "openvite_install=skip"
     echo "build=skip"
     echo "dev=skip"
   } > "$result_file"
@@ -94,15 +94,15 @@ test_repo() {
   fi
   sed -i '' 's/^install=.*/install=pass/' "$result_file"
 
-  # Install vinext from local build
+  # Install openvite from local build
   echo ""
-  echo "--- install vinext ---"
-  sed -i '' 's/^vinext_install=.*/vinext_install=fail/' "$result_file"
-  if ! npm install --legacy-peer-deps "$VINEXT_PKG" 2>&1; then
-    echo "FAILED: npm install vinext"
+  echo "--- install openvite ---"
+  sed -i '' 's/^openvite_install=.*/openvite_install=fail/' "$result_file"
+  if ! npm install --legacy-peer-deps "$OPENVITE_PKG" 2>&1; then
+    echo "FAILED: npm install openvite"
     return 1
   fi
-  sed -i '' 's/^vinext_install=.*/vinext_install=pass/' "$result_file"
+  sed -i '' 's/^openvite_install=.*/openvite_install=pass/' "$result_file"
 
   # Build
   echo ""
@@ -124,7 +124,7 @@ test_repo() {
   local port=$((3100 + RANDOM % 900))
 
   # Start dev server in background
-  PORT=$port npx vinext dev --port "$port" &
+  PORT=$port npx openvite dev --port "$port" &
   local dev_pid=$!
   echo "$dev_pid" >> "$WORK_DIR/pids"
 
@@ -189,7 +189,7 @@ echo -e "${BOLD}  Results${NC}"
 echo -e "${BOLD}============================================${NC}"
 echo ""
 
-printf "%-30s %-8s %-8s %-10s %-8s %-8s\n" "REPO" "CLONE" "INSTALL" "VINEXT" "BUILD" "DEV"
+printf "%-30s %-8s %-8s %-10s %-8s %-8s\n" "REPO" "CLONE" "INSTALL" "OPENVITE" "BUILD" "DEV"
 printf "%-30s %-8s %-8s %-10s %-8s %-8s\n" "----" "-----" "-------" "------" "-----" "---"
 
 pass_count=0
@@ -199,18 +199,18 @@ for result_file in "$RESULTS_DIR"/*.result; do
   name=$(basename "$result_file" .result)
   clone=$(grep '^clone=' "$result_file" | cut -d= -f2)
   install=$(grep '^install=' "$result_file" | cut -d= -f2)
-  vinext_install=$(grep '^vinext_install=' "$result_file" | cut -d= -f2)
+  openvite_install=$(grep '^openvite_install=' "$result_file" | cut -d= -f2)
   build=$(grep '^build=' "$result_file" | cut -d= -f2)
   dev=$(grep '^dev=' "$result_file" | cut -d= -f2)
 
   # Colorize
   c_clone=$([[ "$clone" == "pass" ]] && echo -e "${GREEN}pass${NC}" || echo -e "${RED}$clone${NC}")
   c_install=$([[ "$install" == "pass" ]] && echo -e "${GREEN}pass${NC}" || echo -e "${RED}$install${NC}")
-  c_vinext=$([[ "$vinext_install" == "pass" ]] && echo -e "${GREEN}pass${NC}" || echo -e "${RED}$vinext_install${NC}")
+  c_openvite=$([[ "$openvite_install" == "pass" ]] && echo -e "${GREEN}pass${NC}" || echo -e "${RED}$openvite_install${NC}")
   c_build=$([[ "$build" == "pass" ]] && echo -e "${GREEN}pass${NC}" || echo -e "${YELLOW}$build${NC}")
   c_dev=$([[ "$dev" == "pass" ]] && echo -e "${GREEN}pass${NC}" || echo -e "${RED}$dev${NC}")
 
-  printf "%-30s %-17s %-17s %-19s %-17s %-17s\n" "$name" "$c_clone" "$c_install" "$c_vinext" "$c_build" "$c_dev"
+  printf "%-30s %-17s %-17s %-19s %-17s %-17s\n" "$name" "$c_clone" "$c_install" "$c_openvite" "$c_build" "$c_dev"
 
   if [[ "$dev" == "pass" ]]; then
     pass_count=$((pass_count + 1))

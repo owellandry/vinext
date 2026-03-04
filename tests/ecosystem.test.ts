@@ -1,6 +1,6 @@
 /**
  * Ecosystem integration tests — verifies popular third-party libraries
- * work correctly with vinext.
+ * work correctly with openvite.
  *
  * Uses subprocess-based testing: starts Vite dev server as a child process,
  * waits for it to be ready, makes HTTP requests, and asserts SSR output.
@@ -82,7 +82,10 @@ async function startFixture(
 
 function killProcess(proc: ChildProcess | null) {
   if (proc && !proc.killed) {
-    proc.kill("SIGTERM");
+    // On Windows, SIGTERM does not reliably terminate processes.
+    // Using SIGKILL ensures the child process is actually stopped,
+    // preventing stale servers with leftover in-memory state.
+    proc.kill(process.platform === "win32" ? "SIGKILL" : "SIGTERM");
   }
 }
 

@@ -1,6 +1,6 @@
-# Contributing to vinext
+# Contributing to openvite
 
-vinext was born from an experiment in pushing AI to its limits. Almost every line of code in this repo was written by AI, and every pull request is both created and reviewed by AI agents. We welcome human contributions, but if you want to have a good time in this repo, you're going to want to use AI.
+openvite was born from an experiment in pushing AI to its limits. Almost every line of code in this repo was written by AI, and every pull request is both created and reviewed by AI agents. We welcome human contributions, but if you want to have a good time in this repo, you're going to want to use AI.
 
 ## Recommended setup
 
@@ -8,9 +8,9 @@ We use [OpenCode](https://opencode.ai) with Claude Opus 4.6, set to max thinking
 
 ## Before you open a PR
 
-1. **Run the test suite.** `pnpm test` runs Vitest. `pnpm run test:e2e` runs Playwright.
+1. **Run the test suite.** `bun run test` runs Vitest. `bun run test:e2e` runs Playwright.
 2. **Add tests for new functionality.** Unit tests go in `tests/*.test.ts`. Browser-level tests go in `tests/e2e/`.
-3. **Run the linter and type checker.** `pnpm run lint` (oxlint) and `pnpm run typecheck` (tsgo).
+3. **Run the linter and type checker.** `bun run lint` (oxlint) and `bun run typecheck` (tsgo).
 4. **Read `AGENTS.md`.** It has the architecture context, key gotchas, and development workflow that will save you (and your AI) time.
 
 ## AI code review
@@ -28,7 +28,7 @@ For browser-level debugging (verifying rendered output, client-side navigation, 
 
 ## What to work on
 
-Check the [open issues](https://github.com/cloudflare/vinext/issues). Issues labeled `post-launch` are known gaps we're planning to address. If you're looking to contribute, those are a good place to start.
+Check the [open issues](https://github.com/openvite/openvite/issues). Issues labeled `post-launch` are known gaps we're planning to address. If you're looking to contribute, those are a good place to start.
 
 ## Project structure
 

@@ -7,10 +7,10 @@ test.describe("Cloudflare Workers SSR", () => {
     await page.goto(`${BASE}/`);
 
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
     await expect(page.locator("p").first()).toContainText(
-      "server-rendered by vinext",
+      "server-rendered by openvite",
     );
   });
 
@@ -21,7 +21,7 @@ test.describe("Cloudflare Workers SSR", () => {
     await page.goto(`${BASE}/`);
 
     await expect(page.locator("h1")).toHaveText(
-      "vinext on Cloudflare Workers",
+      "openvite on Cloudflare Workers",
     );
     // Counter should show initial state from SSR
     await expect(page.locator('[data-testid="count"]')).toHaveText("Count: 0");
@@ -35,7 +35,7 @@ test.describe("Cloudflare Workers SSR", () => {
 
     await expect(page.locator("h1")).toHaveText("About");
     await expect(page.locator("p").first()).toContainText(
-      "vinext app deployed on Cloudflare Workers",
+      "openvite app deployed on Cloudflare Workers",
     );
   });
 
@@ -68,7 +68,7 @@ test.describe("Cloudflare Workers SSR", () => {
 
     // Check title is set
     const title = await page.title();
-    expect(title).toBe("vinext on Cloudflare Workers");
+    expect(title).toBe("openvite on Cloudflare Workers");
 
     // Check meta viewport
     const viewport = await page.getAttribute(

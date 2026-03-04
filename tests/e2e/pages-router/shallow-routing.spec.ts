@@ -3,12 +3,12 @@ import { test, expect } from "@playwright/test";
 const BASE = "http://localhost:4173";
 
 /**
- * Wait for the Pages Router to hydrate (the __VINEXT_ROOT__ is set).
+ * Wait for the Pages Router to hydrate (the __OPENVITE_ROOT__ is set).
  */
 async function waitForHydration(page: import("@playwright/test").Page) {
   await expect(async () => {
     const ready = await page.evaluate(
-      () => !!(window as any).__VINEXT_ROOT__,
+      () => !!(window as any).__OPENVITE_ROOT__,
     );
     expect(ready).toBe(true);
   }).toPass({ timeout: 10_000 });

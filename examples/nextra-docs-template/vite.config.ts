@@ -1,5 +1,5 @@
 import { defineConfig } from "vite";
-import vinext from "vinext";
+import openvite from "openvite";
 import mdx from "@mdx-js/rollup";
 import { cloudflare } from "@cloudflare/vite-plugin";
 
@@ -8,8 +8,8 @@ export default defineConfig({
     // MDX support — compiles .mdx files into React components
     mdx(),
 
-    // vinext plugin (provides all next/* shims, routing, SSR, RSC)
-    vinext(),
+    // openvite plugin (provides all next/* shims, routing, SSR, RSC)
+    openvite(),
 
     // Cloudflare Workers plugin — builds for workerd runtime
     cloudflare({

@@ -8,7 +8,7 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 **Local**: `tests/nextjs-compat/app-rendering.test.ts`
 **Fixtures**: `fixtures/app-basic/app/nextjs-compat/`
 
-| # | Next.js Test | Vinext Status | Notes |
+| # | Next.js Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | should serve app/page.server.js at / | PASS | Mapped to `/nextjs-compat` sub-route |
 | 2 | SSR only: should run data in layout and page | PASS | `use(getData())` with `revalidate=0` works |
@@ -19,7 +19,7 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 | 7 | ISR: should produce different timestamps on revalidation | **SKIP** | RSC module instances persist across requests in dev — `Date.now()` in `use(getData())` returns cached value. Needs investigation into RSC module re-execution per request. |
 | 8 | mixed static and dynamic | SKIP (N/A) | Also skipped in Next.js source |
 
-**Result: 6/8 pass, 1 skip (vinext issue), 1 skip (N/A)**
+**Result: 6/8 pass, 1 skip (openvite issue), 1 skip (N/A)**
 
 ### Findings
 
@@ -34,7 +34,7 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 **Local**: `tests/nextjs-compat/not-found.test.ts`
 **Fixtures**: `fixtures/app-basic/app/nextjs-compat/not-found-*`
 
-| # | Next.js Test | Vinext Status | Notes |
+| # | Next.js Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | 404 status for non-matching routes | PASS | |
 | 2 | Root not-found content renders | PASS | Includes root layout wrapper |
@@ -52,7 +52,7 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 | 14 | Client-side notFound() from button click (nested) | N/A | Same — needs Playwright spec |
 | 15 | Dev file rename -> 404 -> restore | N/A | Tests HMR/file watcher, not not-found logic |
 | 16 | Build output: file traces, pages manifest | N/A | Next.js-specific .next/ build structure |
-| 17 | Edge runtime variant | N/A | Vinext tests edge via separate Cloudflare projects |
+| 17 | Edge runtime variant | N/A | Openvite tests edge via separate Cloudflare projects |
 
 **Result: 12/12 pass (HTTP-level), 5 N/A (browser-only, build-only, edge)**
 
@@ -75,13 +75,13 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 **Local**: `tests/nextjs-compat/global-error.test.ts`
 **Fixtures**: `fixtures/app-basic/app/nextjs-compat/global-error-{rsc,ssr}/`, `metadata-error-{with,without}-boundary/`
 
-| # | Next.js Test | Vinext Status | Notes |
+| # | Next.js Test | Openvite Status | Notes |
 |---|---|---|---|
-| 1 | error-server-test: server component throw caught by error.tsx | **SKIP** | Vinext returns 500 instead of rendering error.tsx boundary (200). RSC error propagates to HTTP handler instead of being caught at segment level. Fix: `packages/vinext/src/server/app-dev-server.ts` — SSR layer needs to handle RSC error chunks by rendering error boundary. |
+| 1 | error-server-test: server component throw caught by error.tsx | **SKIP** | Openvite returns 500 instead of rendering error.tsx boundary (200). RSC error propagates to HTTP handler instead of being caught at segment level. Fix: `packages/openvite/src/server/app-dev-server.ts` — SSR layer needs to handle RSC error chunks by rendering error boundary. |
 | 2 | error-nested-test: nested error caught by inner error.tsx | **SKIP** | Same root cause as #1. |
 | 3 | Server component throw without local error.tsx returns a response | PASS | Returns a response (500) — server doesn't crash. Next.js would render global-error.tsx with 200. |
 | 4 | Client component SSR throw without local error.tsx returns a response | PASS | Same — returns response, server stays up. |
-| 5 | generateMetadata() error caught by local error.tsx boundary | **SKIP** | Vinext shows Vite dev error overlay instead of rendering co-located error.tsx. Fix: `packages/vinext/src/shims/metadata.tsx` (resolveModuleMetadata ~line 135) — wrap generateMetadata() in try/catch, render error boundary if sibling error.tsx exists. |
+| 5 | generateMetadata() error caught by local error.tsx boundary | **SKIP** | Openvite shows Vite dev error overlay instead of rendering co-located error.tsx. Fix: `packages/openvite/src/shims/metadata.tsx` (resolveModuleMetadata ~line 135) — wrap generateMetadata() in try/catch, render error boundary if sibling error.tsx exists. |
 | 6 | generateMetadata() error without local boundary returns a response | PASS | Returns a response (Vite overlay HTML), server stays up. |
 | 7 | Client-side error trigger via button click -> global-error renders | N/A | Requires Playwright — client component state change triggers throw |
 | 8 | Nested client error auto-thrown via useEffect -> global-error | N/A | Requires Playwright |
@@ -89,12 +89,12 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 | 10 | Client-side notFound() trigger from button (root) | N/A | Requires Playwright |
 | 11 | Client-side notFound() trigger from button (nested) | N/A | Requires Playwright |
 
-**Result: 3/6 pass (HTTP-level), 3 skip (vinext issues), 5 N/A (browser-only, dev overlay)**
+**Result: 3/6 pass (HTTP-level), 3 skip (openvite issues), 5 N/A (browser-only, dev overlay)**
 
 ### Findings
 
-- **Server component errors return 500**: When a server component throws during RSC rendering, vinext returns HTTP 500 instead of catching the error and rendering the nearest error.tsx boundary with a 200. The RSC stream correctly encodes the error, but the SSR layer doesn't handle error chunks by activating React error boundaries.
-- **generateMetadata() errors bypass error.tsx**: When `generateMetadata()` throws, vinext's metadata resolution lets the error propagate to the top-level handler, triggering Vite's dev error overlay instead of rendering the co-located error.tsx boundary.
+- **Server component errors return 500**: When a server component throws during RSC rendering, openvite returns HTTP 500 instead of catching the error and rendering the nearest error.tsx boundary with a 200. The RSC stream correctly encodes the error, but the SSR layer doesn't handle error chunks by activating React error boundaries.
+- **generateMetadata() errors bypass error.tsx**: When `generateMetadata()` throws, openvite's metadata resolution lets the error propagate to the top-level handler, triggering Vite's dev error overlay instead of rendering the co-located error.tsx boundary.
 - **Server stays up**: Despite errors, the dev server doesn't crash — all error paths return some HTTP response.
 
 ---
@@ -104,7 +104,7 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 **Local**: `tests/nextjs-compat/dynamic.test.ts`
 **Fixtures**: `fixtures/app-basic/app/nextjs-compat/dynamic/`
 
-| # | Next.js Test | Vinext Status | Notes |
+| # | Next.js Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | SSR: React.lazy loaded content | PASS | "next-dynamic lazy" rendered in SSR HTML |
 | 2 | SSR: dynamic() server component content | PASS | "next-dynamic dynamic on server" rendered |
@@ -142,7 +142,7 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 **Local**: `tests/nextjs-compat/app-routes.test.ts`
 **Fixtures**: `fixtures/app-basic/app/nextjs-compat/api/*` (new), `fixtures/app-basic/app/api/*` (pre-existing)
 
-| # | Next.js Test | Vinext Status | Notes |
+| # | Next.js Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1-5 | Basic HTTP methods (GET, POST, PUT, DELETE, PATCH) | PASS (x5) | All return 200 with correct body and x-method header |
 | 6 | Can read query parameters | PASS | `?ping=pong` parsed correctly |
@@ -183,7 +183,7 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 **Local**: `tests/nextjs-compat/metadata.test.ts`
 **Fixtures**: `fixtures/app-basic/app/nextjs-compat/metadata-*`
 
-| # | Next.js Test | Vinext Status | Notes |
+| # | Next.js Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Title in head | PASS | `<title>this is the page title</title>` |
 | 2 | Description meta tag | PASS | |
@@ -237,7 +237,7 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 **Local**: `tests/nextjs-compat/navigation.test.ts`
 **Fixtures**: `fixtures/app-basic/app/nextjs-compat/nav-*`
 
-| # | Next.js Test | Vinext Status | Notes |
+| # | Next.js Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | redirect() in server component | PASS | Produces 307 with correct Location header |
 | 2 | Redirect destination renders correctly | PASS | "Result Page" content present |
@@ -265,14 +265,14 @@ Ported from: https://github.com/vercel/next.js/tree/canary/test/e2e/app-dir
 ### Chunk 8: parallel-routes-and-interception
 **Source**: https://github.com/vercel/next.js/blob/canary/test/e2e/app-dir/parallel-routes-and-interception/parallel-routes-and-interception.test.ts
 
-**Not ported — already covered by existing vinext tests.**
+**Not ported — already covered by existing openvite tests.**
 
 The Next.js test is ~25 cases, almost entirely browser-based (client-side nav, back/forward, URL bar, prefetch, loading states). The ~3 SSR-testable patterns (nested parallel slot matching, route group + parallel slots, 404 on direct slot access) are already covered by `tests/app-router.test.ts` (lines 141-288) with 13 existing tests for parallel routes and intercepting routes using pre-existing fixtures in `fixtures/app-basic/app/dashboard/@team/`, `@analytics/`, and `feed/@modal/`.
 
 ### Chunk 9: app (main kitchen sink)
 **Source**: https://github.com/vercel/next.js/blob/canary/test/e2e/app-dir/app/index.test.ts
 
-**Not ported — ~90% overlap with existing vinext tests.**
+**Not ported — ~90% overlap with existing openvite tests.**
 
 The Next.js test is a massive kitchen-sink with 50+ cases. The SSR-testable patterns (dynamic routes, catch-all, layouts, client component SSR, loading.tsx, search params, 404, metadata, RSC content-type) are already thoroughly covered by `tests/app-router.test.ts` and `tests/nextjs-compat/*.test.ts` chunks 1-7. The remaining tests are browser-only (Link, HMR, client-side nav, rewrites, middleware).
 
@@ -291,7 +291,7 @@ Three Playwright spec files cover client-side behaviors that cannot be tested vi
 
 **Config**: `tests/e2e/app-router/nextjs-compat/playwright.nextjs-compat.config.ts`
 **Run**: `node node_modules/@playwright/test/cli.js test -c tests/e2e/app-router/nextjs-compat/playwright.nextjs-compat.config.ts`
-**Prereq**: Build vinext (`npx tsc -p packages/vinext/tsconfig.json`) and start dev server (`npx vite --port 4174` from `fixtures/app-basic`)
+**Prereq**: Build openvite (`npx tsc -p packages/openvite/tsconfig.json`) and start dev server (`npx vite --port 4174` from `fixtures/app-basic`)
 
 ### Chunk 4: dynamic (Playwright)
 
@@ -299,7 +299,7 @@ Three Playwright spec files cover client-side behaviors that cannot be tested vi
 
 | # | Test | Status | Notes |
 |---|------|--------|-------|
-| 1 | ssr:false component appears after hydration | PASS | `#css-text-dynamic-no-ssr-client` visible after `__VINEXT_RSC_ROOT__` set |
+| 1 | ssr:false component appears after hydration | PASS | `#css-text-dynamic-no-ssr-client` visible after `__OPENVITE_RSC_ROOT__` set |
 | 2 | dynamic() components remain visible after hydration | PASS | All 4 dynamic import patterns still present post-hydration |
 | 3 | named export via dynamic() renders button after hydration | PASS | `#client-button` interactive in browser |
 | 4 | ssr:false page shows dynamic content after hydration | PASS | Static text immediate, dynamic appears after hydration |
@@ -332,7 +332,7 @@ Three Playwright spec files cover client-side behaviors that cannot be tested vi
 | 1 | server component redirect lands on result page | PASS | Browser follows 307, URL and content correct |
 | 2 | client-side redirect via router.push() | PASS | Button click -> navigates to result page |
 | 3 | server component notFound() renders not-found component | PASS | 404 status, body contains "404" |
-| 4 | client-side notFound() trigger renders not-found component | **SKIP** | Client-side `notFound()` from "use client" component crashes React tree instead of rendering not-found boundary. Body shows raw Vite RSC entry text. Fix: `packages/vinext/src/shims/navigation.ts` — need client-side NotFoundBoundary that catches NEXT_NOT_FOUND error. |
+| 4 | client-side notFound() trigger renders not-found component | **SKIP** | Client-side `notFound()` from "use client" component crashes React tree instead of rendering not-found boundary. Body shows raw Vite RSC entry text. Fix: `packages/openvite/src/shims/navigation.ts` — need client-side NotFoundBoundary that catches NEXT_NOT_FOUND error. |
 | 5 | Link navigates client-side without full reload | PASS | Window marker preserved across navigation |
 | 6 | browser back button works after client navigation | PASS | goBack() returns to original page |
 
@@ -392,13 +392,13 @@ Three Playwright spec files cover client-side behaviors that cannot be tested vi
 - **2 new issues found** in Phase 3: duplicate title with Suspense layout, external redirect in server actions
 
 ### Issues Found (Fix Backlog)
-1. **RSC module caching across requests** — `Date.now()` cached in dev. Fix: `packages/vinext/src/server/app-dev-server.ts`
+1. **RSC module caching across requests** — `Date.now()` cached in dev. Fix: `packages/openvite/src/server/app-dev-server.ts`
 2. ~~**Server component errors return 500 instead of rendering error.tsx**~~ — **FIXED**. Added `renderErrorBoundaryPage()` in `app-dev-server.ts` that renders the nearest error.tsx wrapped in layouts when a server component throws. Catches errors in `buildPageElement` catch (metadata errors) and SSR catch (render errors). Returns 200 with error boundary HTML.
 3. ~~**generateMetadata() errors bypass error.tsx**~~ — **FIXED**. Same fix as #2 — the `buildPageElement` catch now calls `renderErrorBoundaryPage()` for non-special errors from `generateMetadata()`.
 4. ~~**React `use()` hook warning**~~ — **FIXED**. Not duplicate React — the pre-render check (`app-dev-server.ts:1268`) calls `PageComponent()` directly outside React's render cycle, triggering "Invalid hook call" for components using `use()`. Fix: suppress the expected warning during the pre-render test.
 5. ~~**Keywords separator formatting**~~ — **FIXED**. Changed `metadata.keywords.join(", ")` to `.join(",")` in `metadata.tsx:338` to match Next.js behavior.
 6. ~~**Client-side notFound() crashes React tree**~~ — **FIXED**. Added `NotFoundBoundary` class component to `error-boundary.tsx` that catches `NEXT_NOT_FOUND`/`NEXT_HTTP_ERROR_FALLBACK;404` errors. Wrapped in `buildPageElement()` above `ErrorBoundary`, with pre-rendered not-found.tsx element as fallback. Playwright test now passes.
-7. ~~**useParams() returns empty on client after hydration**~~ — **FIXED**. Root cause: `setClientParams()` was never called in the browser. Fix: server now sends `X-Vinext-Params` header in RSC responses (`app-dev-server.ts:1295`), browser entry reads it during hydration and client-side navigation (`app-dev-server.ts:1594-1597, 1612-1617`). All 3 Playwright useParams tests now pass.
+7. ~~**useParams() returns empty on client after hydration**~~ — **FIXED**. Root cause: `setClientParams()` was never called in the browser. Fix: server now sends `X-Openvite-Params` header in RSC responses (`app-dev-server.ts:1295`), browser entry reads it during hydration and client-side navigation (`app-dev-server.ts:1594-1597, 1612-1617`). All 3 Playwright useParams tests now pass.
 8. ~~**Client-side error.tsx boundary doesn't activate during navigation**~~ — **FIXED**. Added `onCaughtError: function() {}` to `hydrateRoot()` call in `generateBrowserEntry()` to suppress Vite dev overlay for errors caught by React error boundaries. Combined with PR #51's `renderErrorBoundaryPage()` for SSR-side error rendering.
 
 ---
@@ -406,7 +406,7 @@ Three Playwright spec files cover client-side behaviors that cannot be tested vi
 ## Phase 2: Additional Test Chunks (COMPLETE)
 
 Gap analysis against the full Next.js e2e/app-dir suite (365 test dirs) identified these
-high-value areas where vinext **implements the feature** but had thin or no Next.js-compat
+high-value areas where openvite **implements the feature** but had thin or no Next.js-compat
 test coverage. Ordered by impact on real-world app confidence.
 
 ### Chunk 11: hooks — `useRouter`, `usePathname`, `useSearchParams`, `useParams` ✅
@@ -424,7 +424,7 @@ useRouter.push/replace/back all work.
 
 ### Chunk 12: forbidden / unauthorized — SKIPPED (already well-covered)
 
-Existing vinext tests already thoroughly cover forbidden/unauthorized: unit tests for
+Existing openvite tests already thoroughly cover forbidden/unauthorized: unit tests for
 throw/digest, SSR integration tests for 403/401 rendering with custom boundaries, and
 Playwright E2E status code checks. No additional Next.js-compat tests needed.
 
@@ -494,11 +494,11 @@ Full draft mode lifecycle works through HTTP: `draftMode().enable()` sets
 `__prerender_bypass` cookie, `draftMode().disable()` clears it, `draftMode().isEnabled`
 returns false by default and true when bypass cookie is present in the request.
 
-### Vinext Feature Audit Summary
+### Openvite Feature Audit Summary
 
-Conducted a full audit of vinext's feature surface against 25 Next.js capabilities:
+Conducted a full audit of openvite's feature surface against 25 Next.js capabilities:
 
-| Feature | Vinext | Tested | Phase 2 Chunk | Phase 5 |
+| Feature | Openvite | Tested | Phase 2 Chunk | Phase 5 |
 |---------|--------|--------|---------------|---------|
 | Streaming/Suspense SSR | YES | Existing e2e | 15 | — |
 | Server Actions | YES | Existing e2e (8 tests) | — | — |
@@ -536,7 +536,7 @@ Conducted a full audit of vinext's feature surface against 25 Next.js capabiliti
 
 ## Phase 3: Server Actions, Revalidation, Prefetch, and More
 
-Targeted the top 10 gaps from the coverage analysis — features vinext implements
+Targeted the top 10 gaps from the coverage analysis — features openvite implements
 but had no Next.js-compat test coverage for.
 
 ### Chunk 19: actions-navigation — Server action after client navigation ✅
@@ -585,7 +585,7 @@ page reload (window marker preserved).
 Metadata renders correctly in `<head>` when the layout wraps children in
 `<Suspense>`: title, description, and application-name are all present and correct.
 
-**1 skipped**: Duplicate `<title>` tags. Vinext emits the metadata twice — once in
+**1 skipped**: Duplicate `<title>` tags. Openvite emits the metadata twice — once in
 the shell and again when the Suspense boundary resolves. Fix: metadata should be
 hoisted above Suspense boundaries in `app-dev-server.ts:buildPageElement()`.
 
@@ -604,7 +604,7 @@ both work correctly — return `{ revalidated: true }` with 200 status.
 **Local**: `tests/e2e/app-router/nextjs-compat/external-redirect.spec.ts`
 **Result**: Playwright 0/1 pass, 1 skip
 
-**Skipped**: Vinext handles server action redirects via `x-action-redirect` headers
+**Skipped**: Openvite handles server action redirects via `x-action-redirect` headers
 and `window.history.replaceState` + RSC navigate. For external URLs, this tries to
 do a client-side RSC navigation instead of `window.location.href = url`. Fix: in
 the browser entry's server action callback, detect external redirects (different
@@ -643,8 +643,8 @@ Next.js-specific and requires `createRouterAct` test infrastructure.
 
 ### New Issues Found
 
-9. **Duplicate `<title>` tags with Suspense layout** — When a layout wraps children in `<Suspense>`, metadata `<title>` tag appears twice. Fix: `packages/vinext/src/server/app-dev-server.ts` — hoist metadata rendering above Suspense boundaries.
-10. **External redirect in server actions** — `redirect('https://example.com')` inside a server action does client-side RSC navigation instead of full page navigation. Fix: `packages/vinext/src/server/app-dev-server.ts` browser entry — detect external origin and use `window.location.href`.
+9. **Duplicate `<title>` tags with Suspense layout** — When a layout wraps children in `<Suspense>`, metadata `<title>` tag appears twice. Fix: `packages/openvite/src/server/app-dev-server.ts` — hoist metadata rendering above Suspense boundaries.
+10. **External redirect in server actions** — `redirect('https://example.com')` inside a server action does client-side RSC navigation instead of full page navigation. Fix: `packages/openvite/src/server/app-dev-server.ts` browser entry — detect external origin and use `window.location.href`.
 
 ---
 
@@ -658,7 +658,7 @@ Ported from: https://github.com/opennextjs/opennextjs-cloudflare/tree/main/examp
 Workers, AWS Lambda, etc.). Their E2E test suites are **behavioral conformance tests** — they verify
 that Next.js features work correctly across different deployment targets. These assertions (what the
 user sees, what headers are returned, how caching behaves) are framework-agnostic and portable,
-making them a good reference for vinext's own compatibility testing.
+making them a good reference for openvite's own compatibility testing.
 
 **Approach**: We port the *test patterns and assertions* into our existing Playwright specs, running
 against our Vite-based fixture apps. Each test links back to the OpenNext source for reference.
@@ -668,9 +668,9 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/isr.test.ts
 **Local**: `tests/e2e/app-router/isr.spec.ts` (enhanced)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
-| 1 | ISR page returns HIT on prebuilt path (`dynamicParams=true`) | PASS | `x-vinext-cache: HIT` verified for `/products/1` |
+| 1 | ISR page returns HIT on prebuilt path (`dynamicParams=true`) | PASS | `x-openvite-cache: HIT` verified for `/products/1` |
 | 2 | ISR page returns MISS on non-prebuilt path (`dynamicParams=true`) | PASS | New path gets `MISS` then `HIT` on next request |
 | 3 | ISR page returns 404 for notFound() path | PASS | 404 + `private, no-cache` Cache-Control |
 | 4 | `dynamicParams=false` returns 404 for unknown param | PASS | Already tested in `advanced.spec.ts` |
@@ -685,7 +685,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Local**: `tests/e2e/app-router/isr.spec.ts` (new tests)
 **Fixtures**: `app/revalidate-tag-test/`, `app/revalidate-tag-test/nested/`, `app/api/revalidate-tag/`, `app/api/revalidate-path/`
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Load tagged ISR page → HIT → call `/api/revalidate-tag` → MISS | PASS | ISR cache entries now tagged with fetch tags; revalidateTag invalidates them |
 | 2 | Nested page shares tag, also invalidated | FIXME | Blocked: revalidateTag does not invalidate ISR cache in dev server |
@@ -697,7 +697,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/methods.test.ts
 **Local**: `tests/e2e/app-router/api-routes.spec.ts` (enhanced)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | GET returns 200 with JSON | PASS | Already tested |
 | 2 | POST with text body, status-based responses | PASS | Already tested |
@@ -705,13 +705,13 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 | 4 | PATCH returns 202 with timestamp | PASS | New test |
 | 5 | DELETE returns 204 | PASS | New test |
 | 6 | HEAD returns 200 with custom headers, empty body | PASS | Already tested |
-| 7 | OPTIONS returns 204 with Allow header | FIXME | vinext auto-OPTIONS does not set Allow header — feature gap |
+| 7 | OPTIONS returns 204 with Allow header | FIXME | openvite auto-OPTIONS does not set Allow header — feature gap |
 | 8 | formData POST works | PASS | New test |
 | 9 | Cookies set via route handler | PASS | Already tested |
 | 10 | redirect() in route handler returns 307 | PASS | Already tested |
 | 11 | Dynamic segment params in route handler | PASS | Already tested |
 | 12 | Query parameters in route handler | PASS | New test |
-| 13 | Static GET route has `s-maxage` Cache-Control | FIXME | vinext does not read `revalidate` from route handler modules |
+| 13 | Static GET route has `s-maxage` Cache-Control | FIXME | openvite does not read `revalidate` from route handler modules |
 | 14 | Revalidation timing in GET route handler | FIXME | Same: route handler cache headers not implemented |
 
 ### ON-4: SSR + loading.tsx Suspense Timing
@@ -719,7 +719,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/ssr.test.ts
 **Local**: `tests/e2e/app-router/loading.spec.ts` (enhanced)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Loading boundary shows "Loading..." before content resolves | PASS | Suspense streaming sends loading.tsx fallback in initial HTML shell |
 | 2 | Content replaces loading state after delay | PASS | Full lifecycle (slow page has 2s async delay) |
@@ -732,7 +732,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Local**: `tests/e2e/app-router/streaming.spec.ts` (new file)
 **Fixtures**: `app/api/sse/route.ts` (SSE endpoint), `app/sse-test/page.tsx` (SSE client)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | SSE messages arrive incrementally (not all at once) | PASS | Messages appear sequentially with delays between them |
 | 2 | Each SSE message arrives after a delay | PASS | Visibility checks between 1s delays confirmed |
@@ -744,7 +744,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/headers.test.ts
 **Local**: `tests/e2e/app-router/headers-cookies.spec.ts` (enhanced)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Middleware sets cookies on response | PASS | Verified via context.cookies() |
 | 2 | cookies().get() reads middleware-set cookie | PASS | Server component reads cookie set by middleware |
@@ -752,7 +752,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 | 4 | `x-middleware-next` NOT in response headers | PASS | Internal header stripped |
 | 5 | Request headers available in RSC | PASS | Already tested |
 | 6 | `next.config.js` headers applied to response | PASS | Covered by ON-15 tests in config-redirect.spec.ts |
-| 7 | `x-powered-by` absent from responses | PASS | vinext never sends X-Powered-By; explicit assertion added |
+| 7 | `x-powered-by` absent from responses | PASS | openvite never sends X-Powered-By; explicit assertion added |
 
 ### ON-7: next/after Deferred Work
 
@@ -760,7 +760,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Local**: `tests/e2e/app-router/after.spec.ts` (new file)
 **Fixtures**: `app/api/after-test/route.ts`
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | POST responds immediately (<2s), `after()` runs in background | PASS | Timing assertion: response time < 2s confirmed |
 | 2 | Counter NOT updated immediately after POST | PASS | Immediate GET confirms no change |
@@ -771,11 +771,11 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/headers.test.ts
 **Local**: `tests/e2e/app-router/headers-cookies.spec.ts` (enhanced)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | `next.config.js` headers set on response | PASS | Covered by ON-15 tests in config-redirect.spec.ts |
-| 2 | Middleware headers override config headers (when configured) | FIXME | vinext does not implement `dangerous.middlewareHeadersOverrideNextConfigHeaders` |
-| 3 | `x-powered-by` absent when `poweredByHeader: false` | PASS | vinext never sends X-Powered-By; explicit assertion added |
+| 2 | Middleware headers override config headers (when configured) | FIXME | openvite does not implement `dangerous.middlewareHeadersOverrideNextConfigHeaders` |
+| 3 | `x-powered-by` absent when `poweredByHeader: false` | PASS | openvite never sends X-Powered-By; explicit assertion added |
 
 ### ON-9: Parallel Routes and Intercepting Routes
 
@@ -783,7 +783,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/modals.test.ts
 **Local**: `tests/e2e/app-router/advanced.spec.ts` (already covered)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Parallel routes: slots render default when not active | PASS | Already in advanced.spec.ts |
 | 2 | Parallel routes: enabling slots shows content | PASS | Already in advanced.spec.ts |
@@ -796,7 +796,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/serverActions.test.ts
 **Local**: `tests/e2e/app-router/server-actions.spec.ts` (already covered)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Server action fires and updates UI state | PASS | Already tested (like button) |
 | 2 | Server action works after page reload | PASS | Already tested |
@@ -821,15 +821,15 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 | **Total** | **55** | **48** | **6** | **0** | **1** | |
 
 - **Pass**: Tests that pass in the E2E suite
-- **Fixme**: Tests written but marked `test.fixme()` due to vinext feature gaps
+- **Fixme**: Tests written but marked `test.fixme()` due to openvite feature gaps
 - **Pending**: Need additional fixture/config work beyond what was created
-- **Skip**: Known vinext limitation (pre-existing)
+- **Skip**: Known openvite limitation (pre-existing)
 
 ### Known Feature Gaps (Fixme)
 
 | Feature | Test | Issue |
 |---------|------|-------|
-| OPTIONS + Allow header | ON-3 #7 | vinext auto-OPTIONS does not set Allow header |
+| OPTIONS + Allow header | ON-3 #7 | openvite auto-OPTIONS does not set Allow header |
 | Suspense streaming | ON-4 #1 | loading.tsx fallback not shown in dev mode streaming |
 
 ### New Files Created
@@ -862,13 +862,13 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Local**: `tests/e2e/app-router/middleware.spec.ts` (new file)
 **Fixtures**: `tests/fixtures/app-basic/middleware.ts` (modified)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Middleware redirect lands on target page | PASS | `/middleware-redirect` → `/about` |
 | 2 | Middleware redirect sets a cookie | PASS | `middleware-redirect=success` cookie verified |
 | 3 | Direct load of redirect URL returns 3xx | PASS | Status 301/302/307/308 with Location header |
 | 4 | Middleware rewrite serves content at original URL | PASS | `/middleware-rewrite` shows `/` content |
-| 5 | Middleware rewrite with custom status code | FIXME | vinext drops status from `NextResponse.rewrite(url, { status })` |
+| 5 | Middleware rewrite with custom status code | FIXME | openvite drops status from `NextResponse.rewrite(url, { status })` |
 | 6 | Middleware block returns 403 | PASS | Custom response body "Blocked by middleware" |
 
 ### ON-12: Config Redirects and Rewrites
@@ -877,13 +877,13 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Local**: `tests/e2e/app-router/config-redirect.spec.ts` (new file)
 **Fixtures**: `tests/fixtures/app-basic/next.config.ts` (new file)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Simple redirect from config source to destination | PASS | `/config-redirect-source` → `/about` |
 | 2 | Permanent redirect returns 308 | PASS | |
 | 3 | Non-permanent redirect returns 307 | PASS | `/config-redirect-query` → `/about?from=config` |
 | 4 | Parameterized redirect preserves slug | PASS | `/old-blog/:slug` → `/blog/:slug` |
-| 5 | Redirect with has/missing cookie conditions | FIXME | vinext `matchRedirect()` does not support has/missing |
+| 5 | Redirect with has/missing cookie conditions | FIXME | openvite `matchRedirect()` does not support has/missing |
 | 6 | Config rewrite serves content at original URL | PASS | `/config-rewrite` → `/` |
 | 7 | Custom headers from next.config headers() on pages | PASS | `x-page-header` and `x-e2e-header` present |
 | 8 | Custom headers from next.config headers() on API routes | PASS | `x-custom-header` present |
@@ -893,7 +893,7 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/trailing.test.ts
 **Local**: `tests/e2e/app-router/routing-misc.spec.ts` (new file)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Trailing slash stripped via 308 redirect | PASS | `/about/` → `/about` |
 | 2 | Trailing slash redirect preserves search params | PASS | `/about/?foo=bar` → `/about?foo=bar` |
@@ -907,26 +907,26 @@ against our Vite-based fixture apps. Each test links back to the OpenNext source
 **Local**: `tests/e2e/app-router/routing-misc.spec.ts` (new file)
 **Fixtures**: `app/api/catch-all/[...slugs]/route.ts`, `app/api/host/route.ts`, `app/search-query/page.tsx`
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Catch-all API route captures multiple segments with hyphens | PASS | `/api/catch-all/open-next/is/really/cool` |
 | 2 | Catch-all API route works with single segment | PASS | `/api/catch-all/single` |
 | 3 | Route handler request.url has correct host | PASS | Returns `http://localhost:4174/api/host` |
 | 4 | searchParams available via props in server component | PASS | Single-value params work |
-| 5 | Multi-value searchParams returned as arrays | FIXME | vinext uses `URLSearchParams.forEach()` which overwrites duplicate keys |
-| 6 | Middleware forwards search params as request header | FIXME | vinext does not unpack `x-middleware-request-*` headers into request context |
+| 5 | Multi-value searchParams returned as arrays | FIXME | openvite uses `URLSearchParams.forEach()` which overwrites duplicate keys |
+| 6 | Middleware forwards search params as request header | FIXME | openvite does not unpack `x-middleware-request-*` headers into request context |
 
 ### ON-15: Config Headers and poweredByHeader
 
 **Source**: https://github.com/opennextjs/opennextjs-cloudflare/blob/main/examples/e2e/app-router/e2e/headers.test.ts
 **Local**: `tests/e2e/app-router/config-redirect.spec.ts` (Config Custom Headers section)
 
-| # | OpenNext Test | Vinext Status | Notes |
+| # | OpenNext Test | Openvite Status | Notes |
 |---|---|---|---|
 | 1 | Custom header on page routes from next.config headers() | PASS | `x-page-header: about-page` verified |
-| 2 | Custom header on API routes from next.config headers() | PASS | `x-custom-header: vinext-app` verified |
-| 3 | Catch-all header pattern `/(.*)`  applies to all routes | PASS | `x-e2e-header: vinext-e2e` on both page and API |
-| 4 | `poweredByHeader: false` suppresses X-Powered-By | PASS (passive) | vinext never sends X-Powered-By regardless of config |
+| 2 | Custom header on API routes from next.config headers() | PASS | `x-custom-header: openvite-app` verified |
+| 3 | Catch-all header pattern `/(.*)`  applies to all routes | PASS | `x-e2e-header: openvite-e2e` on both page and API |
+| 4 | `poweredByHeader: false` suppresses X-Powered-By | PASS (passive) | openvite never sends X-Powered-By regardless of config |
 | 5 | Config headers NOT applied to redirect responses | PASS | Bug fix: skip headers on 3xx responses |
 | 6 | Middleware headers with has/missing conditions | FIXME | Needs has/missing support in `matchHeaders()` |
 
@@ -983,7 +983,7 @@ Fix: skip applying config headers to 3xx redirect responses in `app-dev-server.t
 
 **Modified files:**
 - `tests/fixtures/app-basic/middleware.ts` — Added redirect-with-cookie, rewrite, block, search-params paths
-- `packages/vinext/src/server/app-dev-server.ts` — Bug fix: skip config headers on redirect responses
+- `packages/openvite/src/server/app-dev-server.ts` — Bug fix: skip config headers on redirect responses
 - `tests/app-router.test.ts` — Removed dynamic next.config.mjs writing (uses permanent next.config.ts)
 
 ---
@@ -991,8 +991,8 @@ Fix: skip applying config headers to 3xx redirect responses in `app-dev-server.t
 ## Phase 5: Shim and Core Module Unit Tests
 
 Unit tests for previously untested Next.js shims and core modules. These tests import
-directly from source (`packages/vinext/src/shims/`, `packages/vinext/src/server/`,
-`packages/vinext/src/routing/`) and test pure functions and SSR rendering via
+directly from source (`packages/openvite/src/shims/`, `packages/openvite/src/server/`,
+`packages/openvite/src/routing/`) and test pure functions and SSR rendering via
 `ReactDOMServer.renderToString` — no running dev server needed.
 
 **Overlap policy**: 15 redundant tests were removed from `route-sorting.test.ts` that

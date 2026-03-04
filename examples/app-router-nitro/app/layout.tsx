@@ -8,13 +8,13 @@ const mono = Geist_Mono({ variable: "--font-mono" });
 // Static metadata on root layout with title template
 export const metadata: Metadata = {
   title: {
-    default: "vinext + nitro",
-    template: "%s | vinext + nitro",
+    default: "openvite + nitro",
+    template: "%s | openvite + nitro",
   },
-  description: "A vinext app deployed with nitro showcasing Next.js features",
-  keywords: ["vinext", "nitro", "react", "vite"],
+  description: "A openvite app deployed with nitro showcasing Next.js features",
+  keywords: ["openvite", "nitro", "react", "vite"],
   openGraph: {
-    siteName: "vinext + nitro",
+    siteName: "openvite + nitro",
     type: "website",
   },
 };
@@ -77,7 +77,7 @@ export default function RootLayout({
             href="/"
             style={{ fontWeight: 700, fontSize: "1.1rem", color: "var(--fg)" }}
           >
-            vinext + nitro
+            openvite + nitro
           </Link>
           <nav>
             <ul

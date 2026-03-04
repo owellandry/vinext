@@ -11,7 +11,7 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "vinext-benchmarks",
+      "database_name": "openvite-benchmarks",
       "database_id": "b5997bf3-56f8-4dde-8bd8-d07604ffcb3e"
     }
   ]

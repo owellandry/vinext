@@ -3,7 +3,7 @@ description: Review a PR using the reviewer agent (different model)
 agent: reviewer
 ---
 
-Review pull request #$ARGUMENTS on cloudflare/vinext.
+Review pull request #$ARGUMENTS on openvite/openvite.
 
 ## Steps
 
@@ -14,10 +14,10 @@ Review pull request #$ARGUMENTS on cloudflare/vinext.
 3. **Read full files**: For each modified file, read the complete file (not just the diff) so you understand the surrounding code and can catch issues the diff alone won't reveal.
 
 4. **Check server parity**: If any of these files were touched, check whether the others need matching changes:
-   - `packages/vinext/src/server/app-dev-server.ts`
-   - `packages/vinext/src/server/dev-server.ts`
-   - `packages/vinext/src/server/prod-server.ts`
-   - `packages/vinext/src/cloudflare/worker-entry.ts`
+   - `packages/openvite/src/server/app-dev-server.ts`
+   - `packages/openvite/src/server/dev-server.ts`
+   - `packages/openvite/src/server/prod-server.ts`
+   - `packages/openvite/src/cloudflare/worker-entry.ts`
 
 5. **Check test coverage**: Are the changes tested? Are edge cases covered? Run `gh pr diff $ARGUMENTS` again filtered to test files if needed.
 
@@ -28,7 +28,7 @@ Review pull request #$ARGUMENTS on cloudflare/vinext.
 
    For inline comments on specific files/lines, use:
    ```
-   gh api repos/cloudflare/vinext/pulls/$ARGUMENTS/comments -f body="..." -f path="..." -F line=N -f side="RIGHT"
+   gh api repos/openvite/openvite/pulls/$ARGUMENTS/comments -f body="..." -f path="..." -F line=N -f side="RIGHT"
    ```
 
 Be thorough. This is the only review gate before merge.

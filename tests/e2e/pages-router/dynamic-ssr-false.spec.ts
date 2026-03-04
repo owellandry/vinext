@@ -37,7 +37,7 @@ test.describe("next/dynamic with ssr: false (Pages Router)", () => {
     await page.goto(`${BASE}/dynamic-ssr-false`);
 
     // Wait for hydration
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     // The client-only component should now be visible in both containers
     const withLoading = page.locator(
@@ -59,7 +59,7 @@ test.describe("next/dynamic with ssr: false (Pages Router)", () => {
     page,
   }) => {
     await page.goto(`${BASE}/dynamic-ssr-false`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     // Find the first counter button
     const counter = page

@@ -272,13 +272,13 @@ function CommitList({ commits }: { commits: BenchmarkCommit[] }) {
           <Table.Row>
             <Table.Head>Commit</Table.Head>
             <Table.Head>Date</Table.Head>
-            <Table.Head>Build Time (vinext Rolldown)</Table.Head>
-            <Table.Head>Client Bundle Size (vinext Rolldown)</Table.Head>
+            <Table.Head>Build Time (openvite Rolldown)</Table.Head>
+            <Table.Head>Client Bundle Size (openvite Rolldown)</Table.Head>
           </Table.Row>
         </Table.Header>
         <Table.Body>
           {commits.map((c) => {
-            const rd = c.runners.vinext_rolldown;
+            const rd = c.runners.openvite_rolldown;
             return (
               <Table.Row key={c.commitSha}>
                 <Table.Cell>

@@ -7,7 +7,7 @@ test.describe("router.beforePopState (Pages Router)", () => {
     page,
   }) => {
     await page.goto(`${BASE}/before-pop-state-test`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     // Enable blocking BEFORE navigating away
     await page.click('[data-testid="enable-blocking"]');
@@ -38,7 +38,7 @@ test.describe("router.beforePopState (Pages Router)", () => {
 
   test("allowing callback permits back navigation", async ({ page }) => {
     await page.goto(`${BASE}/before-pop-state-test`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     // Blocking is OFF by default — verify
     await expect(page.locator('[data-testid="toggle-blocking"]')).toHaveText(

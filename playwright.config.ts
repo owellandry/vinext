@@ -10,7 +10,7 @@ const projectServers = {
     testDir: "./tests/e2e/pages-router",
     server: {
       command:
-        "npx tsc -p ../../../packages/vinext/tsconfig.json && npx vite --port 4173",
+        "npx tsc -p ../../../packages/openvite/tsconfig.json && npx vite --port 4173",
       cwd: "./tests/fixtures/pages-basic",
       port: 4173,
       reuseExistingServer: !process.env.CI,
@@ -40,10 +40,10 @@ const projectServers = {
   "pages-router-prod": {
     testDir: "./tests/e2e/pages-router-prod",
     server: {
-      // Use node to invoke the CLI directly — npx vinext may not be on PATH
-      // in fixture subdirectories since vinext is a workspace dependency.
+      // Use node to invoke the CLI directly — npx openvite may not be on PATH
+      // in fixture subdirectories since openvite is a workspace dependency.
       command:
-        "npx tsc -p ../../../packages/vinext/tsconfig.json && node ../../../packages/vinext/dist/cli.js build && node ../../../packages/vinext/dist/cli.js start --port 4175",
+        "npx tsc -p ../../../packages/openvite/tsconfig.json && node ../../../packages/openvite/dist/cli.js build && node ../../../packages/openvite/dist/cli.js start --port 4175",
       cwd: "./tests/fixtures/pages-basic",
       port: 4175,
       reuseExistingServer: !process.env.CI,

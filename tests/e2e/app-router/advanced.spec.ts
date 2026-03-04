@@ -72,7 +72,7 @@ test.describe("Intercepting Routes", () => {
 
     // Wait for hydration
     await page.waitForFunction(
-      () => typeof (window as any).__VINEXT_RSC_NAVIGATE__ === "function",
+      () => typeof (window as any).__OPENVITE_RSC_NAVIGATE__ === "function",
       null,
       { timeout: 10000 },
     );
@@ -145,7 +145,7 @@ test.describe("Shallow Routing (history.pushState/replaceState)", () => {
 
     // Wait for hydration
     await page.waitForFunction(
-      () => typeof (window as any).__VINEXT_RSC_ROOT__ !== "undefined",
+      () => typeof (window as any).__OPENVITE_RSC_ROOT__ !== "undefined",
       null,
       { timeout: 10000 },
     );
@@ -176,7 +176,7 @@ test.describe("Shallow Routing (history.pushState/replaceState)", () => {
     await page.goto(`${BASE}/shallow-test`);
 
     await page.waitForFunction(
-      () => typeof (window as any).__VINEXT_RSC_ROOT__ !== "undefined",
+      () => typeof (window as any).__OPENVITE_RSC_ROOT__ !== "undefined",
       null,
       { timeout: 10000 },
     );
@@ -202,7 +202,7 @@ test.describe("Shallow Routing (history.pushState/replaceState)", () => {
     await page.goto(`${BASE}/shallow-test`);
 
     await page.waitForFunction(
-      () => typeof (window as any).__VINEXT_RSC_ROOT__ !== "undefined",
+      () => typeof (window as any).__OPENVITE_RSC_ROOT__ !== "undefined",
       null,
       { timeout: 10000 },
     );
@@ -228,7 +228,7 @@ test.describe("Shallow Routing (history.pushState/replaceState)", () => {
     await page.goto(`${BASE}/shallow-test`);
 
     await page.waitForFunction(
-      () => typeof (window as any).__VINEXT_RSC_ROOT__ !== "undefined",
+      () => typeof (window as any).__OPENVITE_RSC_ROOT__ !== "undefined",
       null,
       { timeout: 10000 },
     );

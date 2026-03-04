@@ -6,7 +6,7 @@
  *
  * NOTE: The client logic is in sse-client.tsx (not here) because having
  * "use client" at the page level breaks SSR of dynamic() client components
- * in other routes. See: https://github.com/cloudflare/vinext/issues/75
+ * in other routes. See SSE streaming implementation notes.
  */
 import SSEClient from "./sse-client";
 

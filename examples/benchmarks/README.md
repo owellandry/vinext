@@ -1,8 +1,8 @@
 # Performance Benchmarks
 
-A dashboard for viewing vinext performance benchmarks, built with the App Router on Cloudflare Workers.
+A dashboard for viewing openvite performance benchmarks, built with the App Router on Cloudflare Workers.
 
-Compares build times and metrics across Next.js 16 (Turbopack), vinext (Rollup), and vinext (Rolldown) on every merge to main.
+Compares build times and metrics across Next.js 16 (Turbopack), openvite (Rollup), and openvite (Rolldown) on every merge to main.
 
 Uses a D1 database for benchmark storage and Tailwind CSS for styling.
 
@@ -11,23 +11,23 @@ Uses a D1 database for benchmark storage and Tailwind CSS for styling.
 1. Install dependencies:
 
 ```sh
-pnpm install
+bun install
 ```
 
 2. Start the dev server:
 
 ```sh
-pnpm dev
+bun run dev
 ```
 
 3. Build for production:
 
 ```sh
-pnpm build
+bun run build
 ```
 
 4. Preview the production build:
 
 ```sh
-pnpm preview
+bun run preview
 ```

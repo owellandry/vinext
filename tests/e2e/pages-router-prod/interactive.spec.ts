@@ -3,11 +3,11 @@ import { test, expect } from "@playwright/test";
 const BASE = "http://localhost:4175";
 
 test.describe("Pages Router Production — Interactive", () => {
-  // NOTE: Pages Router production build (vinext build + vinext start) does not
+  // NOTE: Pages Router production build (openvite build + openvite start) does not
   // currently hydrate client components — interactive useState/onClick don't work.
   // The SSR HTML renders correctly, but client JS bundles aren't loaded.
   // This is a known gap — production hydration only works on Cloudflare Workers
-  // (via the vinext:cloudflare-build client environment). Phase 9 DX work should
+  // (via the openvite:cloudflare-build client environment). Phase 9 DX work should
   // add production hydration for the Node.js server too.
   test("counter page SSR renders correctly in production", async ({ page }) => {
     await page.goto(`${BASE}/counter`);
@@ -19,7 +19,7 @@ test.describe("Pages Router Production — Interactive", () => {
 
   test("Link click navigates to correct page", async ({ page }) => {
     await page.goto(`${BASE}/`);
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
 
     await page.click('a[href="/about"]');
     await expect(page.locator("h1")).toHaveText("About");
@@ -28,13 +28,13 @@ test.describe("Pages Router Production — Interactive", () => {
 
   test("browser back button works after navigation", async ({ page }) => {
     await page.goto(`${BASE}/`);
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
 
     await page.click('a[href="/about"]');
     await expect(page.locator("h1")).toHaveText("About");
 
     await page.goBack();
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
     expect(page.url()).toBe(`${BASE}/`);
   });
 
@@ -93,7 +93,7 @@ test.describe("Pages Router Production — Interactive", () => {
     await expect(page.locator('[data-testid="app-wrapper"]')).toBeVisible();
 
     await page.click('a[href="/"]');
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
     await expect(page.locator('[data-testid="app-wrapper"]')).toBeVisible();
   });
 });

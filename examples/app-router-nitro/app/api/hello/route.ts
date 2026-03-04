@@ -8,7 +8,7 @@ export async function GET(request: Request) {
   const name = url.searchParams.get("name") ?? "world";
 
   return NextResponse.json({
-    message: `Hello, ${name}! From vinext with nitro.`,
+    message: `Hello, ${name}! From openvite with nitro.`,
     pathname: url.pathname,
     runtime:
       typeof globalThis.navigator !== "undefined"

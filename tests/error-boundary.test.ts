@@ -11,7 +11,7 @@
  */
 import { describe, it, expect, beforeAll, vi } from "vitest";
 
-// Mock next/navigation since it's a virtual module provided by the vinext plugin.
+// Mock next/navigation since it's a virtual module provided by the openvite plugin.
 // We only need usePathname for the NotFoundBoundary wrapper, not for the static
 // getDerivedStateFromError methods we're testing.
 vi.mock("next/navigation", () => ({
@@ -88,7 +88,7 @@ describe("ErrorBoundary digest classification (actual class)", () => {
   let ErrorBoundary: any;
 
   beforeAll(async () => {
-    const mod = await import("../packages/vinext/src/shims/error-boundary.js");
+    const mod = await import("../packages/openvite/src/shims/error-boundary.js");
     ErrorBoundary = mod.ErrorBoundary;
   });
 

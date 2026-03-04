@@ -64,7 +64,7 @@ if [[ -z "$ISSUE" ]]; then
 fi
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-WORKTREE_DIR="${REPO_ROOT}/../vinext-fix-${ISSUE}"
+WORKTREE_DIR="${REPO_ROOT}/../openvite-fix-${ISSUE}"
 
 # ── Server lifecycle ──────────────────────────────────────────
 cleanup() {
@@ -176,7 +176,7 @@ find_pr_number() {
     branch=$(git -C "${WORKTREE_DIR}" branch --show-current 2>/dev/null || true)
     if [[ -n "${branch}" ]]; then
       local pr
-      pr=$(gh pr list --repo cloudflare/vinext --head "${branch}" --json number -q '.[0].number' 2>/dev/null || true)
+      pr=$(gh pr list --repo openvite/openvite --head "${branch}" --json number -q '.[0].number' 2>/dev/null || true)
       if [[ -n "${pr}" ]]; then
         echo "${pr}"
         return 0
@@ -186,7 +186,7 @@ find_pr_number() {
 
   # Fallback: search by issue reference
   local pr
-  pr=$(gh pr list --repo cloudflare/vinext --search "Fixes #${ISSUE}" --json number -q '.[0].number' 2>/dev/null || true)
+  pr=$(gh pr list --repo openvite/openvite --search "Fixes #${ISSUE}" --json number -q '.[0].number' 2>/dev/null || true)
   if [[ -n "${pr}" ]]; then
     echo "${pr}"
     return 0

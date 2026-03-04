@@ -5,7 +5,7 @@ const BASE = "http://localhost:4173";
 test.describe("Link advanced props (Pages Router)", () => {
   test("scroll={false} preserves scroll position", async ({ page }) => {
     await page.goto(`${BASE}/link-test`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     // Intercept window.scrollTo to detect if scroll-to-top was called
     await page.evaluate(() => {
@@ -44,11 +44,11 @@ test.describe("Link advanced props (Pages Router)", () => {
   test("replace does not add to browser history", async ({ page }) => {
     // Start at home, then go to link-test
     await page.goto(`${BASE}/`);
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
 
     // Navigate to link-test page
     await page.goto(`${BASE}/link-test`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     // Scroll to links
     await page.locator('[data-testid="links"]').scrollIntoViewIfNeeded();
@@ -60,14 +60,14 @@ test.describe("Link advanced props (Pages Router)", () => {
     // Going back should NOT go to link-test (because replace was used)
     // It should go to the page before link-test (the home page)
     await page.goBack();
-    await expect(page.locator("h1")).toHaveText("Hello, vinext!");
+    await expect(page.locator("h1")).toHaveText("Hello, openvite!");
   });
 
   test("as prop renders correct href on the anchor element", async ({
     page,
   }) => {
     await page.goto(`${BASE}/link-test`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     // The anchor should use the "as" value for its href
     const href = await page.getAttribute('[data-testid="link-as"]', "href");
@@ -76,7 +76,7 @@ test.describe("Link advanced props (Pages Router)", () => {
 
   test("onClick with preventDefault blocks navigation", async ({ page }) => {
     await page.goto(`${BASE}/link-test`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     // Click the link with preventDefault
     await page.click('[data-testid="link-prevent"]');
@@ -92,7 +92,7 @@ test.describe("Link advanced props (Pages Router)", () => {
 
   test('target="_blank" has correct attributes', async ({ page }) => {
     await page.goto(`${BASE}/link-test`);
-    await page.waitForFunction(() => (window as any).__VINEXT_ROOT__);
+    await page.waitForFunction(() => (window as any).__OPENVITE_ROOT__);
 
     const link = page.locator('[data-testid="link-blank"]');
     await expect(link).toHaveAttribute("target", "_blank");

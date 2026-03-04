@@ -1,11 +1,11 @@
 /**
- * Cloudflare Worker entry point for vinext Pages Router.
+ * Cloudflare Worker entry point for openvite Pages Router.
  *
- * The built server entry (virtual:vinext-server-entry) exports:
+ * The built server entry (virtual:openvite-server-entry) exports:
  * - renderPage(request, url, manifest) -> Response
  * - handleApiRoute(request, url) -> Response
  * - runMiddleware(request) -> middleware result
- * - vinextConfig -> embedded next.config.js settings
+ * - openviteConfig -> embedded next.config.js settings
  *
  * Both use Web-standard Request/Response APIs, making them
  * directly usable in a Worker fetch handler.
@@ -17,17 +17,17 @@ import {
   requestContextFromRequest,
   isExternalUrl,
   proxyExternalRequest,
-} from "vinext/config/config-matchers";
+} from "openvite/config/config-matchers";
 
-// @ts-expect-error -- virtual module resolved by vinext at build time
-import { renderPage, handleApiRoute, runMiddleware, vinextConfig } from "virtual:vinext-server-entry";
+// @ts-expect-error -- virtual module resolved by openvite at build time
+import { renderPage, handleApiRoute, runMiddleware, openviteConfig } from "virtual:openvite-server-entry";
 
 // Extract config values (embedded at build time in the server entry)
-const basePath: string = vinextConfig?.basePath ?? "";
-const trailingSlash: boolean = vinextConfig?.trailingSlash ?? false;
-const configRedirects = vinextConfig?.redirects ?? [];
-const configRewrites = vinextConfig?.rewrites ?? { beforeFiles: [], afterFiles: [], fallback: [] };
-const configHeaders = vinextConfig?.headers ?? [];
+const basePath: string = openviteConfig?.basePath ?? "";
+const trailingSlash: boolean = openviteConfig?.trailingSlash ?? false;
+const configRedirects = openviteConfig?.redirects ?? [];
+const configRewrites = openviteConfig?.rewrites ?? { beforeFiles: [], afterFiles: [], fallback: [] };
+const configHeaders = openviteConfig?.headers ?? [];
 
 export default {
   async fetch(request: Request): Promise<Response> {
@@ -207,7 +207,7 @@ export default {
 
       return mergeHeaders(response, middlewareHeaders, middlewareRewriteStatus);
     } catch (error) {
-      console.error("[vinext] Worker error:", error);
+      console.error("[openvite] Worker error:", error);
       return new Response("Internal Server Error", { status: 500 });
     }
   },

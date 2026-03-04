@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Generate the shared 33-route benchmark app.
- * Shared between the Next.js and vinext benchmark projects.
+ * Shared between the Next.js and openvite benchmark projects.
  */
 import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -33,14 +33,14 @@ function write(rel, content) {
 write("layout.tsx", `
 // Force all pages to be dynamically rendered (no static pre-rendering).
 // Without this, Next.js detects most pages as static and pre-renders them at
-// build time — work that vinext doesn't do. This benchmark is designed to
+// build time — work that openvite doesn't do. This benchmark is designed to
 // compare build/compilation speed, not static generation, so we opt out of
 // pre-rendering to keep the comparison apples-to-apples.
 export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: { default: "Benchmark App", template: "%s | Benchmark" },
-  description: "A realistic benchmark app for comparing Next.js and vinext",
+  description: "A realistic benchmark app for comparing Next.js and openvite",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -135,7 +135,7 @@ export default function AboutPage() {
   return (
     <div>
       <h1>About</h1>
-      <p>This is a benchmark application for comparing Next.js and vinext (Vite) performance.</p>
+      <p>This is a benchmark application for comparing Next.js and openvite (Vite) performance.</p>
       <p>It includes 33 routes with nested layouts, dynamic routes, server components, client components, and metadata.</p>
     </div>
   );
@@ -485,7 +485,7 @@ console.log(`Generated benchmark app: ${pages} pages + ${routes} API routes = ${
 // Copy to each benchmark project (symlinks don't work with Turbopack)
 import { cpSync } from "node:fs";
 const BASE = dirname(new URL(import.meta.url).pathname);
-for (const project of ["nextjs", "vinext", "vinext-rolldown"]) {
+for (const project of ["nextjs", "openvite", "openvite-rolldown"]) {
   const dest = join(BASE, project, "app");
   rmSync(dest, { recursive: true, force: true });
   cpSync(APP, dest, { recursive: true });
